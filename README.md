@@ -9,6 +9,7 @@
 
 **Instantly convert any unit measurement by simply selecting text on any webpage!**
 A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, and area measurements with smart auto-sizing and mixed-dimension support.
+
 ![Extension Popup Demo](img/popup.png)
 </div>
 
