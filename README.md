@@ -1,6 +1,7 @@
 <div align="center">
-<h1> <img src=""> Universal Unit Converter - Chrome Extension </h1>
-
+<div align="center" style="display: flex;"> 
+<h1 style="text-align: center;"> <img src="icons/icon32.png"> Universal Unit Converter - Chrome Extension </h1>
+</div>
 [![Tests](https://img.shields.io/badge/tests-24/24_passing-brightgreen)](tests/TESTING.md)
 [![Node.js](https://img.shields.io/badge/node.js-24.x-green)](package.json)
 [![Manifest](https://img.shields.io/badge/manifest-v3-blue)](manifest.json)
