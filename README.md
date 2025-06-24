@@ -1,6 +1,6 @@
 <div align="center">
 <div align="center" style="display: flex;"> 
-<h1 style="text-align: center;"> <img src="icons/icon32.png"> Universal Unit Converter - Chrome Extension </h1>
+<img src="icons/icon32.png"><h1 style="text-align: center;">  Universal Unit Converter - Chrome Extension </h1>
 </div>
 
 [![Tests](https://img.shields.io/badge/tests-24/24_passing-brightgreen)](tests/TESTING.md)
