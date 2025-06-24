@@ -1,17 +1,16 @@
 <div align="center">
-
 # 🔄 Universal Unit Converter - Chrome Extension
 
 [![Tests](https://img.shields.io/badge/tests-24/24_passing-brightgreen)](tests/TESTING.md)
 [![Node.js](https://img.shields.io/badge/node.js-24.x-green)](package.json)
 [![Manifest](https://img.shields.io/badge/manifest-v3-blue)](manifest.json)
 
-</div>
+
 
 **Instantly convert any unit measurement by simply selecting text on any webpage!**
 
 ![Extension Popup Demo](img/popup.png)
-
+</div>
 A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, and area measurements with smart auto-sizing and mixed-dimension support.
 
 ## ✨ Key Features

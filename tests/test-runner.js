@@ -142,14 +142,21 @@ class UnitConverterTester {
 
   // Test auto-sizing functionality
   testAutoSizing() {
-    console.log(`\n${colors.blue}🧪 Testing Auto-Sizing${colors.reset}`);
-
-    // Small values should use smaller units
+    console.log(`\n${colors.blue}🧪 Testing Auto-Sizing${colors.reset}`);    // Small values should use smaller units
     const small_area = this.unitConverter.getBestUnit(0.001, 'area', 'm2');
     this.assert(small_area.unit === 'cm2', 'Auto-size: 0.001 m² → cm²', 'cm2', small_area.unit);
 
     const small_length = this.unitConverter.getBestUnit(0.001, 'length', 'm');
     this.assert(small_length.unit === 'mm', 'Auto-size: 0.001 m → mm', 'mm', small_length.unit);
+
+    // Test specific case: 0.3m should show as 30cm
+    const cm_30 = this.unitConverter.getBestUnit(0.3, 'length', 'm');
+    this.assert(cm_30.unit === 'cm' && cm_30.value === 30, 'Auto-size: 0.3 m → 30 cm', '30 cm', `${cm_30.value} ${cm_30.unit}`);
+
+    // Test the example case: 11.81 inches should show as ~30cm when converted to meters then auto-sized
+    const inches_to_m = this.unitConverter.convert(11.81, 'in', 'm');
+    const auto_sized = this.unitConverter.getBestUnit(inches_to_m, 'length', 'm');
+    this.assert(auto_sized.unit === 'cm', 'Auto-size: 11.81 in → ~30 cm (via meters)', 'cm', auto_sized.unit);
 
     // Large values should use larger units
     const large_area = this.unitConverter.getBestUnit(2000000, 'area', 'm2');

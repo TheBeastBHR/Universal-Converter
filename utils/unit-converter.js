@@ -134,8 +134,7 @@ window.UnitConverter.UnitConverter = class {
     }
     return null;
   }
-  
-  /**
+    /**
    * Get the best unit for displaying a value (auto-size detection)
    * @param {number} value - The converted value
    * @param {string} unitType - The unit type (length, weight, etc.)
@@ -144,45 +143,99 @@ window.UnitConverter.UnitConverter = class {
    */
   getBestUnit(value, unitType, defaultUnit) {
     if (unitType === 'length') {
-      const units = this.conversions.length;      // If too small, use smaller unit
-      if (value < 0.01 && defaultUnit === 'm') {
+      const units = this.conversions.length;
+      
+      // If less than 1 and default is meters, use smaller units
+      if (value < 1 && defaultUnit === 'm') {
         const cmValue = value * units.cm;
         if (cmValue >= 1) return { value: cmValue, unit: 'cm' };
         const mmValue = value * units.mm;
         return { value: mmValue, unit: 'mm' };
       }
+      
+      // If less than 1 and default is feet, use inches
+      if (value < 1 && defaultUnit === 'ft') {
+        const inValue = value * units.in;
+        return { value: inValue, unit: 'in' };
+      }
+      
+      // If less than 1 and default is yards, use feet or inches
+      if (value < 1 && defaultUnit === 'yd') {
+        const ftValue = value * units.ft;
+        if (ftValue >= 1) return { value: ftValue, unit: 'ft' };
+        const inValue = value * units.in;
+        return { value: inValue, unit: 'in' };
+      }
+      
       // If too large, use larger unit
       if (value > 1000 && defaultUnit === 'm') {
         return { value: value * units.km, unit: 'km' };
       }
+      if (value > 5280 && defaultUnit === 'ft') {
+        return { value: value * units.mi, unit: 'mi' };
+      }
+      
     } else if (unitType === 'weight') {
       const units = this.conversions.weight;
-      // If too small, use smaller unit
-      if (value < 0.01 && defaultUnit === 'kg') {
+      
+      // If less than 1 and default is kg, use grams
+      if (value < 1 && defaultUnit === 'kg') {
         return { value: value * units.g, unit: 'g' };
       }
+      
+      // If less than 1 and default is pounds, use ounces
+      if (value < 1 && defaultUnit === 'lb') {
+        return { value: value * units.oz, unit: 'oz' };
+      }
+      
       // If too large, use larger unit
       if (value > 1000 && defaultUnit === 'kg') {
         return { value: value * units.t, unit: 't' };
       }
+      
     } else if (unitType === 'volume') {
       const units = this.conversions.volume;
-      // If too small, use smaller unit
-      if (value < 0.01 && defaultUnit === 'l') {
+      
+      // If less than 1 and default is liters, use ml
+      if (value < 1 && defaultUnit === 'l') {
         return { value: value * units.ml, unit: 'ml' };
       }
+      
+      // If less than 1 and default is gallons, use smaller units
+      if (value < 1 && defaultUnit === 'gal') {
+        const qtValue = value * units.qt;
+        if (qtValue >= 1) return { value: qtValue, unit: 'qt' };
+        const ptValue = value * units.pt;
+        if (ptValue >= 1) return { value: ptValue, unit: 'pt' };
+        const cupValue = value * units.cup;
+        if (cupValue >= 1) return { value: cupValue, unit: 'cup' };
+        const flozValue = value * units.floz;
+        return { value: flozValue, unit: 'floz' };
+      }
+      
     } else if (unitType === 'area') {
       const units = this.conversions.area;
-      // If too small, use smaller unit
-      if (value < 0.01 && defaultUnit === 'm2') {
+      
+      // If less than 1 and default is m², use smaller units
+      if (value < 1 && defaultUnit === 'm2') {
         const cm2Value = value * units.cm2;
-        if (cm2Value >= 0.1) return { value: cm2Value, unit: 'cm2' };
+        if (cm2Value >= 1) return { value: cm2Value, unit: 'cm2' };
         const mm2Value = value * units.mm2;
         return { value: mm2Value, unit: 'mm2' };
       }
+      
+      // If less than 1 and default is ft², use in²
+      if (value < 1 && defaultUnit === 'ft2') {
+        const in2Value = value * units.in2;
+        return { value: in2Value, unit: 'in2' };
+      }
+      
       // If too large, use larger unit
       if (value > 1000000 && defaultUnit === 'm2') {
         return { value: value * units.km2, unit: 'km2' };
+      }
+      if (value > 43560 && defaultUnit === 'ft2') {
+        return { value: value * units.acre, unit: 'acre' };
       }
     }
     
