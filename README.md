@@ -237,5 +237,3 @@ npm run zip
 ## 📄 License
 
 **MIT License** - Feel free to use, modify, and distribute for any purpose.
-
----
