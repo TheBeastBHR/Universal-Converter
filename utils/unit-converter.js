@@ -144,11 +144,10 @@ window.UnitConverter.UnitConverter = class {
    */
   getBestUnit(value, unitType, defaultUnit) {
     if (unitType === 'length') {
-      const units = this.conversions.length;
-      // If too small, use smaller unit
+      const units = this.conversions.length;      // If too small, use smaller unit
       if (value < 0.01 && defaultUnit === 'm') {
         const cmValue = value * units.cm;
-        if (cmValue >= 0.1) return { value: cmValue, unit: 'cm' };
+        if (cmValue >= 1) return { value: cmValue, unit: 'cm' };
         const mmValue = value * units.mm;
         return { value: mmValue, unit: 'mm' };
       }
