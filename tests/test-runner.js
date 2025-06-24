@@ -28,21 +28,20 @@ class UnitConverterTester {
     // Load the extension modules
     this.loadModules();
   }
-
   loadModules() {
     try {
       // Load conversion data
-      const conversionDataPath = path.join(__dirname, 'data', 'conversion-data.js');
+      const conversionDataPath = path.join(__dirname, '..', 'data', 'conversion-data.js');
       const conversionData = fs.readFileSync(conversionDataPath, 'utf8');
       eval(conversionData);
 
       // Load unit converter
-      const unitConverterPath = path.join(__dirname, 'utils', 'unit-converter.js');
+      const unitConverterPath = path.join(__dirname, '..', 'utils', 'unit-converter.js');
       const unitConverter = fs.readFileSync(unitConverterPath, 'utf8');
       eval(unitConverter);
 
       // Load conversion detector
-      const detectorPath = path.join(__dirname, 'utils', 'conversion-detector.js');
+      const detectorPath = path.join(__dirname, '..', 'utils', 'conversion-detector.js');
       const detector = fs.readFileSync(detectorPath, 'utf8');
       eval(detector);
 

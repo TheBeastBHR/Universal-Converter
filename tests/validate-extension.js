@@ -38,12 +38,11 @@ class ExtensionValidator {
       }
     }
   }
-
   validateManifest() {
     console.log(`${colors.blue}🔍 Validating manifest.json${colors.reset}`);
     
     try {
-      const manifestPath = path.join(__dirname, 'manifest.json');
+      const manifestPath = path.join(__dirname, '..', 'manifest.json');
       const manifestContent = fs.readFileSync(manifestPath, 'utf8');
       const manifest = JSON.parse(manifestContent);
 
@@ -85,27 +84,21 @@ class ExtensionValidator {
   }
 
   validateFiles() {
-    console.log(`\n${colors.blue}📁 Validating file structure${colors.reset}`);
-
-    // Required files
+    console.log(`\n${colors.blue}📁 Validating file structure${colors.reset}`);    // Required files
     const requiredFiles = [
       'manifest.json',
       'background.js',
       'content.js',
-      'popup.html',
-      'popup.js',
+      'popup/popup.html',
+      'popup/popup.js',
       'content.css'
-    ];
-
-    requiredFiles.forEach(file => {
-      const exists = fs.existsSync(path.join(__dirname, file));
+    ];requiredFiles.forEach(file => {
+      const exists = fs.existsSync(path.join(__dirname, '..', file));
       this.check(exists, `Required file exists: ${file}`);
-    });
-
-    // Required directories
-    const requiredDirs = ['data', 'utils', 'icons'];
+    });    // Required directories
+    const requiredDirs = ['data', 'utils', 'icons', 'popup', 'tests', 'debug'];
     requiredDirs.forEach(dir => {
-      const exists = fs.existsSync(path.join(__dirname, dir));
+      const exists = fs.existsSync(path.join(__dirname, '..', dir));
       this.check(exists, `Required directory exists: ${dir}`);
     });
 
@@ -116,10 +109,8 @@ class ExtensionValidator {
       'utils/conversion-detector.js',
       'utils/popup-manager.js',
       'utils/settings-manager.js'
-    ];
-
-    moduleFiles.forEach(file => {
-      const exists = fs.existsSync(path.join(__dirname, file));
+    ];    moduleFiles.forEach(file => {
+      const exists = fs.existsSync(path.join(__dirname, '..', file));
       this.check(exists, `Module file exists: ${file}`);
     });
 
@@ -127,28 +118,24 @@ class ExtensionValidator {
     const iconSizes = [16, 32, 48, 128];
     iconSizes.forEach(size => {
       const iconFile = `icons/icon${size}.png`;
-      const exists = fs.existsSync(path.join(__dirname, iconFile));
+      const exists = fs.existsSync(path.join(__dirname, '..', iconFile));
       this.check(exists, `Icon file exists: ${iconFile}`, true); // Warning only
     });
   }
 
   validateSyntax() {
-    console.log(`\n${colors.blue}🔧 Validating JavaScript syntax${colors.reset}`);
-
-    const jsFiles = [
+    console.log(`\n${colors.blue}🔧 Validating JavaScript syntax${colors.reset}`);    const jsFiles = [
       'background.js',
       'content.js',
-      'popup.js',
+      'popup/popup.js',
       'data/conversion-data.js',
       'utils/unit-converter.js',
       'utils/conversion-detector.js',
       'utils/popup-manager.js',
       'utils/settings-manager.js'
-    ];
-
-    jsFiles.forEach(file => {
+    ];jsFiles.forEach(file => {
       try {
-        const filePath = path.join(__dirname, file);
+        const filePath = path.join(__dirname, '..', file);
         if (fs.existsSync(filePath)) {
           const content = fs.readFileSync(filePath, 'utf8');
           // Basic syntax check - try to parse as JS
@@ -167,10 +154,8 @@ class ExtensionValidator {
   }
 
   validateContentScriptOrder() {
-    console.log(`\n${colors.blue}📜 Validating content script loading order${colors.reset}`);
-
-    try {
-      const manifestPath = path.join(__dirname, 'manifest.json');
+    console.log(`\n${colors.blue}📜 Validating content script loading order${colors.reset}`);    try {
+      const manifestPath = path.join(__dirname, '..', 'manifest.json');
       const manifestContent = fs.readFileSync(manifestPath, 'utf8');
       const manifest = JSON.parse(manifestContent);
 

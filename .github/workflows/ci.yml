@@ -165,18 +165,16 @@ jobs:
         node-version: 20.x
         
     - name: Build extension package
-      run: |
-        # Create distribution package
+      run: |        # Create distribution package
         mkdir -p dist
         cp -r data/ dist/
         cp -r utils/ dist/
         cp -r icons/ dist/
+        cp -r popup/ dist/
         cp manifest.json dist/
         cp background.js dist/
         cp content.js dist/
         cp content.css dist/
-        cp popup.html dist/
-        cp popup.js dist/
         cp LICENSE dist/
         cp README.md dist/
         

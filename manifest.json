@@ -6,9 +6,8 @@
   "permissions": [
     "activeTab",
     "storage"
-  ],
-  "action": {
-    "default_popup": "popup.html",
+  ],  "action": {
+    "default_popup": "popup/popup.html",
     "default_title": "Unit Converter Settings"
   },
   "content_scripts": [

@@ -79,12 +79,13 @@ A Chrome extension that provides **instant unit conversions** using text selecti
 unitConverter/
 ├── manifest.json              # Extension configuration
 ├── content.js                 # Main orchestrator (modular architecture)
-├── popup.html                 # Settings UI (auto-save enabled)
-├── popup.js                   # Auto-save settings management
 ├── background.js              # Service worker
 ├── content.css                # Popup styling
 ├── package.json               # NPM configuration and build scripts
 ├── LICENSE                    # MIT license file
+├── popup/                     # Extension popup UI
+│   ├── popup.html             # Settings UI (auto-save enabled)
+│   └── popup.js               # Auto-save settings management
 ├── data/
 │   └── conversion-data.js      # All conversion data & patterns
 ├── utils/
@@ -97,12 +98,19 @@ unitConverter/
 │   ├── icon32.png
 │   ├── icon48.png
 │   └── icon128.png
-├── test files:                # Comprehensive test suite
+├── tests/                     # Comprehensive test suite
 │   ├── area-test.html         # Area conversion edge cases & Unicode tests
 │   ├── test.html              # General conversion testing
 │   ├── conversion-test.js     # Programmatic testing script
 │   ├── test-suite.js          # Automated test runner
+│   ├── test-runner.js         # Node.js test automation
+│   ├── validate-extension.js  # Extension structure validation
+│   ├── TESTING.md             # Testing documentation
+│   └── TESTING_SUMMARY.md     # Testing infrastructure overview
+├── debug/                     # Debug utilities
 │   └── debug-area.js          # Debug utilities for area conversions
+├── .github/workflows/         # CI/CD automation
+│   └── ci.yml                 # GitHub Actions workflow
 ├── .git/                      # Git repository
 └── README.md                  # This documentation file
 ```
@@ -112,15 +120,29 @@ unitConverter/
 ## 🧪 Testing
 
 ### **Test Files Included**
-- `area-test.html` - Test area conversion edge cases and Unicode symbols
-- `test.html` - General conversion testing for all unit types
-- `conversion-test.js` - Programmatic testing script
-- `test-suite.js` - Automated test runner
-- `debug-area.js` - Debug utilities for troubleshooting area conversions
+- `tests/area-test.html` - Test area conversion edge cases and Unicode symbols
+- `tests/test.html` - General conversion testing for all unit types
+- `tests/conversion-test.js` - Programmatic testing script
+- `tests/test-suite.js` - Automated test runner
+- `tests/test-runner.js` - Node.js automated testing
+- `tests/validate-extension.js` - Extension structure validation
+- `debug/debug-area.js` - Debug utilities for troubleshooting area conversions
+
+### **Automated Testing**
+```bash
+# Run all automated tests
+npm test
+
+# Validate extension structure
+npm run validate
+
+# Run browser tests manually
+npm run test:browser
+```
 
 ### **Manual Testing Steps**
 1. **Install** the extension following installation steps
-2. **Visit** any test file or create text with units
+2. **Visit** any test file in the `tests/` folder or create text with units
 3. **Select** text containing measurements
 4. **Verify** popup appears with correct conversions
 5. **Test** settings auto-save by changing preferences

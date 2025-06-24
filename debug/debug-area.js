@@ -10,9 +10,9 @@ if (typeof window === 'undefined') {
 }
 
 // Simulate loading the data
-eval(require('fs').readFileSync('./data/conversion-data.js', 'utf8'));
-eval(require('fs').readFileSync('./utils/unit-converter.js', 'utf8'));
-eval(require('fs').readFileSync('./utils/conversion-detector.js', 'utf8'));
+eval(require('fs').readFileSync('../data/conversion-data.js', 'utf8'));
+eval(require('fs').readFileSync('../utils/unit-converter.js', 'utf8'));
+eval(require('fs').readFileSync('../utils/conversion-detector.js', 'utf8'));
 
 // Test cases from the screenshot
 const testCases = [
