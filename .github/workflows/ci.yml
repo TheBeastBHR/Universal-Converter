@@ -3,25 +3,47 @@ name: Unit Converter CI/CD
 on:
   push:
     branches: [ main, develop ]
+    paths:
+      - '**.js'
+      - '**.json'
+      - '**.html'
+      - '**.css'
+      - 'tests/**'
+      - 'utils/**'
+      - 'data/**'
+      - 'popup/**'
+      - 'debug/**'
+      - 'manifest.json'
+      - 'package.json'
+      - '.github/workflows/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - '**.js'
+      - '**.json'
+      - '**.html'
+      - '**.css'
+      - 'tests/**'
+      - 'utils/**'
+      - 'data/**'
+      - 'popup/**'
+      - 'debug/**'
+      - 'manifest.json'
+      - 'package.json'
+      - '.github/workflows/**'
 
 jobs:
   test:
     runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 24.x
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 24.x
         cache: 'npm'
         
     - name: Install dependencies
@@ -45,7 +67,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results-node-${{ matrix.node-version }}
+        name: test-results-node-24
         path: |
           coverage.txt
           *.log
@@ -159,13 +181,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Use Node.js 20.x
+    - name: Use Node.js 24.x
       uses: actions/setup-node@v4
       with:
-        node-version: 20.x
+        node-version: 24.x
         
     - name: Build extension package
-      run: |        # Create distribution package
+      run: |
+        # Create distribution package
         mkdir -p dist
         cp -r data/ dist/
         cp -r utils/ dist/
@@ -222,3 +245,5 @@ jobs:
         else
           echo "⚠️  Inconsistent indentation detected"
         fi
+        
+        echo "Code quality checks completed"

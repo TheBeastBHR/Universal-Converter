@@ -2,7 +2,8 @@
   "name": "universal-unit-converter",
   "version": "1.0.0",
   "description": "Chrome Extension v3 for converting units with text selection popup",
-  "main": "background.js",  "scripts": {
+  "main": "background.js",
+  "scripts": {
     "test": "node tests/test-runner.js",
     "test:browser": "echo \"Open tests/test.html in a browser after installing the extension\"",
     "test:headless": "node tests/test-headless.js",
@@ -20,7 +21,8 @@
     "popup"
   ],
   "author": "Your Name",
-  "license": "MIT",  "repository": {
+  "license": "MIT",
+  "repository": {
     "type": "git",
     "url": "https://github.com/TheBeastBHR/Unit-Converter.git"
   },
@@ -28,6 +30,7 @@
     "url": "https://github.com/TheBeastBHR/Unit-Converter/issues"
   },
   "homepage": "https://github.com/TheBeastBHR/Unit-Converter#readme",
-  "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
 }

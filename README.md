@@ -82,6 +82,7 @@ unitConverter/
 ├── background.js              # Service worker
 ├── content.css                # Popup styling
 ├── package.json               # NPM configuration and build scripts
+├── package-lock.json          # NPM dependency lock file
 ├── LICENSE                    # MIT license file
 ├── popup/                     # Extension popup UI
 │   ├── popup.html             # Settings UI (auto-save enabled)
@@ -110,7 +111,8 @@ unitConverter/
 ├── debug/                     # Debug utilities
 │   └── debug-area.js          # Debug utilities for area conversions
 ├── .github/workflows/         # CI/CD automation
-│   └── ci.yml                 # GitHub Actions workflow
+│   └── ci.yml                 # GitHub Actions workflow (uses Node.js 24.x, path filtering)
+├── node_modules/              # NPM dependencies (auto-generated)
 ├── .git/                      # Git repository
 └── README.md                  # This documentation file
 ```
@@ -130,15 +132,31 @@ unitConverter/
 
 ### **Automated Testing**
 ```bash
-# Run all automated tests
+# Run all automated tests (24 comprehensive tests)
 npm test
 
-# Validate extension structure
+# Validate extension structure and syntax
 npm run validate
 
 # Run browser tests manually
 npm run test:browser
+
+# Build extension for distribution
+npm run build
+
+# Create extension ZIP package
+npm run zip
 ```
+
+### **Dependencies**
+- **js-yaml**: YAML parsing for CI workflow validation
+- **Node.js 24.x**: Required for development and testing
+
+### **CI/CD Pipeline**
+- **Automated testing** on push to main/develop branches
+- **Path-based triggers** - only runs when relevant files change
+- **5 comprehensive jobs**: testing, browser compatibility, security, build, code quality
+- **Node.js 24.x** for optimal performance and latest features
 
 ### **Manual Testing Steps**
 1. **Install** the extension following installation steps
