@@ -1,0 +1,31 @@
+{
+  "name": "universal-unit-converter",
+  "version": "1.0.0",
+  "description": "Chrome Extension v3 for converting units with text selection popup",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Open test.html in a browser after installing the extension\"",
+    "build": "echo \"Extension ready for loading as unpacked extension\"",
+    "zip": "powershell Compress-Archive -Path *.json,*.js,*.html,*.css,icons,README.md -DestinationPath unit-converter-extension.zip -Force"
+  },
+  "keywords": [
+    "chrome-extension",
+    "unit-converter",
+    "measurement",
+    "conversion",
+    "text-selection",
+    "popup"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/unit-converter-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/unit-converter-extension/issues"
+  },
+  "homepage": "https://github.com/yourusername/unit-converter-extension#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter - Mobile Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .mobile-container {
+            max-width: 100%;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin: 0;
+            color: #667eea;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .test-section h3 {
+            margin: 0 0 15px 0;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        
+        .measurement {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            font-size: 16px; /* Better for mobile touch */
+        }
+        
+        .measurement:hover,
+        .measurement:active {
+            background: linear-gradient(45deg, #ffed4e, #ffd700);
+            transform: scale(1.05);
+            border-color: #f39c12;
+        }
+        
+        .measurement.selected {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #2196f3;
+        }
+        
+        .instructions h4 {
+            margin: 0 0 10px 0;
+            color: #1976d2;
+        }
+        
+        .text-sample {
+            line-height: 1.6;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .mobile-container {
+                padding: 15px;
+            }
+            
+            .measurement {
+                font-size: 14px;
+                padding: 10px 15px;
+                margin: 8px 3px;
+            }
+            
+            .test-section {
+                padding: 12px;
+            }
+        }
+        
+        /* Touch-friendly sizing */
+        @media (pointer: coarse) {
+            .measurement {
+                min-height: 44px; /* Apple's recommended touch target */
+                min-width: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            z-index: 1000;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body {
+            padding-top: 60px; /* Account for status bar */
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span id="status">Tap measurements to test conversions</span>
+    </div>
+    
+    <div class="mobile-container">
+        <div class="header">
+            <h1>📱 Mobile Test Page</h1>
+            <p>Touch-optimized testing for mobile devices</p>
+        </div>
+        
+        <div class="instructions">
+            <h4>📋 Mobile Testing Instructions</h4>
+            <ol>
+                <li>Install the extension in Chrome mobile (if supported)</li>
+                <li>Tap and hold on measurement values below</li>
+                <li>Select the text to trigger conversion popup</li>
+                <li>Verify popup appears below selection</li>
+                <li>Test on different orientations (portrait/landscape)</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h3>🏠 Home & Garden</h3>
+            <div class="text-sample">
+                The living room is <span class="measurement">15 × 12 feet</span> with 
+                <span class="measurement">9-foot</span> ceilings. The new couch weighs 
+                <span class="measurement">85 pounds</span> and measures 
+                <span class="measurement">7 feet</span> long.
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🍳 Cooking & Recipes</h3>
+            <div class="text-sample">
+                Bake at <span class="measurement">350°F</span> for 
+                <span class="measurement">25 minutes</span>. Mix 
+                <span class="measurement">2 cups</span> flour with 
+                <span class="measurement">500ml</span> milk and 
+                <span class="measurement">3 ounces</span> butter.
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚗 Automotive</h3>
+            <div class="text-sample">
+                The engine displacement is <span class="measurement">2.4 liters</span>. 
+                Fuel capacity: <span class="measurement">15 gallons</span>. 
+                The car weighs <span class="measurement">1.8 tonnes</span> and can reach 
+                <span class="measurement">120 mph</span>.
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🏋️ Fitness & Health</h3>
+            <div class="text-sample">
+                Daily goal: walk <span class="measurement">10,000 steps</span> or 
+                <span class="measurement">5 miles</span>. Body weight: 
+                <span class="measurement">70 kg</span>. Drink at least 
+                <span class="measurement">2 liters</span> of water daily.
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🌡️ Weather & Climate</h3>
+            <div class="text-sample">
+                Today's high: <span class="measurement">25°C</span>, low: 
+                <span class="measurement">15°C</span>. Humidity at 65%. 
+                Wind speed: <span class="measurement">15 mph</span>. 
+                Visibility: <span class="measurement">10 kilometers</span>.
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📱 Technology</h3>
+            <div class="text-sample">
+                Screen size: <span class="measurement">6.1 inches</span> diagonal. 
+                Storage: <span class="measurement">128 GB</span>. 
+                Battery: <span class="measurement">3000 mAh</span>. 
+                Weight: <span class="measurement">174 grams</span>.
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Complex Measurements</h3>
+            <div class="text-sample">
+                The shipping container measures 
+                <span class="measurement">40 × 8 × 8.5 feet</span> and can hold 
+                <span class="measurement">67.7 cubic meters</span> of cargo weighing up to 
+                <span class="measurement">28.2 tonnes</span>. Temperature range: 
+                <span class="measurement">-18°C</span> to <span class="measurement">+25°C</span>.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let tapCount = 0;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const measurements = document.querySelectorAll('.measurement');
+            const status = document.getElementById('status');
+            
+            measurements.forEach(measurement => {
+                // Handle both click and touch events
+                measurement.addEventListener('click', handleMeasurementTap);
+                measurement.addEventListener('touchend', handleMeasurementTap);
+                
+                // Prevent default touch behaviors that might interfere
+                measurement.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                });
+            });
+            
+            function handleMeasurementTap(e) {
+                e.preventDefault();
+                
+                const measurement = e.target;
+                
+                // Create text selection
+                const range = document.createRange();
+                const selection = window.getSelection();
+                
+                range.selectNodeContents(measurement);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                // Visual feedback
+                measurement.classList.add('selected');
+                tapCount++;
+                status.textContent = `Tapped ${tapCount} measurements - Extension should show popup`;
+                
+                // Remove selection and visual feedback after delay
+                setTimeout(() => {
+                    measurement.classList.remove('selected');
+                    selection.removeAllRanges();
+                }, 2000);
+                
+                // Scroll the tapped element into view
+                measurement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+            
+            // Handle orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    status.textContent = 'Orientation changed - test popup positioning';
+                }, 100);
+            });
+            
+            // Handle scroll events
+            let scrollTimeout;
+            window.addEventListener('scroll', function() {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    status.textContent = 'Scrolled - popups should reposition correctly';
+                }, 150);
+            });
+            
+            // Detect if extension is loaded
+            setTimeout(() => {
+                const hasExtension = typeof window.unitConverter !== 'undefined';
+                if (!hasExtension) {
+                    status.textContent = '⚠️ Extension not detected - install and reload';
+                    status.style.background = '#ffe6e6';
+                }
+            }, 2000);
+        });
+        
+        // Performance monitoring
+        if ('performance' in window) {
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+                }, 0);
+            });
+        }
+        
+        // Debug information
+        console.log('Mobile test page loaded');
+        console.log('User agent:', navigator.userAgent);
+        console.log('Screen size:', screen.width, 'x', screen.height);
+        console.log('Viewport:', window.innerWidth, 'x', window.innerHeight);
+    </script>
+</body>
+</html>

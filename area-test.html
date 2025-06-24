@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unit Converter Test - Area Conversion</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 5px; }
+        .highlight { background: yellow; padding: 2px 4px; }
+    </style>
+</head>
+<body>
+    <h1>Area Conversion Test Cases</h1>
+    
+    <div class="test-section">
+        <h3>Test Case 1: cm² (Unicode symbol)</h3>
+        <p>Select this text: <span class="highlight">30 cm²</span></p>
+        <p>Expected: Should convert to 0.003 m², 5.4772 cm linear</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Case 2: square meters (text format)</h3>
+        <p>Select this text: <span class="highlight">1000 square meters</span></p>
+        <p>Expected: Should convert to 1000 m², 31.6228 m linear (or auto-detect to km)</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Case 3: mm² (small area)</h3>
+        <p>Select this text: <span class="highlight">500 mm²</span></p>
+        <p>Expected: Should auto-detect best unit (likely stay in mm² or convert to cm²)</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Case 4: ft² (imperial)</h3>
+        <p>Select this text: <span class="highlight">100 ft²</span></p>
+        <p>Expected: Should convert to metric with linear equivalent</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Case 5: Mixed formats</h3>
+        <p>Select this text: <span class="highlight">25 m² and 150 square centimeters</span></p>
+        <p>Expected: Both should be detected and converted properly</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Instructions:</h3>
+        <ol>
+            <li>Install the extension in Chrome</li>
+            <li>Select each highlighted text above</li>
+            <li>Check if the conversion popup appears with correct values</li>
+            <li>Verify that area conversions show both area and linear equivalents</li>
+            <li>Check that auto-sizing works for very small/large values</li>
+        </ol>
+    </div>
+</body>
+</html>

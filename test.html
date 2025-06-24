@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter Extension - Test Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .test-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .instructions h4 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        code {
+            background: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Unit Converter Extension - Test Page</h1>
+        
+        <div class="instructions">
+            <h4>How to Test:</h4>
+            <ol>
+                <li>Install the extension by loading it as an unpacked extension in Chrome</li>
+                <li>Select any text below that contains measurements</li>
+                <li>A popup should appear below your selection with conversions</li>
+                <li>Click the extension icon to configure your preferred units</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h3>Length Measurements</h3>
+            <p>Try selecting these measurements:</p>
+            <ul>
+                <li>The room is <span class="highlight">10 feet</span> wide</li>
+                <li>The cable is <span class="highlight">5.5 meters</span> long</li>
+                <li>The screen is <span class="highlight">15.6 inches</span> diagonal</li>
+                <li>The distance is <span class="highlight">2.3 kilometers</span></li>
+                <li>The gap is <span class="highlight">25 millimeters</span></li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>Dimensional Measurements (L × W × H)</h3>
+            <p>Test these dimension formats:</p>
+            <ul>
+                <li>Box dimensions: <span class="highlight">10 x 5 x 3 inches</span></li>
+                <li>Room size: <span class="highlight">4.5 × 3.2 × 2.8 meters</span></li>
+                <li>Package: <span class="highlight">12 by 8 by 6 feet</span></li>
+                <li>Container: <span class="highlight">2.1m × 1.5m × 1.8m</span></li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>Weight Measurements</h3>
+            <p>Select these weight examples:</p>
+            <ul>
+                <li>The package weighs <span class="highlight">2.5 kg</span></li>
+                <li>Add <span class="highlight">500 grams</span> of flour</li>
+                <li>The laptop is <span class="highlight">3.2 pounds</span></li>
+                <li>Use <span class="highlight">8 ounces</span> of chocolate</li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>Temperature Measurements</h3>
+            <p>Try these temperature conversions:</p>
+            <ul>
+                <li>Bake at <span class="highlight">350°F</span> for 30 minutes</li>
+                <li>The water is <span class="highlight">100 degrees Celsius</span></li>
+                <li>Room temperature: <span class="highlight">22°C</span></li>
+                <li>Freezing point: <span class="highlight">32 degrees Fahrenheit</span></li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>Volume Measurements</h3>
+            <p>Test these volume conversions:</p>
+            <ul>
+                <li>Add <span class="highlight">2 liters</span> of water</li>
+                <li>Pour <span class="highlight">500 ml</span> of milk</li>
+                <li>Fill with <span class="highlight">1 gallon</span> of gas</li>
+                <li>Use <span class="highlight">2 cups</span> of sugar</li>
+                <li>Add <span class="highlight">16 fluid ounces</span></li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>Area Measurements</h3>
+            <p>Select these area examples:</p>
+            <ul>
+                <li>The plot is <span class="highlight">1000 square meters</span></li>
+                <li>Area: <span class="highlight">500 ft²</span></li>
+                <li>Surface: <span class="highlight">2.5 acres</span></li>
+                <li>The tile is <span class="highlight">30 cm²</span></li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>Mixed Examples</h3>
+            <p>Complex text with multiple measurements:</p>
+            <p>The new office space measures <span class="highlight">25 feet by 15 feet</span> with <span class="highlight">9-foot</span> ceilings. 
+            The air conditioning system can maintain <span class="highlight">72°F</span> while the server room needs to stay at 
+            <span class="highlight">18°C</span>. The conference table is <span class="highlight">8 ft × 4 ft × 30 inches</span> and weighs 
+            approximately <span class="highlight">45 kg</span>.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+.unit-converter-popup {
+  position: absolute;
+  z-index: 999999;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: white;
+  min-width: 250px;
+  max-width: 400px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.unit-converter-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.unit-converter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.unit-converter-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #fff;
+}
+
+.unit-converter-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.unit-converter-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.unit-converter-results {
+  padding: 16px;
+}
+
+.unit-converter-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.4s ease-out;
+}
+
+.unit-converter-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.original {
+  font-weight: 500;
+  color: #e0e0e0;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: fit-content;
+}
+
+.arrow {
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.converted {
+  font-weight: 600;
+  color: #fff;
+  font-size: 13px;
+  background: linear-gradient(45deg, #4CAF50, #45a049);
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  flex: 1;
+  text-align: center;
+}
+
+/* Ensure popup appears above everything */
+.unit-converter-popup * {
+  box-sizing: border-box;
+}
+
+/* Handle dark mode websites */
+@media (prefers-color-scheme: dark) {
+  .unit-converter-popup {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  }
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .unit-converter-popup {
+    max-width: 90vw;
+    font-size: 12px;
+  }
+  
+  .unit-converter-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .arrow {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+  
+  .converted {
+    width: 100%;
+  }
+}
