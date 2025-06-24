@@ -106,8 +106,7 @@ unitConverter/
 │   ├── test-suite.js          # Automated test runner
 │   ├── test-runner.js         # Node.js test automation
 │   ├── validate-extension.js  # Extension structure validation
-│   ├── TESTING.md             # Testing documentation
-│   └── TESTING_SUMMARY.md     # Testing infrastructure overview
+│   └── TESTING.md             # Testing documentation
 ├── debug/                     # Debug utilities
 │   └── debug-area.js          # Debug utilities for area conversions
 ├── .github/workflows/         # CI/CD automation
