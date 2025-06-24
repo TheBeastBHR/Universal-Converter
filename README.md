@@ -1,6 +1,6 @@
 # Universal Unit Converter - Chrome Extension v3
 
-A powerful Chrome extension that provides **instant unit conversions** using text selection popups and comprehensive unit support. Features advanced area conversions, auto-sizing, and intelligent detection of Unicode symbols.
+A Chrome extension that provides **instant unit conversions** using text selection popups and comprehensive unit support. Features advanced area conversions, auto-sizing, and supports detection of Unicode symbols and text based units (meters, feet squared etc..).
 
 ## ✨ Key Features
 
@@ -8,7 +8,7 @@ A powerful Chrome extension that provides **instant unit conversions** using tex
 - Select any text containing units (measurements, dimensions, temperatures, etc.)
 - Get instant conversion popup below the selected text
 - Supports complex dimensions in **"L x W x H"** format with mixed units
-- **Non-intrusive popup** that doesn't modify the original text
+- **Non-intrusive popup** doesn't modify the original text
 
 ### 📏 **Comprehensive Unit Support**
 - **Length**: meters, centimeters, millimeters, kilometers, inches, feet, yards, miles
@@ -16,7 +16,6 @@ A powerful Chrome extension that provides **instant unit conversions** using tex
 - **Temperature**: Celsius, Fahrenheit, Kelvin (with proper conversion formulas)
 - **Volume**: liters, milliliters, gallons, quarts, pints, cups, fluid ounces
 - **Area**: square meters, square centimeters, square kilometers, square feet, square inches, acres
-- **TODO** : Fix `cm²`, `m²`, `°C`, `°F` and other special symbols
 
 ### 🎯 **Advanced Area Conversions**
 - **Linear Equivalents**: Shows both area and linear measurements (e.g., "100 m², 10 m linear")
@@ -24,11 +23,11 @@ A powerful Chrome extension that provides **instant unit conversions** using tex
 - **Text Format Recognition**: "square meters", "meters squared", "square feet"
 - **Fixed Conversion Bug**: Correctly calculates linear equivalents from converted area values
 
-### 🧠 **Smart Auto-Sizing** 
+### 🧠 **Auto unit Sizing** 
 - **Automatic Unit Selection**: Chooses the most appropriate unit for display
 - **Small Values**: `0.001 m²` → `10 cm²` or `1000 mm²`
 - **Large Values**: `2000000 m²` → `2 km²`
-- **Prevents Awkward Numbers**: No more `0.0003 m` - shows `3 mm` instead
+- **Prevents Awkward Numbers**: Instead of `0.0003 m` - shows `3 mm` instead
 - **Works Across All Unit Types**: Length, weight, volume, and area
 
 ### ⚙️ **Settings Management** *(Auto-Save)*
@@ -43,7 +42,6 @@ A powerful Chrome extension that provides **instant unit conversions** using tex
 - **Smooth Animations**: Elegant transitions and hover effects
 - **Responsive Layout**: Works on all screen sizes
 - **Dark Mode Compatible**: Adapts to system preferences
-- **Clean Typography**: Easy-to-read Segoe UI font
 
 ## 🚀 Installation
 
@@ -76,18 +74,17 @@ A powerful Chrome extension that provides **instant unit conversions** using tex
 - **Mixed**: Works with or without spaces, different separators
 
 ### **File Structure**
-Following industry best practices with **separation of concerns**:
 
 ```
 unitConverter/
 ├── manifest.json              # Extension configuration
-├── content.js                 # Main orchestrator 
-├── popup.html                 # Settings UI 
+├── content.js                 # Main orchestrator (modular architecture)
+├── popup.html                 # Settings UI (auto-save enabled)
 ├── popup.js                   # Auto-save settings management
 ├── background.js              # Service worker
 ├── content.css                # Popup styling
 ├── package.json               # NPM configuration and build scripts
-├── install.ps1                # PowerShell installation helper
+├── LICENSE                    # MIT license file
 ├── data/
 │   └── conversion-data.js      # All conversion data & patterns
 ├── utils/
@@ -95,15 +92,19 @@ unitConverter/
 │   ├── conversion-detector.js  # Enhanced text pattern matching
 │   ├── popup-manager.js        # DOM manipulation & positioning
 │   └── settings-manager.js     # Chrome storage wrapper
-├── icons/                     # Extension icons (16-128px PNG)
+├── icons/                     # Extension icons (16px, 32px, 48px, 128px)
+│   ├── icon16.png
+│   ├── icon32.png
+│   ├── icon48.png
+│   └── icon128.png
 ├── test files:                # Comprehensive test suite
-│   ├── area-test.html         # Area conversion edge cases
-│   ├── test.html              # General conversion testing  
-│   ├── mixed-units-test.html  # Complex dimension testing
-│   ├── mobile-test.html       # Mobile compatibility testing
+│   ├── area-test.html         # Area conversion edge cases & Unicode tests
+│   ├── test.html              # General conversion testing
 │   ├── conversion-test.js     # Programmatic testing script
-│   └── test-suite.js          # Automated test runner
-└── README.md, INSTALL_TEST.md # Documentation
+│   ├── test-suite.js          # Automated test runner
+│   └── debug-area.js          # Debug utilities for area conversions
+├── .git/                      # Git repository
+└── README.md                  # This documentation file
 ```
 
 
@@ -111,13 +112,11 @@ unitConverter/
 ## 🧪 Testing
 
 ### **Test Files Included**
-- `area-test.html` - Test area conversion edge cases
-- `test.html` - General conversion testing
-- `mixed-units-test.html` - Complex dimension testing
-- `mobile-test.html` - Mobile compatibility testing
+- `area-test.html` - Test area conversion edge cases and Unicode symbols
+- `test.html` - General conversion testing for all unit types
 - `conversion-test.js` - Programmatic testing script
 - `test-suite.js` - Automated test runner
-- `INSTALL_TEST.md` - Detailed installation and testing guide
+- `debug-area.js` - Debug utilities for troubleshooting area conversions
 
 ### **Manual Testing Steps**
 1. **Install** the extension following installation steps
@@ -148,10 +147,8 @@ unitConverter/
 git clone <repository-url>
 cd unitConverter
 
-# Optional: Use the PowerShell install script (Windows)
-.\install.ps1
 
-# OR Manual installation:
+# Manual installation:
 # Load in Chrome for testing
 # 1. Go to chrome://extensions/
 # 2. Enable "Developer mode"
@@ -183,18 +180,10 @@ npm run zip
 # 4. Check console for errors
 ```
 
-## 📋 Changelog
+## 📋 TODO:
 
-### **v1.0.0** *(Latest - Current)*
-- ✅ **Fixed**: Area conversion linear equivalent calculation
-- ✅ **Enhanced**: Unicode symbol support (`cm²`, `m²`, etc.)
-- ✅ **Added**: Smart auto-sizing for appropriate unit display
-- ✅ **Improved**: Auto-save settings (removed save button)
-- ✅ **Refactored**: Modular architecture with programming conventions
-- ✅ **Added**: Comprehensive test suite with automated testing
-- ✅ **Added**: PowerShell installation script and build tools
-- ✅ **Fixed**: All reported conversion bugs
-- ✅ **Created**: Complete documentation with INSTALL_TEST.md
+1. **Publish to Chrome Webstore**
+2. **FIX**: some bugs related to conversions.
 
 ## 🤝 Contributing
 
@@ -211,7 +200,3 @@ npm run zip
 **MIT License** - Feel free to use, modify, and distribute for any purpose.
 
 ---
-
-## 🏆 **Ready for Production Use!**
-
-This extension is **thoroughly tested**, **bug-free**, and follows **industry-standard programming conventions**. Perfect for daily use with automatic unit conversions across the web! 🚀

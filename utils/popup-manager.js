@@ -84,7 +84,7 @@ window.UnitConverter.PopupManager = class {
     
     this.conversionPopup.style.top = `${top}px`;
     this.conversionPopup.style.left = `${left}px`;
-    this.conversionPopup.style.zIndex = '999999';
+    this.conversionPopup.style.zIndex = '2147483647';
   }
   
   /**
