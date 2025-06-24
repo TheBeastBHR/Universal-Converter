@@ -1,6 +1,6 @@
 # Universal Unit Converter - Chrome Extension v3
 
-A powerful Chrome extension that provides **instant unit conversions** with smart text selection popups and comprehensive unit support. Features advanced area conversions, auto-sizing, and intelligent detection of Unicode symbols.
+A powerful Chrome extension that provides **instant unit conversions** using text selection popups and comprehensive unit support. Features advanced area conversions, auto-sizing, and intelligent detection of Unicode symbols.
 
 ## ✨ Key Features
 
@@ -9,7 +9,6 @@ A powerful Chrome extension that provides **instant unit conversions** with smar
 - Get instant conversion popup below the selected text
 - Supports complex dimensions in **"L x W x H"** format with mixed units
 - **Non-intrusive popup** that doesn't modify the original text
-- **Smart positioning** that adapts to viewport boundaries
 
 ### 📏 **Comprehensive Unit Support**
 - **Length**: meters, centimeters, millimeters, kilometers, inches, feet, yards, miles
@@ -17,22 +16,22 @@ A powerful Chrome extension that provides **instant unit conversions** with smar
 - **Temperature**: Celsius, Fahrenheit, Kelvin (with proper conversion formulas)
 - **Volume**: liters, milliliters, gallons, quarts, pints, cups, fluid ounces
 - **Area**: square meters, square centimeters, square kilometers, square feet, square inches, acres
-- **Unicode Support**: Recognizes `cm²`, `m²`, `°C`, `°F` and other special symbols
+- **TODO** : Fix `cm²`, `m²`, `°C`, `°F` and other special symbols
 
-### 🎯 **Advanced Area Conversions** *(Recently Enhanced)*
+### 🎯 **Advanced Area Conversions**
 - **Linear Equivalents**: Shows both area and linear measurements (e.g., "100 m², 10 m linear")
 - **Unicode Symbol Detection**: Properly handles `cm²`, `m²`, `mm²`, `km²`, `ft²`, `in²`
 - **Text Format Recognition**: "square meters", "meters squared", "square feet"
 - **Fixed Conversion Bug**: Correctly calculates linear equivalents from converted area values
 
-### 🧠 **Smart Auto-Sizing** *(New Feature)*
+### 🧠 **Smart Auto-Sizing** 
 - **Automatic Unit Selection**: Chooses the most appropriate unit for display
 - **Small Values**: `0.001 m²` → `10 cm²` or `1000 mm²`
 - **Large Values**: `2000000 m²` → `2 km²`
 - **Prevents Awkward Numbers**: No more `0.0003 m` - shows `3 mm` instead
 - **Works Across All Unit Types**: Length, weight, volume, and area
 
-### ⚙️ **Smart Settings Management** *(Auto-Save)*
+### ⚙️ **Settings Management** *(Auto-Save)*
 - **Preset Systems**: Choose between Metric, Imperial, or Custom unit preferences
 - **Auto-Save**: Settings save automatically when changed - no save button needed
 - **Individual Unit Control**: Override defaults for specific unit types
@@ -76,15 +75,7 @@ A powerful Chrome extension that provides **instant unit conversions** with smar
 - **Aliases**: `5 inches`, `10 lbs`, `20 degrees celsius`
 - **Mixed**: Works with or without spaces, different separators
 
-## 🏗️ Technical Architecture
-
-### **Modern Chrome Extension (Manifest v3)**
-- ✅ **Service Worker Architecture**: Modern background script approach
-- ✅ **Secure Content Injection**: Safe DOM manipulation
-- ✅ **Efficient Storage**: Chrome Storage API with sync
-- ✅ **Cross-Origin Compatible**: Works on all websites
-
-### **Modular Code Structure**
+### **File Structure**
 Following industry best practices with **separation of concerns**:
 
 ```
@@ -115,41 +106,7 @@ unitConverter/
 └── README.md, INSTALL_TEST.md # Documentation
 ```
 
-### **Programming Conventions**
-- ✅ **Separation of Concerns**: Each module has single responsibility
-- ✅ **Global Namespaces**: `window.UnitConverter` & `window.UnitConverterData`
-- ✅ **Chrome Extension Compatible**: Classical JS (no ES6 modules in content scripts)
-- ✅ **Error Handling**: Comprehensive try-catch blocks throughout
-- ✅ **JSDoc Documentation**: All public methods documented
-- ✅ **Consistent Naming**: Clear, descriptive variable names
-- ✅ **No Code Duplication**: DRY principles applied
 
-## 🔧 Recent Fixes & Improvements
-
-### **✅ Fixed Area Conversion Bugs** 
-- **Problem**: `30 cm²` was showing `0.3m` instead of `5.48 cm linear`
-- **Solution**: Fixed linear equivalent calculation to use converted area value
-- **Result**: Now correctly shows both area and linear measurements
-
-### **✅ Enhanced Unicode Support**
-- **Problem**: `cm²`, `m²` symbols not being detected
-- **Solution**: Added Unicode symbols to regex patterns and aliases
-- **Result**: Perfect detection of `cm²`, `m²`, `mm²`, `km²`, `ft²`, `in²`
-
-### **✅ Smart Auto-Sizing System**
-- **Problem**: Results like `0.001 m` were hard to interpret
-- **Solution**: Added intelligent unit selection based on value size
-- **Result**: Shows `10 cm` or `1000 mm` instead of `0.001 m`
-
-### **✅ Auto-Save Settings**
-- **Problem**: Manual save button was clunky UX
-- **Solution**: Implemented real-time auto-save on all changes
-- **Result**: Settings save instantly when you change any dropdown
-
-### **✅ Code Refactoring**
-- **Problem**: Monolithic 400+ line files were hard to maintain
-- **Solution**: Split into focused modules following programming conventions
-- **Result**: Clean, maintainable, testable codebase
 
 ## 🧪 Testing
 
@@ -174,7 +131,6 @@ unitConverter/
 - **Minimal Permissions**: Only `activeTab` and `storage`
 - **No External Servers**: All processing happens locally
 - **No Data Collection**: Zero tracking or analytics
-- **Open Source**: Full code transparency
 - **Offline Functionality**: Works without internet connection
 
 ## 🌐 Browser Compatibility
@@ -239,13 +195,6 @@ npm run zip
 - ✅ **Added**: PowerShell installation script and build tools
 - ✅ **Fixed**: All reported conversion bugs
 - ✅ **Created**: Complete documentation with INSTALL_TEST.md
-
-### **v0.9.0** *(Previous Release)*
-- 🎉 **Released**: Text selection conversion system
-- 🎉 **Added**: Comprehensive unit support (length, weight, temperature, volume, area)
-- 🎉 **Implemented**: Settings management with presets
-- 🎉 **Created**: Modern gradient UI design
-- 🎉 **Achieved**: Chrome Extension Manifest v3 compliance
 
 ## 🤝 Contributing
 

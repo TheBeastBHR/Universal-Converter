@@ -74,20 +74,37 @@ window.UnitConverter.ConversionDetector = class {
    * @param {string} text - Text to analyze
    * @param {Object} userSettings - User settings
    * @returns {Array} - Array of regular conversions
-   */
-  findRegularConversions(text, userSettings) {
+   */  findRegularConversions(text, userSettings) {
     const conversions = [];
+    const processedRanges = []; // Track which parts of text we've already processed
     
-    for (const [unitType, pattern] of Object.entries(this.patterns)) {
+    // Process area units FIRST to avoid conflicts with length units
+    const priorityOrder = ['area', 'temperature', 'volume', 'weight', 'length'];
+    
+    for (const unitType of priorityOrder) {
       if (unitType === 'dimensions') continue;
+      
+      const pattern = this.patterns[unitType];
+      if (!pattern) continue;
       
       const matches = text.matchAll(pattern);
       for (const match of matches) {
         const [fullMatch, value, unit] = match;
+        const matchStart = match.index;
+        const matchEnd = match.index + fullMatch.length;
+        
+        // Check if this range overlaps with already processed ranges
+        const isOverlapping = processedRanges.some(range => 
+          (matchStart < range.end && matchEnd > range.start)
+        );
+        
+        if (isOverlapping) continue; // Skip if already processed by higher priority pattern
+        
         const normalizedUnit = this.unitConverter.normalizeUnit(unit);
         const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedUnit, userSettings);
         
-        if (targetUnit && normalizedUnit !== targetUnit) {          const convertedValue = this.unitConverter.convert(parseFloat(value), normalizedUnit, targetUnit);
+        if (targetUnit && normalizedUnit !== targetUnit) {
+          const convertedValue = this.unitConverter.convert(parseFloat(value), normalizedUnit, targetUnit);
           if (convertedValue !== null) {
             // Auto-detect best unit size
             const bestResult = this.unitConverter.getBestUnit(convertedValue, unitType, targetUnit);
@@ -107,7 +124,11 @@ window.UnitConverter.ConversionDetector = class {
               original: fullMatch,
               converted: convertedText,
               type: unitType
-            });          }
+            });
+            
+            // Mark this range as processed
+            processedRanges.push({ start: matchStart, end: matchEnd });
+          }
         }
       }
     }

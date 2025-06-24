@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Area Conversion Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        .test { margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+        .result { color: #006600; font-weight: bold; }
+        .error { color: #cc0000; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Area Conversion Debug Test</h1>
+    <div id="results"></div>
+
+    <!-- Load the extension modules -->
+    <script src="data/conversion-data.js"></script>
+    <script src="utils/unit-converter.js"></script>
+    <script src="utils/conversion-detector.js"></script>
+
+    <script>
+        // Test cases from the screenshot
+        const testCases = [
+            "30 cm²",
+            "500 mm²", 
+            "100 ft²",
+            "150 square centimeters",
+            "1000 square meters"
+        ];
+
+        // Initialize the components
+        const unitConverter = new window.UnitConverter.UnitConverter();
+        const detector = new window.UnitConverter.ConversionDetector(unitConverter);
+
+        // Default user settings
+        const userSettings = {
+            lengthUnit: 'm',
+            weightUnit: 'kg',
+            temperatureUnit: 'c',
+            volumeUnit: 'l',
+            areaUnit: 'm2'
+        };
+
+        const resultsDiv = document.getElementById('results');
+        
+        testCases.forEach((testCase, index) => {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test';
+            testDiv.innerHTML = `<h3>Test ${index + 1}: "${testCase}"</h3>`;
+            
+            try {
+                // Test the pattern matching
+                const areaPattern = window.UnitConverterData.UNIT_PATTERNS.area;
+                const lengthPattern = window.UnitConverterData.UNIT_PATTERNS.length;
+                
+                const areaMatches = testCase.match(areaPattern);
+                const lengthMatches = testCase.match(lengthPattern);
+                
+                testDiv.innerHTML += `<p><strong>Area pattern matches:</strong> ${areaMatches ? JSON.stringify(areaMatches) : 'None'}</p>`;
+                testDiv.innerHTML += `<p><strong>Length pattern matches:</strong> ${lengthMatches ? JSON.stringify(lengthMatches) : 'None'}</p>`;
+                
+                // Test the full conversion detection
+                const conversions = detector.findConversions(testCase, userSettings);
+                testDiv.innerHTML += `<p><strong>Detected conversions:</strong> ${JSON.stringify(conversions, null, 2)}</p>`;
+                
+                // Manual unit normalization test
+                if (areaMatches && areaMatches.length > 0) {
+                    const [, value, unit] = areaMatches[0];
+                    const normalizedUnit = unitConverter.normalizeUnit(unit);
+                    const unitType = unitConverter.getUnitType(normalizedUnit);
+                    testDiv.innerHTML += `<p><strong>Manual test:</strong> ${value} ${unit} → normalized: ${normalizedUnit}, type: ${unitType}</p>`;
+                    
+                    if (unitType === 'area') {
+                        const converted = unitConverter.convert(parseFloat(value), normalizedUnit, 'm2');
+                        testDiv.innerHTML += `<p><strong>Converted to m2:</strong> ${converted}</p>`;
+                        
+                        if (converted !== null) {
+                            const linear = unitConverter.getLinearEquivalent(converted, 'm2');
+                            testDiv.innerHTML += `<p><strong>Linear equivalent:</strong> ${linear}</p>`;
+                            
+                            // Test auto-sizing
+                            const bestResult = unitConverter.getBestUnit(converted, 'area', 'm2');
+                            testDiv.innerHTML += `<p><strong>Best unit:</strong> ${bestResult.value} ${bestResult.unit}</p>`;
+                        }
+                    }
+                }
+                
+                testDiv.innerHTML += `<div class="result">✓ Test completed</div>`;
+            } catch (error) {
+                testDiv.innerHTML += `<div class="error">✗ Error: ${error.message}</div>`;
+                console.error('Test error:', error);
+            }
+            
+            resultsDiv.appendChild(testDiv);
+        });
+    </script>
+</body>
+</html>
