@@ -108,9 +108,17 @@ window.UnitConverter.ConversionDetector = class {
           if (convertedValue !== null) {
             // Auto-detect best unit size
             const bestResult = this.unitConverter.getBestUnit(convertedValue, unitType, targetUnit);
+            
+            // Skip if the best unit is the same as the original unit AND the values are essentially the same
+            if (bestResult.unit === normalizedUnit && Math.abs(bestResult.value - parseFloat(value)) < 0.01) {
+              continue;
+            }
+            
             let convertedText = this.unitConverter.formatResult(bestResult.value, bestResult.unit);
             
             // For area units, also show the linear equivalent
+            // Commented out as requested - linear equivalent feature disabled
+            /*
             if (unitType === 'area') {
               const linearEquivalent = this.unitConverter.getLinearEquivalent(
                 bestResult.value, bestResult.unit
@@ -119,6 +127,7 @@ window.UnitConverter.ConversionDetector = class {
                 convertedText = `${convertedText}, ${linearEquivalent} linear`;
               }
             }
+            */
             
             conversions.push({
               original: fullMatch,

@@ -101,17 +101,12 @@ class UnitConverterTester {
 
     // Basic area conversions
     const cm2_to_m2 = this.unitConverter.convert(10000, 'cm2', 'm2');
-    this.assert(Math.abs(cm2_to_m2 - 1) < 0.001, 'Area: 10000 cm² = 1 m²', 1, cm2_to_m2);
-
-    const ft2_to_m2 = this.unitConverter.convert(1, 'ft2', 'm2');
+    this.assert(Math.abs(cm2_to_m2 - 1) < 0.001, 'Area: 10000 cm² = 1 m²', 1, cm2_to_m2);    const ft2_to_m2 = this.unitConverter.convert(1, 'ft2', 'm2');
     this.assert(Math.abs(ft2_to_m2 - 0.092903) < 0.001, 'Area: 1 ft² ≈ 0.092903 m²', 0.092903, ft2_to_m2);
 
-    // Linear equivalents
-    const linear_1m2 = this.unitConverter.getLinearEquivalent(1, 'm2');
-    this.assert(linear_1m2 === '1 m', 'Linear equivalent: 1 m² = 1 m linear', '1 m', linear_1m2);
-
-    const linear_0003m2 = this.unitConverter.getLinearEquivalent(0.003, 'm2');
-    this.assert(linear_0003m2 === '0.0548 m', 'Linear equivalent: 0.003 m² ≈ 0.0548 m linear', '0.0548 m', linear_0003m2);
+    // Linear equivalent feature disabled - no longer testing linear equivalents
+    // const linear_1m2 = this.unitConverter.getLinearEquivalent(1, 'm2');
+    // const linear_0003m2 = this.unitConverter.getLinearEquivalent(0.003, 'm2');
   }
 
   // Test unit detection and aliases
@@ -176,27 +171,159 @@ class UnitConverterTester {
       weightUnit: 'kg',
       temperatureUnit: 'c',
       volumeUnit: 'l'
-    };
-
-    // Test area pattern matching
-    const area_conversions = this.detector.findConversions('30 cm²', userSettings);
-    this.assert(area_conversions.length > 0, 'Pattern: "30 cm²" detected', '>0 conversions', area_conversions.length);
+    };    // Test area pattern matching - use values that will result in different units after conversion
+    const area_conversions = this.detector.findConversions('1 ft²', userSettings);
+    this.assert(area_conversions.length > 0, 'Pattern: "1 ft²" detected', '>0 conversions', area_conversions.length);
     
     if (area_conversions.length > 0) {
-      this.assert(area_conversions[0].type === 'area', 'Pattern: "30 cm²" detected as area', 'area', area_conversions[0].type);
+      this.assert(area_conversions[0].type === 'area', 'Pattern: "1 ft²" detected as area', 'area', area_conversions[0].type);
     }
 
-    // Test that length patterns don't interfere
-    const length_conversions = this.detector.findConversions('30 cm', userSettings);
-    this.assert(length_conversions.length > 0, 'Pattern: "30 cm" detected', '>0 conversions', length_conversions.length);
+    // Test that length patterns work with meaningful conversions
+    const length_conversions = this.detector.findConversions('3 feet', userSettings);
+    this.assert(length_conversions.length > 0, 'Pattern: "3 feet" detected', '>0 conversions', length_conversions.length);
     
     if (length_conversions.length > 0) {
-      this.assert(length_conversions[0].type === 'length', 'Pattern: "30 cm" detected as length', 'length', length_conversions[0].type);
+      this.assert(length_conversions[0].type === 'length', 'Pattern: "3 feet" detected as length', 'length', length_conversions[0].type);
     }
 
-    // Test square meters text format
-    const square_meters_conversions = this.detector.findConversions('150 square centimeters', userSettings);
-    this.assert(square_meters_conversions.length > 0, 'Pattern: "150 square centimeters" detected', '>0 conversions', square_meters_conversions.length);
+    // Test text format conversions - use imperial to metric conversion
+    const text_conversions = this.detector.findConversions('1 square foot', userSettings);
+    this.assert(text_conversions.length > 0, 'Pattern: "1 square foot" detected', '>0 conversions', text_conversions.length);
+  }
+
+  // Test comprehensive unit conversions
+  testComprehensiveConversions() {
+    console.log(`\n${colors.blue}🧪 Testing Comprehensive Conversions${colors.reset}`);
+
+    // Length conversions - metric
+    const mm_to_cm = this.unitConverter.convert(10, 'mm', 'cm');
+    this.assert(Math.abs(mm_to_cm - 1) < 0.001, 'Length: 10 mm = 1 cm', 1, mm_to_cm);
+
+    const km_to_m = this.unitConverter.convert(1, 'km', 'm');
+    this.assert(Math.abs(km_to_m - 1000) < 0.001, 'Length: 1 km = 1000 m', 1000, km_to_m);
+
+    // Length conversions - imperial
+    const in_to_ft = this.unitConverter.convert(12, 'in', 'ft');
+    this.assert(Math.abs(in_to_ft - 1) < 0.001, 'Length: 12 in = 1 ft', 1, in_to_ft);
+
+    const yd_to_ft = this.unitConverter.convert(1, 'yd', 'ft');
+    this.assert(Math.abs(yd_to_ft - 3) < 0.001, 'Length: 1 yd = 3 ft', 3, yd_to_ft);
+
+    const mi_to_ft = this.unitConverter.convert(1, 'mi', 'ft');
+    this.assert(Math.abs(mi_to_ft - 5280) < 0.1, 'Length: 1 mi = 5280 ft', 5280, mi_to_ft);
+
+    // Weight conversions - metric
+    const mg_to_g = this.unitConverter.convert(1000, 'mg', 'g');
+    this.assert(Math.abs(mg_to_g - 1) < 0.001, 'Weight: 1000 mg = 1 g', 1, mg_to_g);
+
+    const t_to_kg = this.unitConverter.convert(1, 't', 'kg');
+    this.assert(Math.abs(t_to_kg - 1000) < 0.001, 'Weight: 1 t = 1000 kg', 1000, t_to_kg);
+
+    // Weight conversions - imperial
+    const oz_to_lb = this.unitConverter.convert(16, 'oz', 'lb');
+    this.assert(Math.abs(oz_to_lb - 1) < 0.001, 'Weight: 16 oz = 1 lb', 1, oz_to_lb);
+
+    // Volume conversions - metric
+    const ml_to_l = this.unitConverter.convert(1000, 'ml', 'l');
+    this.assert(Math.abs(ml_to_l - 1) < 0.001, 'Volume: 1000 ml = 1 l', 1, ml_to_l);
+
+    // Volume conversions - imperial
+    const cup_to_pt = this.unitConverter.convert(2, 'cup', 'pt');
+    this.assert(Math.abs(cup_to_pt - 1) < 0.001, 'Volume: 2 cup = 1 pt', 1, cup_to_pt);
+
+    const pt_to_qt = this.unitConverter.convert(2, 'pt', 'qt');
+    this.assert(Math.abs(pt_to_qt - 1) < 0.001, 'Volume: 2 pt = 1 qt', 1, pt_to_qt);
+
+    const qt_to_gal = this.unitConverter.convert(4, 'qt', 'gal');
+    this.assert(Math.abs(qt_to_gal - 1) < 0.001, 'Volume: 4 qt = 1 gal', 1, qt_to_gal);
+
+    // Area conversions - advanced
+    const mm2_to_cm2 = this.unitConverter.convert(100, 'mm2', 'cm2');
+    this.assert(Math.abs(mm2_to_cm2 - 1) < 0.001, 'Area: 100 mm² = 1 cm²', 1, mm2_to_cm2);
+
+    const km2_to_m2 = this.unitConverter.convert(1, 'km2', 'm2');
+    this.assert(Math.abs(km2_to_m2 - 1000000) < 0.001, 'Area: 1 km² = 1,000,000 m²', 1000000, km2_to_m2);
+
+    const in2_to_ft2 = this.unitConverter.convert(144, 'in2', 'ft2');
+    this.assert(Math.abs(in2_to_ft2 - 1) < 0.001, 'Area: 144 in² = 1 ft²', 1, in2_to_ft2);
+  }
+
+  // Test decimal precision formatting
+  testDecimalPrecision() {
+    console.log(`\n${colors.blue}🧪 Testing Decimal Precision${colors.reset}`);
+
+    // Test that results are formatted to 2 decimal places
+    const result1 = this.unitConverter.formatResult(3.14159, 'm');
+    this.assert(result1 === '3.14 m', 'Format: 3.14159 → 3.14 m', '3.14 m', result1);
+
+    const result2 = this.unitConverter.formatResult(1.999, 'kg');
+    this.assert(result2 === '2 kg', 'Format: 1.999 → 2 kg', '2 kg', result2);
+
+    const result3 = this.unitConverter.formatResult(0.666666, 'ft');
+    this.assert(result3 === '0.67 ft', 'Format: 0.666666 → 0.67 ft', '0.67 ft', result3);
+
+    const result4 = this.unitConverter.formatResult(10, 'cm');
+    this.assert(result4 === '10 cm', 'Format: 10 → 10 cm', '10 cm', result4);
+  }
+
+  // Test edge cases and boundary conditions
+  testEdgeCases() {
+    console.log(`\n${colors.blue}🧪 Testing Edge Cases${colors.reset}`);
+
+    // Zero values
+    const zero_result = this.unitConverter.convert(0, 'm', 'cm');
+    this.assert(zero_result === 0, 'Edge: 0 m = 0 cm', 0, zero_result);
+
+    // Very small values
+    const small_result = this.unitConverter.convert(0.001, 'm', 'mm');
+    this.assert(Math.abs(small_result - 1) < 0.001, 'Edge: 0.001 m = 1 mm', 1, small_result);
+
+    // Very large values
+    const large_result = this.unitConverter.convert(1000000, 'm', 'km');
+    this.assert(Math.abs(large_result - 1000) < 0.001, 'Edge: 1,000,000 m = 1000 km', 1000, large_result);
+
+    // Invalid conversions should return null
+    const invalid_result = this.unitConverter.convert(100, 'm', 'invalid_unit');
+    this.assert(invalid_result === null, 'Edge: Invalid unit returns null', null, invalid_result);
+
+    // Different unit types should return null
+    const mixed_types = this.unitConverter.convert(100, 'm', 'kg');
+    this.assert(mixed_types === null, 'Edge: Different unit types return null', null, mixed_types);
+  }
+
+  // Test auto-sizing with comprehensive cases
+  testComprehensiveAutoSizing() {
+    console.log(`\n${colors.blue}🧪 Testing Comprehensive Auto-Sizing${colors.reset}`);
+
+    // Length auto-sizing edge cases
+    const very_small = this.unitConverter.getBestUnit(0.0001, 'length', 'm');
+    this.assert(very_small.unit === 'mm', 'Auto-size: 0.0001 m → mm', 'mm', very_small.unit);
+
+    const cm_boundary = this.unitConverter.getBestUnit(0.99, 'length', 'm');
+    this.assert(cm_boundary.unit === 'cm', 'Auto-size: 0.99 m → cm', 'cm', cm_boundary.unit);
+
+    const large_meters = this.unitConverter.getBestUnit(5000, 'length', 'm');
+    this.assert(large_meters.unit === 'km', 'Auto-size: 5000 m → km', 'km', large_meters.unit);
+
+    // Imperial length auto-sizing
+    const small_feet = this.unitConverter.getBestUnit(0.5, 'length', 'ft');
+    this.assert(small_feet.unit === 'in', 'Auto-size: 0.5 ft → in', 'in', small_feet.unit);
+
+    const large_feet = this.unitConverter.getBestUnit(10000, 'length', 'ft');
+    this.assert(large_feet.unit === 'mi', 'Auto-size: 10000 ft → mi', 'mi', large_feet.unit);
+
+    // Weight auto-sizing
+    const small_kg = this.unitConverter.getBestUnit(0.5, 'weight', 'kg');
+    this.assert(small_kg.unit === 'g', 'Auto-size: 0.5 kg → g', 'g', small_kg.unit);
+
+    const large_kg = this.unitConverter.getBestUnit(2000, 'weight', 'kg');
+    this.assert(large_kg.unit === 't', 'Auto-size: 2000 kg → t', 't', large_kg.unit);
+
+    // Volume auto-sizing
+    const small_liters = this.unitConverter.getBestUnit(0.5, 'volume', 'l');
+    this.assert(small_liters.unit === 'ml', 'Auto-size: 0.5 l → ml', 'ml', small_liters.unit);    const small_gallons = this.unitConverter.getBestUnit(0.25, 'volume', 'gal');
+    this.assert(small_gallons.unit === 'cup', 'Auto-size: 0.25 gal → cup', 'cup', small_gallons.unit);
   }
 
   // Generate test report
@@ -232,6 +359,10 @@ class UnitConverterTester {
     this.testUnitDetection();
     this.testAutoSizing();
     this.testPatternMatching();
+    this.testComprehensiveConversions();
+    this.testDecimalPrecision();
+    this.testEdgeCases();
+    this.testComprehensiveAutoSizing();
   }
 }
 

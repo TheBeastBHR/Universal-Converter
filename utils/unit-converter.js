@@ -114,10 +114,21 @@ window.UnitConverter.UnitConverter = class {
    * @param {number} value - The numeric value
    * @param {string} unit - The unit string
    * @returns {string} - Formatted result string
-   */
-  formatResult(value, unit) {
-    const formatted = Math.round(value * 10000) / 10000;
-    return `${formatted} ${unit}`;
+   */  formatResult(value, unit) {
+    const formatted = Math.round(value * 100) / 100;
+    
+    // Convert area units to use superscript notation
+    const areaUnitMap = {
+      'm2': 'm²',
+      'cm2': 'cm²',
+      'mm2': 'mm²',
+      'km2': 'km²',
+      'ft2': 'ft²',
+      'in2': 'in²'
+    };
+    
+    const displayUnit = areaUnitMap[unit] || unit;
+    return `${formatted} ${displayUnit}`;
   }
     /**
    * Calculate area equivalent for linear measurements

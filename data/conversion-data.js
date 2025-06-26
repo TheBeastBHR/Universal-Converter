@@ -14,10 +14,10 @@ window.UnitConverterData.CONVERSION_RATIOS = {
     ft: 3.28084,
     yd: 1.09361,
     mi: 0.000621371
-  },
-  weight: {
+  },  weight: {
     kg: 1,
     g: 1000,
+    mg: 1000000,
     lb: 2.20462,
     oz: 35.274,
     t: 0.001
@@ -49,7 +49,7 @@ window.UnitConverterData.CONVERSION_RATIOS = {
 
 window.UnitConverterData.UNIT_PATTERNS = {
   length: /\b(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)\b/gi,
-  weight: /\b(\d+(?:\.\d+)?)\s*(kg|g|lb|lbs|oz|ounce|ounces|pound|pounds|kilogram|kilograms|gram|grams|tonne|tonnes|t)\b/gi,
+  weight: /\b(\d+(?:\.\d+)?)\s*(kg|g|mg|lb|lbs|oz|ounce|ounces|pound|pounds|kilogram|kilograms|gram|grams|milligram|milligrams|tonne|tonnes|t)\b/gi,
   temperature: /\b(\d+(?:\.\d+)?)\s*°?\s*(c|f|k|celsius|fahrenheit|kelvin|degrees?\s*celsius|degrees?\s*fahrenheit)\b/gi,
   volume: /\b(\d+(?:\.\d+)?)\s*(l|ml|gal|gallon|gallons|qt|quart|quarts|pt|pint|pints|cup|cups|fl\s*oz|fluid\s*ounce|fluid\s*ounces|liter|liters|milliliter|milliliters)\b/gi,
   area: /(\d+(?:\.\d+)?)\s*-?\s*(m²|cm²|mm²|km²|ft²|in²|m2|cm2|mm2|km2|ft2|in2|acre|acres|square\s*meter|square\s*meters|square\s*centimeter|square\s*centimeters|square\s*millimeter|square\s*millimeters|square\s*kilometer|square\s*kilometers|square\s*foot|square\s*feet|square\s*inch|square\s*inches|meters?\s*squared|meter\s*squared|feet\s*squared|foot\s*squared|inches?\s*squared|inch\s*squared|centimeters?\s*squared|centimeter\s*squared|millimeters?\s*squared|millimeter\s*squared|kilometers?\s*squared|kilometer\s*squared)(?!\w)/gi,
@@ -66,10 +66,10 @@ window.UnitConverterData.UNIT_ALIASES = {
   'centimeter': 'cm', 'centimeters': 'cm',
   'millimeter': 'mm', 'millimeters': 'mm',
   'kilometer': 'km', 'kilometers': 'km',
-  
-  // Weight aliases
+    // Weight aliases
   'kilogram': 'kg', 'kilograms': 'kg',
   'gram': 'g', 'grams': 'g',
+  'milligram': 'mg', 'milligrams': 'mg',
   'pound': 'lb', 'pounds': 'lb', 'lbs': 'lb',
   'ounce': 'oz', 'ounces': 'oz',
   'tonne': 't', 'tonnes': 't',
