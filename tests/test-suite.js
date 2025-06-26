@@ -1,5 +1,5 @@
 // Automated Unit Converter Test Suite
-// This script provides comprehensive testing for the Chrome extension
+// This script provides comprehensive testing for the extension
 
 class ExtensionTester {
   constructor() {

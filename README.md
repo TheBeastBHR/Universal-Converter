@@ -86,6 +86,10 @@ unitConverter/
 
 See [TESTING.md](tests/TESTING.md) for development guidelines and testing procedures.
 
+## Credits
+
+This project includes code from [Currency-Converter](https://github.com/adampawelczyk/Currency-Converter) by Adam Pawełczyk, licensed under the MIT License.
+
 ## 📄 License
 
 MIT License - Feel free to use, modify, and distribute.
