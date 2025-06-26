@@ -36,6 +36,16 @@ window.UnitConverter.UnitConverter = class {
     if (['c', 'f', 'k'].includes(normalizedUnit)) {
       return 'temperature';
     }
+    
+    // Check if it's a currency using Currency-Converter-master detection
+    if (window.UnitConverter.currencyConverter) {
+      const currencyConverter = window.UnitConverter.currencyConverter;
+      const detectedCurrency = currencyConverter.detectCurrency(unit);
+      if (detectedCurrency !== 'Unknown currency') {
+        return 'currency';
+      }
+    }
+    
     return null;
   }
   
@@ -104,7 +114,8 @@ window.UnitConverter.UnitConverter = class {
     const settingKey = unitType === 'weight' ? 'weightUnit' : 
                       unitType === 'temperature' ? 'temperatureUnit' :
                       unitType === 'volume' ? 'volumeUnit' :
-                      unitType === 'area' ? 'areaUnit' : 'lengthUnit';
+                      unitType === 'area' ? 'areaUnit' : 
+                      unitType === 'currency' ? 'currencyUnit' : 'lengthUnit';
     
     return userSettings[settingKey] || this.defaultUnits[unitType];
   }

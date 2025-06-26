@@ -53,7 +53,12 @@ window.UnitConverterData.UNIT_PATTERNS = {
   temperature: /\b(\d+(?:\.\d+)?)\s*°?\s*(c|f|k|celsius|fahrenheit|kelvin|degrees?\s*celsius|degrees?\s*fahrenheit)\b/gi,
   volume: /\b(\d+(?:\.\d+)?)\s*(l|ml|gal|gallon|gallons|qt|quart|quarts|pt|pint|pints|cup|cups|fl\s*oz|fluid\s*ounce|fluid\s*ounces|liter|liters|milliliter|milliliters)\b/gi,
   area: /(\d+(?:\.\d+)?)\s*-?\s*(m²|cm²|mm²|km²|ft²|in²|m2|cm2|mm2|km2|ft2|in2|acre|acres|square\s*meter|square\s*meters|square\s*centimeter|square\s*centimeters|square\s*millimeter|square\s*millimeters|square\s*kilometer|square\s*kilometers|square\s*foot|square\s*feet|square\s*inch|square\s*inches|meters?\s*squared|meter\s*squared|feet\s*squared|foot\s*squared|inches?\s*squared|inch\s*squared|centimeters?\s*squared|centimeter\s*squared|millimeters?\s*squared|millimeter\s*squared|kilometers?\s*squared|kilometer\s*squared)(?!\w)/gi,
-  dimensions: /(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)/gi
+  dimensions: /(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)/gi,
+  // Currency patterns based on Currency-Converter-master: major symbols + amounts
+  // Currency pattern based on Currency-Converter-master approach
+  // This pattern matches currency symbols followed by numbers or numbers followed by currency symbols
+  // Supports various number formats including commas, dots, apostrophes, and spaces as separators
+  currency: /(?:(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡)\s*(\d+(?:[.,\d' \s]*\d)?)|(\d+(?:[.,\d' \s]*\d)?)\s*(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡))/gi
 };
 
 window.UnitConverterData.UNIT_ALIASES = {
@@ -111,7 +116,8 @@ window.UnitConverterData.DEFAULT_UNITS = {
   weight: 'kg',
   temperature: 'c',
   volume: 'l',
-  area: 'm2'
+  area: 'm2',
+  currency: 'usd'
 };
 
 window.UnitConverterData.AREA_TO_LINEAR_MAP = {

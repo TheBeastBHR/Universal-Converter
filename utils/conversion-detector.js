@@ -18,6 +18,10 @@ window.UnitConverter.ConversionDetector = class {
   findConversions(text, userSettings) {
     const conversions = [];
     
+    // Check for currency conversions using Currency-Converter-master logic
+    const currencyConversions = this.findCurrencyConversions(text, userSettings);
+    conversions.push(...currencyConversions);
+    
     // Check for dimensions (L x W x H format) - supports mixed units
     const dimensionConversions = this.findDimensionalConversions(text, userSettings);
     conversions.push(...dimensionConversions);
@@ -69,6 +73,82 @@ window.UnitConverter.ConversionDetector = class {
     return conversions;
   }
   
+  /**
+   * Find currency conversions using Currency-Converter-master logic
+   * @param {string} text - Text to analyze
+   * @param {Object} userSettings - User settings
+   * @returns {Array} - Array of currency conversions
+   */
+  /**
+   * Find currency conversions using Currency-Converter-master logic and regex patterns
+   * @param {string} text - Text to analyze
+   * @param {Object} userSettings - User settings
+   * @returns {Array} - Array of currency conversions
+   */
+  findCurrencyConversions(text, userSettings) {
+    const conversions = [];
+    
+    if (!window.UnitConverter.currencyConverter) {
+      return conversions;
+    }
+    
+    try {
+      const targetCurrency = userSettings.currencyUnit || 'USD';
+      const currencyConverter = window.UnitConverter.currencyConverter;
+      
+      // Use regex pattern to find currency matches
+      const currencyPattern = this.patterns.currency;
+      const matches = [...text.matchAll(currencyPattern)];
+      
+      for (const match of matches) {
+        const fullMatch = match[0];
+        let amount, symbol;
+        
+        // Handle both symbol-first and symbol-last patterns
+        if (match[1] && match[2]) {
+          // Symbol first: $100
+          symbol = match[1];
+          amount = match[2];
+        } else if (match[3] && match[4]) {
+          // Symbol last: 100$
+          amount = match[3];
+          symbol = match[4];
+        } else {
+          continue;
+        }
+        
+        // Use Currency-Converter-master logic for detection
+        const detectedCurrency = currencyConverter.detectCurrency(symbol);
+        
+        if (detectedCurrency !== 'Unknown currency') {
+          // Extract the numeric value using Currency-Converter-master logic
+          const numericAmount = currencyConverter.extractNumber(fullMatch);
+          
+          if (numericAmount && detectedCurrency.toUpperCase() !== targetCurrency.toUpperCase()) {
+            conversions.push({
+              match: fullMatch,
+              originalValue: numericAmount,
+              originalUnit: detectedCurrency,
+              targetUnit: targetCurrency.toUpperCase(),
+              type: 'currency',
+              needsAsyncProcessing: true,
+              fromCurrency: detectedCurrency,
+              toCurrency: targetCurrency.toUpperCase(),
+              convertedValue: '...', // Will be updated with actual conversion
+              // Add properties expected by popup
+              original: `${numericAmount} ${detectedCurrency}`,
+              converted: '...' // Will be updated after API call
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Currency detection error:', error);
+    }
+    
+    return conversions;
+  }
+
   /**
    * Find regular unit conversions
    * @param {string} text - Text to analyze

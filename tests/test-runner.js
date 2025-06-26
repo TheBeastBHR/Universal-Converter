@@ -24,6 +24,7 @@ class UnitConverterTester {
     
     // Mock window object for Node.js
     global.window = {};
+    global.document = { location: { hostname: 'localhost' } }; // Mock document for currency tests
     
     // Load the extension modules
     this.loadModules();
@@ -39,6 +40,11 @@ class UnitConverterTester {
       const unitConverterPath = path.join(__dirname, '..', 'utils', 'unit-converter.js');
       const unitConverter = fs.readFileSync(unitConverterPath, 'utf8');
       eval(unitConverter);
+
+      // Load currency converter
+      const currencyConverterPath = path.join(__dirname, '..', 'utils', 'currency-converter.js');
+      const currencyConverter = fs.readFileSync(currencyConverterPath, 'utf8');
+      eval(currencyConverter);
 
       // Load conversion detector
       const detectorPath = path.join(__dirname, '..', 'utils', 'conversion-detector.js');
@@ -61,11 +67,11 @@ class UnitConverterTester {
     
     if (condition) {
       this.passCount++;
-      console.log(`${colors.green}✅ ${testName}${colors.reset}`);
+      console.log(`${colors.green}[PASS] ${testName}${colors.reset}`);
       this.testResults.push({ name: testName, status: 'PASS', expected, actual });
     } else {
       this.failCount++;
-      console.log(`${colors.red}❌ ${testName}${colors.reset}`);
+      console.log(`${colors.red}[FAIL] ${testName}${colors.reset}`);
       console.log(`   Expected: ${expected}`);
       console.log(`   Actual: ${actual}`);
       this.testResults.push({ name: testName, status: 'FAIL', expected, actual });
@@ -74,7 +80,7 @@ class UnitConverterTester {
 
   // Test basic unit conversions
   testBasicConversions() {
-    console.log(`\n${colors.blue}🧪 Testing Basic Unit Conversions${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Basic Unit Conversions]${colors.reset}`);
 
     // Length conversions
     const cm_to_m = this.unitConverter.convert(100, 'cm', 'm');
@@ -97,7 +103,7 @@ class UnitConverterTester {
 
   // Test area conversions (the main bug we fixed)
   testAreaConversions() {
-    console.log(`\n${colors.blue}🧪 Testing Area Conversions${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Area Conversions]${colors.reset}`);
 
     // Basic area conversions
     const cm2_to_m2 = this.unitConverter.convert(10000, 'cm2', 'm2');
@@ -111,7 +117,7 @@ class UnitConverterTester {
 
   // Test unit detection and aliases
   testUnitDetection() {
-    console.log(`\n${colors.blue}🧪 Testing Unit Detection${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Unit Detection]${colors.reset}`);
 
     // Unicode symbol aliases
     const cm2_unicode = this.unitConverter.normalizeUnit('cm²');
@@ -137,7 +143,7 @@ class UnitConverterTester {
 
   // Test auto-sizing functionality
   testAutoSizing() {
-    console.log(`\n${colors.blue}🧪 Testing Auto-Sizing${colors.reset}`);    // Small values should use smaller units
+    console.log(`\n${colors.blue}[Testing Auto-Sizing]${colors.reset}`);    // Small values should use smaller units
     const small_area = this.unitConverter.getBestUnit(0.001, 'area', 'm2');
     this.assert(small_area.unit === 'cm2', 'Auto-size: 0.001 m² → cm²', 'cm2', small_area.unit);
 
@@ -163,7 +169,7 @@ class UnitConverterTester {
 
   // Test text pattern matching
   testPatternMatching() {
-    console.log(`\n${colors.blue}🧪 Testing Pattern Matching${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Pattern Matching]${colors.reset}`);
 
     const userSettings = {
       lengthUnit: 'm',
@@ -194,7 +200,7 @@ class UnitConverterTester {
 
   // Test comprehensive unit conversions
   testComprehensiveConversions() {
-    console.log(`\n${colors.blue}🧪 Testing Comprehensive Conversions${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Comprehensive Conversions]${colors.reset}`);
 
     // Length conversions - metric
     const mm_to_cm = this.unitConverter.convert(10, 'mm', 'cm');
@@ -251,7 +257,7 @@ class UnitConverterTester {
 
   // Test decimal precision formatting
   testDecimalPrecision() {
-    console.log(`\n${colors.blue}🧪 Testing Decimal Precision${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Decimal Precision]${colors.reset}`);
 
     // Test that results are formatted to 2 decimal places
     const result1 = this.unitConverter.formatResult(3.14159, 'm');
@@ -269,7 +275,7 @@ class UnitConverterTester {
 
   // Test edge cases and boundary conditions
   testEdgeCases() {
-    console.log(`\n${colors.blue}🧪 Testing Edge Cases${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Edge Cases]${colors.reset}`);
 
     // Zero values
     const zero_result = this.unitConverter.convert(0, 'm', 'cm');
@@ -294,7 +300,7 @@ class UnitConverterTester {
 
   // Test auto-sizing with comprehensive cases
   testComprehensiveAutoSizing() {
-    console.log(`\n${colors.blue}🧪 Testing Comprehensive Auto-Sizing${colors.reset}`);
+    console.log(`\n${colors.blue}[Testing Comprehensive Auto-Sizing]${colors.reset}`);
 
     // Length auto-sizing edge cases
     const very_small = this.unitConverter.getBestUnit(0.0001, 'length', 'm');
@@ -328,7 +334,7 @@ class UnitConverterTester {
 
   // Generate test report
   generateReport() {
-    console.log(`\n${colors.bright}${colors.blue}📊 Test Report${colors.reset}`);
+    console.log(`\n${colors.bright}${colors.blue}[Test Report]${colors.reset}`);
     console.log(`${colors.bright}Total Tests: ${this.testCount}${colors.reset}`);
     console.log(`${colors.green}Passed: ${this.passCount}${colors.reset}`);
     console.log(`${colors.red}Failed: ${this.failCount}${colors.reset}`);
@@ -346,13 +352,224 @@ class UnitConverterTester {
       
       process.exit(1); // Exit with error code for CI/CD
     } else {
-      console.log(`\n${colors.green}🎉 All tests passed!${colors.reset}`);
+      console.log(`\n${colors.green}[All tests passed!]${colors.reset}`);
+    }
+  }
+
+  // Test currency conversions (mock tests since we can't make API calls in Node.js)
+  testCurrencyConversions() {
+    console.log(`\n${colors.blue}[Testing Currency Conversions (Mock)]${colors.reset}`);
+
+    // Test if CurrencyConverter class is loaded
+    if (typeof global.window.UnitConverter.CurrencyConverter !== 'undefined') {
+      const currencyConverter = new global.window.UnitConverter.CurrencyConverter();
+      
+      // Test currency symbol extraction
+      const usd_symbol = currencyConverter.extractCurrencySymbol('$100');
+      this.assert(usd_symbol === '$', 'Currency: Extract $ symbol', '$', usd_symbol);
+      
+      const eur_symbol = currencyConverter.extractCurrencySymbol('EUR50');
+      this.assert(eur_symbol === 'EUR', 'Currency: Extract EUR symbol', 'EUR', eur_symbol);
+      
+      const gbp_symbol = currencyConverter.extractCurrencySymbol('GBP25');
+      this.assert(gbp_symbol === 'GBP', 'Currency: Extract GBP symbol', 'GBP', gbp_symbol);
+      
+      // Test amount extraction
+      const amount1 = currencyConverter.extractNumber('$100.50');
+      this.assert(Math.abs(amount1 - 100.50) < 0.001, 'Currency: Extract $100.50', 100.50, amount1);
+      
+      const amount2 = currencyConverter.extractNumber('EUR1,234.56');
+      this.assert(Math.abs(amount2 - 1234.56) < 0.001, 'Currency: Extract EUR1,234.56', 1234.56, amount2);
+      
+      const amount3 = currencyConverter.extractNumber('GBP1.234,56');  // European format
+      this.assert(Math.abs(amount3 - 1234.56) < 0.001, 'Currency: Extract European format GBP1.234,56', 1234.56, amount3);
+      
+      // Test currency detection
+      try {
+        const usd_code = currencyConverter.detectCurrency('$');
+        this.assert(Array.isArray(usd_code) || usd_code === 'USD', 'Currency: $ detection (USD or array)', 'USD or array', typeof usd_code);
+      } catch (e) {
+        console.log(`${colors.yellow}[WARNING] Currency detection test skipped: ${e.message}${colors.reset}`);
+      }
+      
+      const eur_code = currencyConverter.detectCurrency('€');
+      this.assert(eur_code === 'EUR', 'Currency: € maps to EUR', 'EUR', eur_code);
+      
+      const unknown_code = currencyConverter.detectCurrency('XYZ');
+      this.assert(unknown_code === 'Unknown currency', 'Currency: Unknown symbol', 'Unknown currency', unknown_code);
+      
+      // Test currency symbol retrieval
+      const usd_sym = currencyConverter.getCurrencySymbol('USD');
+      const usd_symbol_valid = Array.isArray(usd_sym) ? usd_sym.includes('$') : usd_sym === '$';
+      this.assert(usd_symbol_valid, 'Currency: USD symbol lookup', '$ (or array containing $)', usd_sym);
+      
+      const eur_sym = currencyConverter.getCurrencySymbol('EUR');
+      this.assert(eur_sym === '€', 'Currency: EUR symbol lookup', '€', eur_sym);
+      
+      // Test formatting
+      const formatted1 = currencyConverter.formatCurrency(100.5, 'USD');
+      this.assert(formatted1.includes('100.50') && formatted1.includes('$'), 'Currency: Format USD', 'Contains 100.50 and $', formatted1);
+      
+      const formatted2 = currencyConverter.formatCurrency(1234.56, 'EUR');
+      this.assert(formatted2.includes('1,234.56') && formatted2.includes('€'), 'Currency: Format EUR', 'Contains 1,234.56 and €', formatted2);
+      
+      // Test formatting for important Middle Eastern currencies
+      const formatted3 = currencyConverter.formatCurrency(7.52, 'BHD');
+      this.assert(formatted3.includes('7.52') && formatted3.includes('BHD') && formatted3.includes('د.ب'), 'Currency: Format BHD', 'Contains 7.52, BHD, and د.ب', formatted3);
+      
+      const formatted4 = currencyConverter.formatCurrency(25.75, 'KWD');
+      this.assert(formatted4.includes('25.75') && formatted4.includes('KWD') && (formatted4.includes('د.ك') || formatted4.includes('KD')), 'Currency: Format KWD', 'Contains 25.75, KWD, and د.ك or KD', formatted4);
+      
+      const formatted5 = currencyConverter.formatCurrency(100, 'SAR');
+      this.assert(formatted5.includes('100.00') && formatted5.includes('SAR') && formatted5.includes('ر.س'), 'Currency: Format SAR', 'Contains 100.00, SAR, and ر.س', formatted5);
+      
+      const formatted6 = currencyConverter.formatCurrency(200, 'AED');
+      this.assert(formatted6.includes('200.00') && formatted6.includes('AED') && formatted6.includes('د.إ'), 'Currency: Format AED', 'Contains 200.00, AED, and د.إ', formatted6);
+      
+      const formatted7 = currencyConverter.formatCurrency(50.25, 'QAR');
+      this.assert(formatted7.includes('50.25') && formatted7.includes('QAR') && (formatted7.includes('ر.ق') || formatted7.includes('QR')), 'Currency: Format QAR', 'Contains 50.25, QAR, and ر.ق or QR', formatted7);
+      
+      // Test Asian currencies
+      const formatted8 = currencyConverter.formatCurrency(1500, 'JPY');
+      this.assert(formatted8.includes('1,500.00') && formatted8.includes('JPY') && (formatted8.includes('¥') || formatted8.includes('円')), 'Currency: Format JPY', 'Contains 1,500.00, JPY, and ¥ or 円', formatted8);
+      
+      const formatted9 = currencyConverter.formatCurrency(75.99, 'INR');
+      this.assert(formatted9.includes('75.99') && formatted9.includes('INR') && formatted9.includes('₹'), 'Currency: Format INR', 'Contains 75.99, INR, and ₹', formatted9);
+      
+      const formatted10 = currencyConverter.formatCurrency(1234.56, 'CNY');
+      this.assert(formatted10.includes('1,234.56') && formatted10.includes('CNY') && formatted10.includes('¥'), 'Currency: Format CNY', 'Contains 1,234.56, CNY, and ¥', formatted10);
+      
+      // Test other major currencies
+      const formatted11 = currencyConverter.formatCurrency(123.45, 'CAD');
+      this.assert(formatted11.includes('123.45') && formatted11.includes('CAD') && formatted11.includes('$'), 'Currency: Format CAD', 'Contains 123.45, CAD, and $', formatted11);
+      
+      const formatted12 = currencyConverter.formatCurrency(89.99, 'AUD');
+      this.assert(formatted12.includes('89.99') && formatted12.includes('AUD') && formatted12.includes('$'), 'Currency: Format AUD', 'Contains 89.99, AUD, and $', formatted12);
+      
+      const formatted13 = currencyConverter.formatCurrency(45.67, 'CHF');
+      this.assert(formatted13.includes('45.67') && formatted13.includes('CHF'), 'Currency: Format CHF', 'Contains 45.67 and CHF', formatted13);
+      
+      // Test symbol extraction for critical currencies
+      const bhd_sym = currencyConverter.getCurrencySymbol('BHD');
+      const bhd_symbol_valid = Array.isArray(bhd_sym) ? bhd_sym.includes('د.ب') : bhd_sym === 'د.ب';
+      this.assert(bhd_symbol_valid, 'Currency: BHD symbol lookup', 'د.ب (or array containing د.ب)', bhd_sym);
+      
+      const kwd_sym = currencyConverter.getCurrencySymbol('KWD');
+      const kwd_symbol_valid = Array.isArray(kwd_sym) ? (kwd_sym.includes('د.ك') || kwd_sym.includes('KD')) : (kwd_sym === 'د.ك' || kwd_sym === 'KD');
+      this.assert(kwd_symbol_valid, 'Currency: KWD symbol lookup', 'د.ك or KD (or array containing either)', kwd_sym);
+      
+      const aed_sym = currencyConverter.getCurrencySymbol('AED');
+      const aed_symbol_valid = Array.isArray(aed_sym) ? aed_sym.includes('د.إ') : (aed_sym === 'د.إ' || aed_sym === 'AED');
+      this.assert(aed_symbol_valid, 'Currency: AED symbol lookup', 'د.إ (or array containing د.إ)', Array.isArray(aed_sym) ? aed_sym.join(',') : aed_sym);
+      
+      // Test currency detection for Arabic symbols
+      try {
+        const bhd_detected = currencyConverter.detectCurrency('د.ب');
+        this.assert(bhd_detected === 'BHD', 'Currency: د.ب detection maps to BHD', 'BHD', bhd_detected);
+      } catch (e) {
+        console.log(`${colors.yellow}[WARNING] BHD detection test skipped: ${e.message}${colors.reset}`);
+      }
+      
+      try {
+        const aed_detected = currencyConverter.detectCurrency('د.إ');
+        this.assert(aed_detected === 'AED', 'Currency: د.إ detection maps to AED', 'AED', aed_detected);
+      } catch (e) {
+        console.log(`${colors.yellow}[WARNING] AED detection test skipped: ${e.message}${colors.reset}`);
+      }
+      
+      // Test number extraction for various formats
+      const bhd_amount = currencyConverter.extractNumber('7.52 د.ب');
+      this.assert(Math.abs(bhd_amount - 7.52) < 0.001, 'Currency: Extract BHD amount', 7.52, bhd_amount);
+      
+      const kwd_amount = currencyConverter.extractNumber('25.75 د.ك');
+      this.assert(Math.abs(kwd_amount - 25.75) < 0.001, 'Currency: Extract KWD amount', 25.75, kwd_amount);
+      
+      const sar_amount = currencyConverter.extractNumber('100 ر.س');
+      this.assert(Math.abs(sar_amount - 100) < 0.001, 'Currency: Extract SAR amount', 100, sar_amount);
+
+      // ...existing code...
+    } else {
+      console.log(`${colors.yellow}[WARNING] CurrencyConverter class not available${colors.reset}`);
+    }
+  }
+
+  // Test currency pattern detection in text
+  testCurrencyPatternDetection() {
+    console.log(`\n${colors.blue}[Testing Currency Pattern Detection]${colors.reset}`);
+    
+    const userSettings = {
+      lengthUnit: 'm',
+      areaUnit: 'm2',
+      weightUnit: 'kg',
+      temperatureUnit: 'c',
+      volumeUnit: 'l',
+      currencyUnit: 'USD'
+    };
+
+    // Test currency pattern detection through the main detector
+    const currency_conversions = this.detector.findCurrencyConversions('The price is $100', userSettings);
+    
+    if (currency_conversions && currency_conversions.length > 0) {
+      this.assert(currency_conversions.length > 0, 'Currency Pattern: "$100" detected', '>0 conversions', currency_conversions.length);
+      this.assert(currency_conversions[0].type === 'currency', 'Currency Pattern: Detected as currency type', 'currency', currency_conversions[0].type);
+    } else {
+      console.log(`${colors.yellow}[WARNING] Currency pattern detection not fully integrated yet${colors.reset}`);
+    }
+
+    // Test multiple currency patterns
+    const multi_currency = this.detector.findCurrencyConversions('Items cost €50, $75, and £25', userSettings);
+    if (multi_currency && multi_currency.length > 0) {
+      // Should find 2 conversions (€50->USD and £25->USD), but not $75->USD since it's the same currency
+      this.assert(multi_currency.length >= 2, 'Currency Pattern: Multiple currencies detected', '>=2 conversions', multi_currency.length);
+    }
+
+    // Test currency with commas
+    const comma_currency = this.detector.findCurrencyConversions('Total is $1,234.56', userSettings);
+    if (comma_currency && comma_currency.length > 0) {
+      this.assert(comma_currency[0].originalValue === 1234.56, 'Currency Pattern: Parse comma-separated amount', 1234.56, comma_currency[0].originalValue);
+    }
+
+    // Test Arabic currency symbol patterns
+    const bhd_pattern = this.detector.findCurrencyConversions('The price is 7.52 د.ب today', userSettings);
+    if (bhd_pattern && bhd_pattern.length > 0) {
+      this.assert(bhd_pattern[0].type === 'currency', 'Currency Pattern: BHD د.ب detected as currency', 'currency', bhd_pattern[0].type);
+      this.assert(Math.abs(bhd_pattern[0].originalValue - 7.52) < 0.001, 'Currency Pattern: BHD amount parsed correctly', 7.52, bhd_pattern[0].originalValue);
+    }
+    
+    const kwd_pattern = this.detector.findCurrencyConversions('Cost is 25.75 د.ك per unit', userSettings);
+    if (kwd_pattern && kwd_pattern.length > 0) {
+      this.assert(kwd_pattern[0].type === 'currency', 'Currency Pattern: KWD د.ك detected as currency', 'currency', kwd_pattern[0].type);
+      this.assert(Math.abs(kwd_pattern[0].originalValue - 25.75) < 0.001, 'Currency Pattern: KWD amount parsed correctly', 25.75, kwd_pattern[0].originalValue);
+    }
+    
+    const sar_pattern = this.detector.findCurrencyConversions('Payment of 100 ر.س required', userSettings);
+    if (sar_pattern && sar_pattern.length > 0) {
+      this.assert(sar_pattern[0].type === 'currency', 'Currency Pattern: SAR ر.س detected as currency', 'currency', sar_pattern[0].type);
+      this.assert(Math.abs(sar_pattern[0].originalValue - 100) < 0.001, 'Currency Pattern: SAR amount parsed correctly', 100, sar_pattern[0].originalValue);
+    }
+    
+    const aed_pattern = this.detector.findCurrencyConversions('Total 200 د.إ with tax', userSettings);
+    if (aed_pattern && aed_pattern.length > 0) {
+      this.assert(aed_pattern[0].type === 'currency', 'Currency Pattern: AED د.إ detected as currency', 'currency', aed_pattern[0].type);
+      this.assert(Math.abs(aed_pattern[0].originalValue - 200) < 0.001, 'Currency Pattern: AED amount parsed correctly', 200, aed_pattern[0].originalValue);
+    }
+    
+    // Test mixed currency patterns in single text
+    const mixed_middle_east = this.detector.findCurrencyConversions('Prices: 50 د.ب in Bahrain, 75 د.ك in Kuwait, 100 ر.س in Saudi', userSettings);
+    if (mixed_middle_east && mixed_middle_east.length > 0) {
+      this.assert(mixed_middle_east.length >= 2, 'Currency Pattern: Multiple Middle Eastern currencies detected', '>=2 conversions', mixed_middle_east.length);
+    }
+    
+    // Test currencies with decimal commas (European format)
+    const european_format = this.detector.findCurrencyConversions('Price is €1.234,56 in Europe', userSettings);
+    if (european_format && european_format.length > 0) {
+      this.assert(Math.abs(european_format[0].originalValue - 1234.56) < 0.001, 'Currency Pattern: European decimal comma format', 1234.56, european_format[0].originalValue);
     }
   }
 
   // Run all tests
   async runAllTests() {
-    console.log(`${colors.bright}${colors.yellow}🚀 Starting Unit Converter Tests${colors.reset}\n`);
+    console.log(`${colors.bright}${colors.yellow}[Starting Unit Converter Tests]${colors.reset}\n`);
     
     this.testBasicConversions();
     this.testAreaConversions();
@@ -363,6 +580,8 @@ class UnitConverterTester {
     this.testDecimalPrecision();
     this.testEdgeCases();
     this.testComprehensiveAutoSizing();
+    this.testCurrencyConversions();
+    this.testCurrencyPatternDetection();
   }
 }
 

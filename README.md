@@ -3,14 +3,14 @@
 <img src="icons/icon32.png"><h1 style="text-align: center;">  Universal Unit Converter - Chrome Extension </h1>
 </div>
 
-[![Tests](https://img.shields.io/badge/tests-24/24_passing-brightgreen)](tests/TESTING.md)
+[![Tests](https://img.shields.io/badge/tests-91/91_passing-brightgreen)](tests/TESTING.md)
 [![Node.js](https://img.shields.io/badge/node.js-24.x-green)](package.json)
 [![Manifest](https://img.shields.io/badge/manifest-v3-blue)](manifest.json)
 
 
 
 **Instantly convert any unit measurement by simply selecting text on any webpage!**<br>
-A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, and area measurements with smart auto-sizing and mixed-dimension support.
+A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and mixed-dimension support.
 
 ![Extension Popup Demo](img/popup.png)
 </div>
@@ -20,9 +20,10 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 
 - 🎯 **Text Selection Conversion** - Select any measurement, get instant popup results
 - 📏 **50+ Unit Types** - Length, weight, temperature, volume, area
-- 🔧 **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
+- � **Real-Time Currency Conversion** - Live exchange rates for 150+ currencies with Arabic/Unicode symbol support
+- �🔧 **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
 - 📐 **Dimension Support** - Handles complex formats like "8ft × 4ft × 30in"
-- 🌐 **Unicode Compatible** - Recognizes symbols like cm², m², °C
+- 🌐 **Unicode Compatible** - Recognizes symbols like cm², m², °C, د.ب, ر.س
 - ⚡ **Non-Intrusive** - uses a popup to avoid modifying the original text
 - ⚙️ **Auto-Save Settings** - Metric/Imperial presets with manual overrides
 
@@ -43,6 +44,9 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 | `5 kg` | `11.02 lbs` |
 | `8ft × 4ft` | `2.44m × 1.22m` |
 | `50 m²` | `538.2 ft²` |
+| `$100 USD` | `90.85 EUR €` |
+| `25 د.ب` | `66.23 USD $` |
+| `€50` | `54.95 GBP £` |
 
 ## 🧪 Testing & Development
 
@@ -52,7 +56,7 @@ For  testing documentation, build instructions, and development setup:
 
 **Quick Commands:**
 ```bash
-npm test          # Run all 24 automated tests
+npm test          # Run all 91 automated tests
 npm run validate  # Validate extension structure  
 npm run build     # Build for distribution
 ```
@@ -86,9 +90,9 @@ unitConverter/
 
 See [TESTING.md](tests/TESTING.md) for development guidelines and testing procedures.
 
-## Credits
+## 🙏 Credits & Acknowledgments
 
-This project includes code from [Currency-Converter](https://github.com/adampawelczyk/Currency-Converter) by Adam Pawełczyk, licensed under the MIT License.
+This project integrates currency conversion functionality from [Currency-Converter](https://github.com/adampawelczyk/Currency-Converter) by Adam Pawełczyk. The currency detection, symbol mapping, and real-time exchange rate features are based on this open-source project.
 
 ## 📄 License
 

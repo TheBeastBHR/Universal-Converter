@@ -5,11 +5,15 @@
   <style>
     body {
       width: 350px;
-      padding: 20px;
+      min-height: min-content;
+      max-height: 600px;
+      padding: 5px 5px 0 5px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: #535353;
+      color: #f0f0f0;
       margin: 0;
+      overflow-y: auto;
+      box-sizing: border-box;
     }
     
     .header {
@@ -24,17 +28,17 @@
     }
     
     .section {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 8px;
       padding: 15px;
       margin-bottom: 15px;
-      backdrop-filter: blur(10px);
     }
     
     .section h3 {
       margin: 0 0 10px 0;
       font-size: 14px;
-      color: #e0e0e0;
+      color: #d0d0d0;
     }
     
     .unit-group {
@@ -51,16 +55,17 @@
     select {
       width: 100%;
       padding: 8px;
-      border: none;
+      border: 1px solid #666;
       border-radius: 4px;
-      background: rgba(255, 255, 255, 0.9);
+      background: #404040;
       font-size: 12px;
-      color: #333;
+      color: #f0f0f0;
     }
     
     select:focus {
       outline: none;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+      border-color: #888;
+      box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.3);
     }
     
     .preset-buttons {
@@ -72,10 +77,10 @@
     .preset-btn {
       flex: 1;
       padding: 10px;
-      border: none;
+      border: 1px solid #666;
       border-radius: 5px;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
+      background: #404040;
+      color: #f0f0f0;
       cursor: pointer;
       font-size: 12px;
       font-weight: 500;
@@ -83,30 +88,46 @@
     }
     
     .preset-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: #505050;
+      border-color: #888;
       transform: translateY(-1px);
     }
       .preset-btn.active {
-      background: rgba(255, 255, 255, 0.4);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      background: #606060;
+      border-color: #999;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 15px 0;
+    }
+
+    /* Custom scrollbar styling for dark theme */
+    body::-webkit-scrollbar {
+      width: 8px;
     }
     
-    .status {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 12px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
     }
     
-    .status.show {
-      opacity: 1;
+    body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+    }
+    
+    body::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>🔄 Unit Converter Settings</h1>
+    <h1>🔄 Universal Converter Settings</h1>
   </div>
   
   <div class="section">
@@ -117,8 +138,16 @@
       <button class="preset-btn" id="customBtn">Custom</button>
     </div>
   </div>
-  
   <div class="section">
+
+    <div class="unit-group">
+      <label for="currencyUnit">Currency:</label>
+      <select id="currencyUnit">
+        <!-- Options will be populated dynamically -->
+        <option value="USD">Loading currencies...</option>
+      </select>
+    </div>
+    <hr>
     <h3>Default Units</h3>
     
     <div class="unit-group">
@@ -178,10 +207,12 @@
         <option value="in2">Square Inches (in²)</option>
         <option value="acre">Acres</option>      </select>
     </div>
+
   </div>
   
-  <div class="status" id="status">Settings saved automatically!</div>
+  <div style="height: 10px;"></div> <!-- Bottom spacing -->
   
+  <script src="../data/currency-mappings.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

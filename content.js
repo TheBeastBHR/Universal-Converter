@@ -50,17 +50,54 @@ function setupEventListeners() {
 }
 
 /**
- * Handle text selection events
+ * Handle text selection events using Currency-Converter-master approach
  * @param {Event} event - Mouse up event
  */
-function handleTextSelection(event) {
-  setTimeout(() => {
+async function handleTextSelection(event) {
+  setTimeout(async () => {
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
     
     if (selectedText && selectedText.length > 0) {
+      // Use Currency-Converter-master logic for currency detection
+      const currencyConverter = window.UnitConverter.currencyConverter;
+      const detectedCurrency = currencyConverter.detectCurrency(currencyConverter.extractCurrencySymbol(selectedText));
+      
+      if (detectedCurrency !== 'Unknown currency') {
+        // Currency detected - handle currency conversion
+        const extractedNumber = currencyConverter.extractNumber(selectedText);
+        
+        if (extractedNumber) {
+          const targetCurrency = userSettings.currencyUnit || 'USD';
+          
+          if (detectedCurrency.toUpperCase() !== targetCurrency.toUpperCase()) {
+            const conversions = [{
+              match: selectedText,
+              originalValue: extractedNumber,
+              originalUnit: detectedCurrency,
+              targetUnit: targetCurrency.toUpperCase(),
+              type: 'currency',
+              needsAsyncProcessing: true,
+              fromCurrency: detectedCurrency,
+              toCurrency: targetCurrency.toUpperCase(),
+              convertedValue: '...',
+              // Add properties expected by popup
+              original: `${extractedNumber} ${detectedCurrency}`,
+              converted: '...'
+            }];
+            
+            await processCurrencyConversions(conversions);
+            popupManager.showConversionPopup(conversions, selection);
+            return;
+          }
+        }
+      }
+      
+      // Fallback to regular unit conversions
       const conversions = conversionDetector.findConversions(selectedText, userSettings);
+      
       if (conversions.length > 0) {
+        await processCurrencyConversions(conversions);
         popupManager.showConversionPopup(conversions, selection);
       } else {
         hidePopup();
@@ -69,6 +106,55 @@ function handleTextSelection(event) {
       hidePopup();
     }
   }, 10);
+}
+
+/**
+ * Process currency conversions that need async API calls
+ * @param {Array} conversions - Array of conversion objects
+ */
+async function processCurrencyConversions(conversions) {
+  if (!window.UnitConverter.currencyConverter) {
+    console.error('Currency converter not available');
+    return;
+  }
+  
+  for (const conversion of conversions) {
+    if (conversion.type === 'currency' && conversion.needsAsyncProcessing) {
+      try {
+        console.log('Processing currency conversion:', conversion);
+        
+        // Get the conversion rate
+        const rate = await window.UnitConverter.currencyConverter.getCurrencyRate(
+          conversion.fromCurrency.toLowerCase(), 
+          conversion.toCurrency.toLowerCase()
+        );
+        
+        console.log('Got rate:', rate);
+        
+        if (rate && rate > 0) {
+          const convertedAmount = conversion.originalValue * rate;
+          const formattedResult = window.UnitConverter.currencyConverter.formatCurrency(
+            convertedAmount, 
+            conversion.toCurrency
+          );
+          
+          console.log('Formatted result:', formattedResult);
+          
+          conversion.converted = formattedResult;
+          conversion.convertedValue = convertedAmount;
+          conversion.needsAsyncProcessing = false;
+        } else {
+          console.warn('Unable to get valid exchange rate');
+          conversion.converted = 'Rate unavailable';
+          conversion.needsAsyncProcessing = false;
+        }
+      } catch (error) {
+        console.error('Currency conversion error:', error);
+        conversion.converted = 'Conversion failed';
+        conversion.needsAsyncProcessing = false;
+      }
+    }
+  }
 }
 
 /**

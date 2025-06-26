@@ -1,21 +1,23 @@
 {
   "manifest_version": 3,
-  "name": "Universal Unit Converter",
-  "version": "1.1.0",
-  "description": "Convert any unit to another with text selection popup and comprehensive unit support",
+  "name": "Universal Converter",
+  "version": "1.2.0",
+  "description": "Convert any unit or currency to another with text selection popup and comprehensive unit support",
   "permissions": [
     "activeTab",
     "storage"
   ],  "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "Unit Converter Settings"
+    "default_title": "Universal Converter Settings"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": [
         "data/conversion-data.js",
+        "data/currency-mappings.js",
         "utils/unit-converter.js",
+        "utils/currency-converter.js",
         "utils/conversion-detector.js",
         "utils/popup-manager.js",
         "utils/settings-manager.js",
@@ -32,5 +34,11 @@
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["data/currency-mappings.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
