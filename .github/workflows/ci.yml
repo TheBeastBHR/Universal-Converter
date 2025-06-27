@@ -11,7 +11,7 @@ on:
       - 'tests/**'
       - 'utils/**'
       - 'data/**'
-      - 'popup/**'
+      - 'settings-page/**'
       - 'manifest.json'
       - 'package.json'
       - '.github/workflows/**'
@@ -25,7 +25,7 @@ on:
       - 'tests/**'
       - 'utils/**'
       - 'data/**'
-      - 'popup/**'
+      - 'settings-page/**'
       - 'manifest.json'
       - 'package.json'
       - '.github/workflows/**'
@@ -191,7 +191,7 @@ jobs:
         cp -r data/ dist/
         cp -r utils/ dist/
         cp -r icons/ dist/
-        cp -r popup/ dist/
+        cp -r settings-page/ dist/
         cp manifest.json dist/
         cp background.js dist/
         cp content.js dist/

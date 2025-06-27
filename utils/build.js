@@ -35,7 +35,7 @@ class ExtensionBuilder {
     this.includeDirs = [
       'data',
       'utils',
-      'popup',
+      'settings-page',
       'icons'
     ];
     
@@ -159,8 +159,8 @@ class ExtensionBuilder {
       'manifest.json',
       'background.js',
       'content.js',
-      'popup/popup.html',
-      'popup/popup.js'
+      'settings-page/settings.html',
+      'settings-page/settings.js'
     ];
     
     let isValid = true;

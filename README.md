@@ -83,9 +83,9 @@ Universal Converter/
 │   ├── settings-manager.js    # User preferences storage
 │   └── build.js               # Build script for distribution
 │
-├── popup/                     # Extension popup UI
-│   ├── popup.html            # Settings interface
-│   └── popup.js              # Popup functionality
+├── settings-page/             # Extension settings UI
+│   ├── settings.html         # Settings interface
+│   └── settings.js           # Settings functionality
 │
 ├── icons/                     # Extension icons
 │

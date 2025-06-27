@@ -7,7 +7,7 @@
     "activeTab",
     "storage"
   ],  "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "settings-page/settings.html",
     "default_title": "Universal Converter Settings"
   },
   "content_scripts": [

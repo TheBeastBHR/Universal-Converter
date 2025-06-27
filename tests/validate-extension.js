@@ -89,14 +89,14 @@ class ExtensionValidator {
       'manifest.json',
       'background.js',
       'content.js',
-      'popup/popup.html',
-      'popup/popup.js',
+      'settings-page/settings.html',
+      'settings-page/settings.js',
       'content.css'
     ];requiredFiles.forEach(file => {
       const exists = fs.existsSync(path.join(__dirname, '..', file));
       this.check(exists, `Required file exists: ${file}`);
     });    // Required directories
-    const requiredDirs = ['data', 'utils', 'icons', 'popup', 'tests'];
+    const requiredDirs = ['data', 'utils', 'icons', 'settings-page', 'tests'];
     requiredDirs.forEach(dir => {
       const exists = fs.existsSync(path.join(__dirname, '..', dir));
       this.check(exists, `Required directory exists: ${dir}`);
@@ -127,7 +127,7 @@ class ExtensionValidator {
     console.log(`\n${colors.blue}🔧 Validating JavaScript syntax${colors.reset}`);    const jsFiles = [
       'background.js',
       'content.js',
-      'popup/popup.js',
+      'settings-page/settings.js',
       'data/conversion-data.js',
       'utils/unit-converter.js',
       'utils/conversion-detector.js',

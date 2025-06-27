@@ -50,7 +50,7 @@ function setupEventListeners() {
 }
 
 /**
- * Handle text selection events using Currency-Converter-master approach
+ * Handle text selection events using Currency-Converter approach
  * @param {Event} event - Mouse up event
  */
 async function handleTextSelection(event) {
@@ -59,7 +59,7 @@ async function handleTextSelection(event) {
     const selectedText = selection.toString().trim();
     
     if (selectedText && selectedText.length > 0) {
-      // Use Currency-Converter-master logic for currency detection
+      // Use Currency-Converter logic for currency detection
       const currencyConverter = window.UnitConverter.currencyConverter;
       const detectedCurrency = currencyConverter.detectCurrency(currencyConverter.extractCurrencySymbol(selectedText));
       

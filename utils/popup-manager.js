@@ -36,9 +36,6 @@ window.UnitConverter.PopupManager = class {
     popup.className = 'unit-converter-popup';
     popup.innerHTML = `
       <div class="unit-converter-content">
-        <div class="unit-converter-header">
-          <span class="unit-converter-title" style="text-align: center; width: 100%; display: block;">🔄 Unit Conversion</span>
-        </div>
         <div class="unit-converter-results">
           ${conversions.map(conv => `
             <div class="unit-converter-item">
@@ -72,19 +69,18 @@ window.UnitConverter.PopupManager = class {
       top = selectionRect.top + window.scrollY - popupRect.height - 10;
     }
     
-    // Adjust if popup would go outside right edge
+    
     if (left + popupRect.width > viewportWidth) {
       left = viewportWidth - popupRect.width - 10;
     }
     
-    // Ensure popup doesn't go outside left edge
+    
     if (left < 10) {
       left = 10;
     }
     
     this.conversionPopup.style.top = `${top}px`;
     this.conversionPopup.style.left = `${left}px`;
-    this.conversionPopup.style.zIndex = '2147483647';
   }
   
   /**
