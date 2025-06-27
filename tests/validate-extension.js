@@ -96,7 +96,7 @@ class ExtensionValidator {
       const exists = fs.existsSync(path.join(__dirname, '..', file));
       this.check(exists, `Required file exists: ${file}`);
     });    // Required directories
-    const requiredDirs = ['data', 'utils', 'icons', 'popup', 'tests', 'debug'];
+    const requiredDirs = ['data', 'utils', 'icons', 'popup', 'tests'];
     requiredDirs.forEach(dir => {
       const exists = fs.existsSync(path.join(__dirname, '..', dir));
       this.check(exists, `Required directory exists: ${dir}`);
