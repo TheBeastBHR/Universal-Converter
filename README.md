@@ -37,7 +37,7 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 2. **Open** `chrome://extensions/` in Chrome
 3. **Enable** "Developer mode" (top right toggle)
 4. **Click** "Load unpacked" and select the project folder
-5. **Test** by selecting "30 cm" on any webpage → See "11.81 inches" popup!
+5. **Test** by selecting "30 cm" on any webpage → See "11.81 inches" popup
 
 ## 🧪 Testing & Development
 
