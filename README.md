@@ -13,7 +13,7 @@
 A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and mixed-dimension support.
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/TheBeastBHR/Universal-Converter/main/img/popup.png" alt="Extension Usage Demo" />
+<img src="/img/popup.png" alt="Extension Usage Demo" />
 </div>
 
 ## ✨ Key Features
