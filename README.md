@@ -20,14 +20,14 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 
 ## ✨ Key Features
 
-- 🎯 **Text Selection Conversion** - Select any measurement, get instant popup results
-- 📏 **50+ Unit Types** - Length, weight, temperature, volume, area
-- ⌛ **Real-Time Currency Conversion** - Live exchange rates for 150+ currencies with Arabic/Unicode symbol support
-- 🔧 **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
-- 📐 **Dimension Support** - Handles complex formats like "8ft × 4ft × 30in"
-- 🌐 **Unicode Compatible** - Recognizes symbols like cm², m², °C, د.ب, ر.س
-- ⚡ **Non-Intrusive** - uses a popup to avoid modifying the original text
-- ⚙️ **Auto-Save Settings** - Metric/Imperial presets with manual overrides
+- **Text Selection Conversion** - Select any measurement, get instant popup results
+- **50+ Unit Types** - Length, weight, temperature, volume, area
+- **Real-Time Currency Conversion** - Live exchange rates for 150+ currencies with Arabic/Unicode symbol support
+- **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
+- **Dimension Support** - Handles complex formats like "8ft × 4ft × 30in"
+- **Unicode Compatible** - Recognizes symbols like cm², m², °C, د.ب, ر.س
+- **Non-Intrusive** - uses a popup to avoid modifying the original text
+- **Auto-Save Settings** - Metric/Imperial presets with manual overrides
 
 ## 🚀 Quick Start
 
