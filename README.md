@@ -12,7 +12,7 @@
 **Instantly convert any unit or currency by simply selecting text on any webpage!**<br>
 A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and mixed-dimension support.
 <div align="center">
-![Extension Popup Demo](img/popup.png)
+![Extension Popup Demo](https://raw.githubusercontent.com/TheBeastBHR/Universal-Converter/main/img/popup.png)
 </div>
 
 
@@ -29,7 +29,9 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 
 ## 🚀 Quick Start
 
-1. **Clone** this repository
+
+**Manual Installation**
+1. Click on Code, Download ZIP, Extract files. **OR** Download from Releases `.crx` file
 2. **Open** `chrome://extensions/` in Chrome
 3. **Enable** "Developer mode" (top right toggle)
 4. **Click** "Load unpacked" and select the project folder
@@ -107,7 +109,6 @@ Universal Converter/
 - **Minimal Permissions**: Only `activeTab` and `storage`
 - **Uses Currency Data from an API**: this extension uses [Fawaz Exchange API](https://github.com/fawazahmed0/exchange-api).
 - **No Data Collection**: Zero tracking or analytics
-- **Offline Functionality**: Works without internet connection
 
 ## 🤝 Contributing
 
