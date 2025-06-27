@@ -11,10 +11,10 @@
 
 **Instantly convert any unit or currency by simply selecting text on any webpage!**<br>
 A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and mixed-dimension support.
-<div align="center">
-![Extension Popup Demo](https://raw.githubusercontent.com/TheBeastBHR/Universal-Converter/main/img/popup.png)
-</div>
 
+<div align="center">
+<img src="https://raw.githubusercontent.com/TheBeastBHR/Universal-Converter/main/img/popup.png" alt="Extension Usage Demo" />
+</div>
 
 ## ✨ Key Features
 
