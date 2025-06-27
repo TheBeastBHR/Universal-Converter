@@ -5,10 +5,14 @@
   "main": "background.js",
   "scripts": {
     "test": "node tests/test-runner.js",
+    "test:all": "node tests/run-all-tests.js",
+    "test:verbose": "node tests/run-all-tests.js --verbose",
+    "test:stop-on-failure": "node tests/run-all-tests.js --stop-on-failure",
     "test:browser": "echo \"Open tests/test.html in a browser after installing the extension\"",
     "test:headless": "node tests/test-headless.js",
-    "build": "echo \"Extension ready for loading as unpacked extension\"",
-    "zip": "powershell Compress-Archive -Path *.json,*.js,*.css,icons,data,utils,popup,LICENSE,README.md -DestinationPath unit-converter-extension.zip -Force",
+    "build": "node utils/build.js",
+    "build:clean": "node utils/build.js && echo \"Build completed - check the build/ folder\"",
+    "zip": "node -e \"console.log('Use npm run build to create a proper ZIP package')\"",
     "lint": "echo \"No linting configured yet\"",
     "validate": "node tests/validate-extension.js"
   },
@@ -20,7 +24,7 @@
     "text-selection",
     "popup"
   ],
-  "author": "Your Name",
+  "author": "Ahmed Al-Halal",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -32,5 +36,9 @@
   "homepage": "https://github.com/TheBeastBHR/Unit-Converter#readme",
   "dependencies": {
     "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1",
+    "cross-env": "^7.0.3"
   }
 }

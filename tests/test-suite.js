@@ -1,6 +1,16 @@
 // Automated Unit Converter Test Suite
 // This script provides comprehensive testing for the extension
 
+// Node.js environment setup
+if (typeof window === 'undefined') {
+  global.window = {};
+  global.document = { 
+    location: { hostname: 'localhost' },
+    addEventListener: () => {},
+    documentElement: { lang: 'en-US' }
+  };
+}
+
 class ExtensionTester {
   constructor() {
     this.testResults = [];
@@ -378,13 +388,21 @@ class ExtensionTester {
 const extensionTester = new ExtensionTester();
 
 // Expose to global scope for manual testing
-window.extensionTester = extensionTester;
+if (typeof window !== 'undefined') {
+  window.extensionTester = extensionTester;
+}
 
 // Auto-start tests after page load
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    extensionTester.init();
-  }, 2000); // Wait 2 seconds for extension to load
-});
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      extensionTester.init();
+    }, 2000); // Wait 2 seconds for extension to load
+  });
+} else {
+  // In Node.js environment, run tests immediately
+  console.log('Running tests in Node.js environment...');
+  extensionTester.init();
+}
 
 console.log('🧪 Extension Tester loaded. Use extensionTester.init() to run tests manually.');

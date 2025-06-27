@@ -64,20 +64,48 @@ npm run build     # Build for distribution
 ## 📁 Project Structure
 
 ```
-unitConverter/
+Universal Converter/
 ├── manifest.json              # Extension configuration
-├── popup/                     # Settings UI
-├── data/                      # Conversion data & patterns
-├── utils/                     # Core conversion logic
-├── tests/                     # test suite
-├── .github/workflows/         # CI/CD automation
-└── icons/                     # Extension icons
+├── background.js              # Service worker
+├── content.js                 # Main content script
+├── content.css                # Content script styles
+├── package.json               # Node.js dependencies
+│
+├── data/                       # Conversion data
+│   ├── conversion-data.js     # Unit definitions & patterns
+│   └── currency-mappings.js   # Currency symbols & codes
+│
+├── utils/                      # Core functionality
+│   ├── unit-converter.js      # Unit conversion logic
+│   ├── currency-converter.js  # Currency detection & conversion
+│   ├── conversion-detector.js # Pattern matching & detection
+│   ├── popup-manager.js       # Popup positioning & display
+│   ├── settings-manager.js    # User preferences storage
+│   └── build.js               # Build script for distribution
+│
+├── popup/                     # Extension popup UI
+│   ├── popup.html            # Settings interface
+│   └── popup.js              # Popup functionality
+│
+├── icons/                     # Extension icons
+│
+├── tests/                     # Test suite
+│   ├── test-runner.js        # Core unit tests
+│   ├── test-suite.js         # Additional tests
+│   ├── validate-extension.js # Extension structure validation
+│   ├── run-all-tests.js      # Cross-platform test runner
+│   ├── test.html             # Browser test page
+│   ├── area-test.html        # Area conversion test page
+│   └── TESTING.md            # Testing documentation
+│
+└── .github/                    # GitHub configuration
+    └── workflows/             # CI/CD automation
 ```
 
 ## 🔒 Privacy & Security
 
 - **Minimal Permissions**: Only `activeTab` and `storage`
-- **No External Servers**: All processing happens locally
+- **Uses Currency Data from an API**: this extension uses [Fawaz Exchange API](https://github.com/fawazahmed0/exchange-api).
 - **No Data Collection**: Zero tracking or analytics
 - **Offline Functionality**: Works without internet connection
 
@@ -92,7 +120,7 @@ See [TESTING.md](tests/TESTING.md) for development guidelines and testing proced
 
 ## 🙏 Credits & Acknowledgments
 
-This project integrates currency conversion functionality from [Currency-Converter](https://github.com/adampawelczyk/Currency-Converter) by Adam Pawełczyk. The currency detection, symbol mapping, and real-time exchange rate features are based on this open-source project.
+This project integrates currency conversion functionality from [Currency-Converter](https://github.com/adampawelczyk/Currency-Converter) by Adam Pawełczyk. The currency detection, symbol mapping, API's used and real-time exchange rate features are based on this open-source project.
 
 ## 📄 License
 

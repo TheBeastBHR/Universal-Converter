@@ -36,6 +36,11 @@ class UnitConverterTester {
       const conversionData = fs.readFileSync(conversionDataPath, 'utf8');
       eval(conversionData);
 
+      // Load currency mappings
+      const currencyMappingsPath = path.join(__dirname, '..', 'data', 'currency-mappings.js');
+      const currencyMappings = fs.readFileSync(currencyMappingsPath, 'utf8');
+      eval(currencyMappings);
+
       // Load unit converter
       const unitConverterPath = path.join(__dirname, '..', 'utils', 'unit-converter.js');
       const unitConverter = fs.readFileSync(unitConverterPath, 'utf8');
