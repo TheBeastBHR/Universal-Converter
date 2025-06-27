@@ -1,20 +1,16 @@
+<h1 style="text-align: center;">  Universal Unit Converter - Chrome Extension </h1>
 
 <div align="center" style="display: flex;"> 
-<img src="icons/icon32.png"><h1 style="text-align: center;">  Universal Unit Converter - Chrome Extension </h1>
-
-
 [![Tests](https://img.shields.io/badge/tests-91/91_passing-brightgreen)](tests/TESTING.md)
 [![Node.js](https://img.shields.io/badge/node.js-24.x-green)](package.json)
 [![Manifest](https://img.shields.io/badge/manifest-v3-blue)](manifest.json)
 </div>
 
-
-**Instantly convert any unit or currency by simply selecting text on any webpage!**<br>
-A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and mixed-dimension support.
-
 <div align="center">
 <img src="/img/popup.png" alt="Extension Usage Demo" />
 </div>
+<strong align="center">Instantly convert any unit or currency by simply selecting text on any webpage!</strong> <br>
+A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and mixed-dimension support.
 
 ## ✨ Key Features
 
