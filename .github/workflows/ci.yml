@@ -1,4 +1,4 @@
-name: Unit Converter CI/CD
+name: Universal Converter CI/CD
 
 on:
   push:

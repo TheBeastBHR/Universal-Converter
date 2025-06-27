@@ -1,6 +1,6 @@
 {
-  "name": "universal-unit-converter",
-  "version": "1.0.0",
+  "name": "universal-converter",
+  "version": "1.3.0",
   "description": "Chrome Extension v3 for converting units with text selection popup",
   "main": "background.js",
   "scripts": {

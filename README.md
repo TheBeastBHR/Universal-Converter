@@ -1,4 +1,4 @@
-<h1 style="text-align: center;">Universal Unit Converter - Chrome Extension</h1>
+<h1 style="text-align: center;">Universal Converter - Chrome Extension</h1>
 
 <div align="center">
 
