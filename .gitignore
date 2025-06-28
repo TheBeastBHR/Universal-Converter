@@ -1,7 +1,7 @@
 # Build outputs
 build/
 *.zip
-
+*.crx
 # Test scripts
 run-tests.ps1
 
