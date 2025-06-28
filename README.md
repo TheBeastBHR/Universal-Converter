@@ -20,14 +20,14 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 
 ## ✨ Key Features
 
-- 🎯 **Text Selection Conversion** - Select any measurement, get instant popup results
-- 📏 **50+ Unit Types** - Length, weight, temperature, volume, area
-- ⌛ **Real-Time Currency Conversion** - Live exchange rates for 150+ currencies with Arabic/Unicode symbol support
-- 🔧 **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
-- 📐 **Dimension Support** - Handles complex formats like "8ft × 4ft × 30in"
-- 🌐 **Unicode Compatible** - Recognizes symbols like cm², m², °C, د.ب, ر.س
-- ⚡ **Non-Intrusive** - uses a popup to avoid modifying the original text
-- ⚙️ **Auto-Save Settings** - Metric/Imperial presets with manual overrides
+- **Text Selection Conversion** - Select any measurement, get instant popup results
+- **50+ Unit Types** - Length, weight, temperature, volume, area
+- **Real-Time Currency Conversion** - Live exchange rates for 150+ currencies with Arabic/Unicode symbol support
+- **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
+- **Dimension Support** - Handles complex formats like "8ft × 4ft × 30in"
+- **Unicode Compatible** - Recognizes symbols like cm², m², °C, د.ب, ر.س
+- **Non-Intrusive** - uses a popup to avoid modifying the original text
+- **Auto-Save Settings** - Metric/Imperial presets with manual overrides
 
 ## 🚀 Quick Start
 
@@ -37,20 +37,7 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 2. **Open** `chrome://extensions/` in Chrome
 3. **Enable** "Developer mode" (top right toggle)
 4. **Click** "Load unpacked" and select the project folder
-5. **Test** by selecting "30 cm" on any webpage → See "11.81 inches" popup!
-
-## 💡 Usage Examples
-
-| Select This | Get This Result |
-|-------------|----------------|
-| `30 cm` | `11.81 inches` |
-| `100°F` | `37.78°C` |
-| `5 kg` | `11.02 lbs` |
-| `8ft × 4ft` | `2.44m × 1.22m` |
-| `50 m²` | `538.2 ft²` |
-| `$100 USD` | `90.85 EUR €` |
-| `25 د.ب` | `66.23 USD $` |
-| `€50` | `54.95 GBP £` |
+5. **Test** by selecting "30 cm" on any webpage → See "11.81 inches" popup
 
 ## 🧪 Testing & Development
 
