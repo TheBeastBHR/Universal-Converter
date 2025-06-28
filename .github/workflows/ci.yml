@@ -1,5 +1,6 @@
 name: Universal Converter CI/CD
 
+# Only run CI when code files change, ignore documentation and assets
 on:
   push:
     branches: [ main, develop ]
@@ -8,13 +9,27 @@ on:
       - '**.json'
       - '**.html'
       - '**.css'
-      - 'tests/**'
-      - 'utils/**'
-      - 'data/**'
-      - 'settings-page/**'
       - 'manifest.json'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/**'
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.log'
+      - '**.zip'
+      - '**.crx'
+      - '**.png'
+      - '**.jpg'
+      - '**.jpeg'
+      - '**.gif'
+      - '**.ico'
+      - 'LICENSE'
+      - '.gitignore'
+      - 'build/**'
+      - 'dist/**'
+      - 'node_modules/**'
+      
   pull_request:
     branches: [ main ]
     paths:
@@ -22,13 +37,26 @@ on:
       - '**.json'
       - '**.html'
       - '**.css'
-      - 'tests/**'
-      - 'utils/**'
-      - 'data/**'
-      - 'settings-page/**'
       - 'manifest.json'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/**'
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.log'
+      - '**.zip'
+      - '**.crx'
+      - '**.png'
+      - '**.jpg'
+      - '**.jpeg'
+      - '**.gif'
+      - '**.ico'
+      - 'LICENSE'
+      - '.gitignore'
+      - 'build/**'
+      - 'dist/**'
+      - 'node_modules/**'
 
 jobs:
   test:

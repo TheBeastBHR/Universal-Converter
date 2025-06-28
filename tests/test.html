@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit Converter Extension - Test Page</title>
+    <title>Universal Converter Extension - Comprehensive Test Page</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -46,6 +46,22 @@
             padding: 2px 4px;
             border-radius: 3px;
             border: 1px solid #ffeaa7;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .highlight:hover {
+            background: #ffeaa7;
+        }
+        
+        .currency-section {
+            background: #e8f5e8;
+            border-left-color: #28a745;
+        }
+        
+        .dimension-section {
+            background: #fff3e0;
+            border-left-color: #ff9800;
         }
         
         .instructions {
@@ -70,16 +86,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔄 Unit Converter Extension - Test Page</h1>
+        <h1>🔄 Universal Converter Extension - Comprehensive Test Page</h1>
         
         <div class="instructions">
             <h4>How to Test:</h4>
             <ol>
-                <li>Install the extension by loading it as an unpacked extension in Chrome</li>
-                <li>Select any text below that contains measurements</li>
-                <li>A popup should appear below your selection with conversions</li>
-                <li>Click the extension icon to configure your preferred units</li>
+                <li>Install the extension by loading it as an unpacked extension in Chrome/Edge</li>
+                <li>Select any highlighted text below that contains measurements or currencies</li>
+                <li>A popup should appear below your selection with real-time conversions</li>
+                <li>Click the extension icon to configure your preferred units and currency</li>
+                <li><strong>New:</strong> Test currency conversions with live exchange rates!</li>
+                <li><strong>New:</strong> Try dimension formats like "10 x 5 x 3 inches" and "12 by 8 by 6 feet"</li>
             </ol>
+            <p><strong>Note:</strong> Currency conversions require an internet connection for live exchange rates.</p>
         </div>
         
         <div class="test-section">
@@ -150,13 +169,60 @@
             </ul>
         </div>
         
+        <div class="test-section currency-section">
+            <h3>Currency Conversions</h3>
+            <p>Test real-time currency conversions:</p>
+            <ul>
+                <li>The item costs <span class="highlight">$100</span> in the US</li>
+                <li>Price in Europe: <span class="highlight">€85.50</span></li>
+                <li>UK price: <span class="highlight">£75.99</span></li>
+                <li>Japan pricing: <span class="highlight">¥12,500</span></li>
+                <li>Indian rate: <span class="highlight">₹8,250</span></li>
+                <li>Canadian dollar: <span class="highlight">CAD 135</span></li>
+                <li>Australian price: <span class="highlight">AUD 145</span></li>
+            </ul>
+            
+            <h4>Middle Eastern Currencies</h4>
+            <ul>
+                <li>Bahrain: <span class="highlight">7.52 د.ب</span> (BHD)</li>
+                <li>Kuwait: <span class="highlight">25.75 د.ك</span> (KWD)</li>
+                <li>Saudi Arabia: <span class="highlight">100 ر.س</span> (SAR)</li>
+                <li>UAE: <span class="highlight">200 د.إ</span> (AED)</li>
+                <li>Qatar: <span class="highlight">50.25 ر.ق</span> (QAR)</li>
+            </ul>
+            
+            <h4>European Decimal Format</h4>
+            <ul>
+                <li>German format: <span class="highlight">€1.234,56</span></li>
+                <li>French format: <span class="highlight">€2.500,00</span></li>
+            </ul>
+            
+            <h4>Multi-Currency Text</h4>
+            <p>The conference costs <span class="highlight">$500</span> for Americans, <span class="highlight">€420</span> for Europeans, 
+            and <span class="highlight">£380</span> for UK residents. In the Middle East, it's <span class="highlight">1,890 د.إ</span> 
+            in UAE and <span class="highlight">125 د.ك</span> in Kuwait.</p>
+        </div>
+
         <div class="test-section">
             <h3>Mixed Examples</h3>
             <p>Complex text with multiple measurements:</p>
             <p>The new office space measures <span class="highlight">25 feet by 15 feet</span> with <span class="highlight">9-foot</span> ceilings. 
             The air conditioning system can maintain <span class="highlight">72°F</span> while the server room needs to stay at 
             <span class="highlight">18°C</span>. The conference table is <span class="highlight">8 ft × 4 ft × 30 inches</span> and weighs 
-            approximately <span class="highlight">45 kg</span>.</p>
+            approximately <span class="highlight">45 kg</span>. The project budget is <span class="highlight">$50,000</span> USD, 
+            which is roughly <span class="highlight">€42,000</span> or <span class="highlight">£38,500</span>.</p>
+        </div>
+        
+        <div class="test-section dimension-section">
+            <h3>Advanced Dimension Tests</h3>
+            <p>Test various dimension formats that were recently fixed:</p>
+            <ul>
+                <li>Standard format: <span class="highlight">10 x 5 x 3 inches</span></li>
+                <li>Unicode separator: <span class="highlight">4.5 × 3.2 × 2.8 meters</span></li>
+                <li>Word separator: <span class="highlight">12 by 8 by 6 feet</span></li>
+                <li>Mixed separators: <span class="highlight">6m × 4m × 2.5m</span></li>
+                <li>No spaces: <span class="highlight">8ft×4ft×2ft</span></li>
+            </ul>
         </div>
     </div>
 </body>
