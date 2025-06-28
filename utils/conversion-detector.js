@@ -44,26 +44,42 @@ window.UnitConverter.ConversionDetector = class {
     const dimensionMatches = text.matchAll(this.patterns.dimensions);
     
     for (const match of dimensionMatches) {
-      const [fullMatch, length, lengthUnit, width, widthUnit, height, heightUnit] = match;
+      const [fullMatch, length, width, height, unit] = match;
       
-      // Normalize all units
-      const normalizedLengthUnit = this.unitConverter.normalizeUnit(lengthUnit);
-      const normalizedWidthUnit = this.unitConverter.normalizeUnit(widthUnit);
-      const normalizedHeightUnit = this.unitConverter.normalizeUnit(heightUnit);
+      // Normalize the unit (same unit applies to all dimensions)
+      const normalizedUnit = this.unitConverter.normalizeUnit(unit);
       
-      // Get target unit (use the first unit's target or default)
-      const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedLengthUnit, userSettings);
+      // Get target unit
+      const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedUnit, userSettings);
       
       if (targetUnit) {
         // Convert all dimensions to the target unit
-        const convertedLength = this.unitConverter.convert(parseFloat(length), normalizedLengthUnit, targetUnit);
-        const convertedWidth = this.unitConverter.convert(parseFloat(width), normalizedWidthUnit, targetUnit);
-        const convertedHeight = this.unitConverter.convert(parseFloat(height), normalizedHeightUnit, targetUnit);
+        const convertedLength = this.unitConverter.convert(parseFloat(length), normalizedUnit, targetUnit);
+        const convertedWidth = this.unitConverter.convert(parseFloat(width), normalizedUnit, targetUnit);
+        const convertedHeight = this.unitConverter.convert(parseFloat(height), normalizedUnit, targetUnit);
         
         if (convertedLength !== null && convertedWidth !== null && convertedHeight !== null) {
+          // Use getBestUnit for smart unit sizing for each dimension
+          const bestLength = this.unitConverter.getBestUnit(convertedLength, 'length', targetUnit);
+          const bestWidth = this.unitConverter.getBestUnit(convertedWidth, 'length', targetUnit);
+          const bestHeight = this.unitConverter.getBestUnit(convertedHeight, 'length', targetUnit);
+          
+          // For consistency, use the same unit for all dimensions (prefer the unit that works best for the largest dimension)
+          const maxValue = Math.max(bestLength.value, bestWidth.value, bestHeight.value);
+          let chosenUnit = targetUnit;
+          
+          if (maxValue === bestLength.value) chosenUnit = bestLength.unit;
+          else if (maxValue === bestWidth.value) chosenUnit = bestWidth.unit;
+          else chosenUnit = bestHeight.unit;
+          
+          // Convert all dimensions to the chosen unit
+          const finalLength = this.unitConverter.convert(parseFloat(length), normalizedUnit, chosenUnit);
+          const finalWidth = this.unitConverter.convert(parseFloat(width), normalizedUnit, chosenUnit);
+          const finalHeight = this.unitConverter.convert(parseFloat(height), normalizedUnit, chosenUnit);
+          
           conversions.push({
             original: fullMatch,
-            converted: `${Math.round(convertedLength * 100) / 100} × ${Math.round(convertedWidth * 100) / 100} × ${Math.round(convertedHeight * 100) / 100} ${targetUnit}`,
+            converted: `${Math.round(finalLength * 100) / 100} × ${Math.round(finalWidth * 100) / 100} × ${Math.round(finalHeight * 100) / 100} ${chosenUnit}`,
             type: 'dimensions'
           });
         }

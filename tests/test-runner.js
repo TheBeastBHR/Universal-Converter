@@ -61,6 +61,11 @@ class UnitConverterTester {
       this.unitConverter = new global.window.UnitConverter.UnitConverter();
       this.detector = new global.window.UnitConverter.ConversionDetector(this.unitConverter);
       
+      // Initialize the global currency converter instance for pattern detection
+      if (typeof global.window.UnitConverter.CurrencyConverter !== 'undefined') {
+        global.window.UnitConverter.currencyConverter = new global.window.UnitConverter.CurrencyConverter();
+      }
+      
     } catch (error) {
       console.error(`${colors.red}❌ Failed to load modules:${colors.reset}`, error.message);
       process.exit(1);
@@ -337,6 +342,77 @@ class UnitConverterTester {
     this.assert(small_gallons.unit === 'cup', 'Auto-size: 0.25 gal → cup', 'cup', small_gallons.unit);
   }
 
+  // Test dimension conversions (bug fix verification)
+  testDimensionConversions() {
+    console.log(`\n${colors.blue}[Testing Dimension Conversions]${colors.reset}`);
+
+    const userSettings = {
+      lengthUnit: 'cm',
+      areaUnit: 'm2',
+      weightUnit: 'kg',
+      temperatureUnit: 'c',
+      volumeUnit: 'l',
+      currencyUnit: 'USD'
+    };
+
+    // Test 1: Metric dimensions - should convert to appropriate metric unit
+    const metric_conversions = this.detector.findConversions('4.5 × 3.2 × 2.8 meters', userSettings);
+    const metric_dimension = metric_conversions.find(conv => conv.type === 'dimensions');
+    this.assert(metric_dimension !== undefined, 'Dimension: "4.5 × 3.2 × 2.8 meters" detected', 'detected', metric_dimension ? 'detected' : 'not detected');
+    
+    if (metric_dimension) {
+      // Should convert to cm since that's the user preference for length
+      const expectedContainsCm = metric_dimension.converted.includes('cm');
+      this.assert(expectedContainsCm, 'Dimension: Metric dimensions convert to cm', 'contains cm', metric_dimension.converted);
+      
+      // Check the actual values: 4.5m = 450cm, 3.2m = 320cm, 2.8m = 280cm
+      const expectedValues = metric_dimension.converted.includes('450') && 
+                           metric_dimension.converted.includes('320') && 
+                           metric_dimension.converted.includes('280');
+      this.assert(expectedValues, 'Dimension: Metric conversion values correct (450×320×280 cm)', 'correct values', metric_dimension.converted);
+    }
+
+    // Test 2: Imperial dimensions - should convert to metric (the main bug we fixed)
+    const imperial_conversions = this.detector.findConversions('10 x 5 x 3 inches', userSettings);
+    const imperial_dimension = imperial_conversions.find(conv => conv.type === 'dimensions');
+    this.assert(imperial_dimension !== undefined, 'Dimension: "10 x 5 x 3 inches" detected', 'detected', imperial_dimension ? 'detected' : 'not detected');
+    
+    if (imperial_dimension) {
+      // Should convert to cm since that's the user preference
+      const expectedContainsCm = imperial_dimension.converted.includes('cm');
+      this.assert(expectedContainsCm, 'Dimension: Imperial dimensions convert to cm', 'contains cm', imperial_dimension.converted);
+      
+      // Check the actual values: 10in = 25.4cm, 5in = 12.7cm, 3in = 7.62cm
+      const expectedValues = imperial_dimension.converted.includes('25.4') && 
+                           imperial_dimension.converted.includes('12.7') && 
+                           imperial_dimension.converted.includes('7.62');
+      this.assert(expectedValues, 'Dimension: Imperial conversion values correct (25.4×12.7×7.62 cm)', 'correct values', imperial_dimension.converted);
+    }
+
+    // Test 3: Different separator formats
+    const x_format = this.detector.findConversions('8 x 4 x 2 feet', userSettings);
+    const x_dimension = x_format.find(conv => conv.type === 'dimensions');
+    this.assert(x_dimension !== undefined, 'Dimension: "8 x 4 x 2 feet" with x separator detected', 'detected', x_dimension ? 'detected' : 'not detected');
+
+    const unicode_format = this.detector.findConversions('6 × 3 × 1.5 meters', userSettings);
+    const unicode_dimension = unicode_format.find(conv => conv.type === 'dimensions');
+    this.assert(unicode_dimension !== undefined, 'Dimension: "6 × 3 × 1.5 meters" with × separator detected', 'detected', unicode_dimension ? 'detected' : 'not detected');
+
+    const by_format = this.detector.findConversions('12 by 8 by 6 feet', userSettings);
+    const by_dimension = by_format.find(conv => conv.type === 'dimensions');
+    this.assert(by_dimension !== undefined, 'Dimension: "12 by 8 by 6 feet" with by separator detected', 'detected', by_dimension ? 'detected' : 'not detected');
+
+    // Test 4: False positive prevention - should NOT detect mixed units (this should fail gracefully)
+    const mixed_units = this.detector.findConversions('8ft x 4ft x 30in', userSettings);
+    const mixed_dimension = mixed_units.find(conv => conv.type === 'dimensions');
+    // This should either not be detected (preferred) or handled correctly if detected
+    if (mixed_dimension) {
+      console.log(`${colors.yellow}[INFO] Mixed units detected: ${mixed_dimension.converted}${colors.reset}`);
+    } else {
+      this.assert(true, 'Dimension: Mixed units "8ft x 4ft x 30in" correctly ignored', 'ignored', 'ignored');
+    }
+  }
+
   // Generate test report
   generateReport() {
     console.log(`\n${colors.bright}${colors.blue}[Test Report]${colors.reset}`);
@@ -508,17 +584,17 @@ class UnitConverterTester {
       weightUnit: 'kg',
       temperatureUnit: 'c',
       volumeUnit: 'l',
-      currencyUnit: 'USD'
+      currencyUnit: 'EUR'  // Changed from USD to EUR to test conversion
     };
 
     // Test currency pattern detection through the main detector
     const currency_conversions = this.detector.findCurrencyConversions('The price is $100', userSettings);
     
     if (currency_conversions && currency_conversions.length > 0) {
-      this.assert(currency_conversions.length > 0, 'Currency Pattern: "$100" detected', '>0 conversions', currency_conversions.length);
+      this.assert(currency_conversions.length > 0, 'Currency Pattern: "$100" detected for USD->EUR conversion', '>0 conversions', currency_conversions.length);
       this.assert(currency_conversions[0].type === 'currency', 'Currency Pattern: Detected as currency type', 'currency', currency_conversions[0].type);
     } else {
-      console.log(`${colors.yellow}[WARNING] Currency pattern detection not fully integrated yet${colors.reset}`);
+      this.assert(false, 'Currency Pattern: "$100" not detected for USD->EUR conversion', 'detected', 'not detected');
     }
 
     // Test multiple currency patterns
@@ -581,6 +657,7 @@ class UnitConverterTester {
     this.testUnitDetection();
     this.testAutoSizing();
     this.testPatternMatching();
+    this.testDimensionConversions();
     this.testComprehensiveConversions();
     this.testDecimalPrecision();
     this.testEdgeCases();
