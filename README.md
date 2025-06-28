@@ -33,7 +33,7 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 
 
 **Manual Installation**
-1. Click on Code, Download ZIP, Extract files. **OR** Download from [Releases](../../releases) `.crx` file
+1. Click on Code, Download ZIP (or get it from releases), Extract files.
 2. **Open** `chrome://extensions/` in Chrome
 3. **Enable** "Developer mode" (top right toggle)
 4. **Click** "Load unpacked" and select the project folder
