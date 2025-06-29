@@ -1,4 +1,4 @@
-name: Universal Converter CI/CD
+name: Unit Tests
 
 # Only run CI when code files change, ignore documentation and assets
 on:
