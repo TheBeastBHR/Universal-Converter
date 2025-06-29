@@ -2,9 +2,8 @@
 
 <div align="center">
 
-[![Tests](https://img.shields.io/badge/tests-103/103_passing-brightgreen)](tests/TESTING.md)
+[![Tests](https://github.com/TheBeastBHR/Universal-Converter/actions/workflows/ci.yml/badge.svg)](https://github.com/TheBeastBHR/Universal-Converter/actions)
 [![Node.js](https://img.shields.io/badge/node.js-24.x-green)](package.json)
-[![Manifest](https://img.shields.io/badge/manifest-v3-blue)](manifest.json)
 
 </div>
 

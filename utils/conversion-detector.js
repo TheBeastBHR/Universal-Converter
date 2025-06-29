@@ -17,17 +17,40 @@ window.UnitConverter.ConversionDetector = class {
    */
   findConversions(text, userSettings) {
     const conversions = [];
+    const processedRanges = []; // Track which parts of text we've already processed globally
     
     // Check for currency conversions using Currency-Converter-master logic
     const currencyConversions = this.findCurrencyConversions(text, userSettings);
     conversions.push(...currencyConversions);
     
+    // Add currency ranges to processed ranges
+    for (const conversion of currencyConversions) {
+      const index = text.indexOf(conversion.original);
+      if (index !== -1) {
+        processedRanges.push({ 
+          start: index, 
+          end: index + conversion.original.length 
+        });
+      }
+    }
+    
     // Check for dimensions (L x W x H format) - supports mixed units
-    const dimensionConversions = this.findDimensionalConversions(text, userSettings);
+    const dimensionConversions = this.findDimensionalConversions(text, userSettings, processedRanges);
     conversions.push(...dimensionConversions);
     
+    // Add dimension ranges to processed ranges
+    for (const conversion of dimensionConversions) {
+      const index = text.indexOf(conversion.original);
+      if (index !== -1) {
+        processedRanges.push({ 
+          start: index, 
+          end: index + conversion.original.length 
+        });
+      }
+    }
+    
     // Check for regular units
-    const regularConversions = this.findRegularConversions(text, userSettings);
+    const regularConversions = this.findRegularConversions(text, userSettings, processedRanges);
     conversions.push(...regularConversions);
     
     return conversions;
@@ -37,14 +60,24 @@ window.UnitConverter.ConversionDetector = class {
    * Find dimensional conversions (L x W x H format)
    * @param {string} text - Text to analyze
    * @param {Object} userSettings - User settings
+   * @param {Array} processedRanges - Already processed text ranges
    * @returns {Array} - Array of dimensional conversions
    */
-  findDimensionalConversions(text, userSettings) {
+  findDimensionalConversions(text, userSettings, processedRanges = []) {
     const conversions = [];
     const dimensionMatches = text.matchAll(this.patterns.dimensions);
     
     for (const match of dimensionMatches) {
       const [fullMatch, length, width, height, unit] = match;
+      const matchStart = match.index;
+      const matchEnd = match.index + fullMatch.length;
+      
+      // Check if this range overlaps with already processed ranges
+      const isOverlapping = processedRanges.some(range => 
+        (matchStart < range.end && matchEnd > range.start)
+      );
+      
+      if (isOverlapping) continue; // Skip if already processed
       
       // Normalize the unit (same unit applies to all dimensions)
       const normalizedUnit = this.unitConverter.normalizeUnit(unit);
@@ -169,10 +202,11 @@ window.UnitConverter.ConversionDetector = class {
    * Find regular unit conversions
    * @param {string} text - Text to analyze
    * @param {Object} userSettings - User settings
+   * @param {Array} processedRanges - Already processed text ranges
    * @returns {Array} - Array of regular conversions
-   */  findRegularConversions(text, userSettings) {
+   */  
+  findRegularConversions(text, userSettings, processedRanges = []) {
     const conversions = [];
-    const processedRanges = []; // Track which parts of text we've already processed
     
     // Process area units FIRST to avoid conflicts with length units
     const priorityOrder = ['area', 'temperature', 'volume', 'weight', 'length'];
@@ -194,7 +228,7 @@ window.UnitConverter.ConversionDetector = class {
           (matchStart < range.end && matchEnd > range.start)
         );
         
-        if (isOverlapping) continue; // Skip if already processed by higher priority pattern
+        if (isOverlapping) continue; // Skip if already processed by higher priority pattern or other conversion types
         
         const normalizedUnit = this.unitConverter.normalizeUnit(unit);
         const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedUnit, userSettings);

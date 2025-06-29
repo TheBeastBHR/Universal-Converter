@@ -1,6 +1,6 @@
 # Testing Guide for Universal Converter Extension
 
-## 🧪 How to Run Tests
+## How to Run Tests
 
 ### 1. **Node.js Tests** (Recommended - No Browser Required)
 
@@ -22,17 +22,17 @@ npm run test:stop-on-failure
 ```
 
 **What it tests:**
-- ✅ **103 automated test cases** covering all functionality
-- ✅ Basic unit conversions (length, weight, temperature, volume, area)
-- ✅ **Dimension conversions** ("10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "12 by 8 by 6 feet")
-- ✅ **Currency pattern detection** with real-time conversion support
-- ✅ Unicode symbol detection (cm², m², ft², د.ب, ر.س, د.إ)
-- ✅ Auto-sizing functionality (0.001m → 1mm)
-- ✅ Pattern matching and text detection
-- ✅ Unit aliases and normalization
-- ✅ **Arabic currency symbols** (BHD, KWD, SAR, AED, QAR)
-- ✅ **European number formats** (1.234,56)
-- ✅ Edge cases and error handling
+- Basic unit conversions (length, weight, temperature, volume, area)
+- Dimension conversions ("10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "12 by 8 by 6 feet")
+- Currency pattern detection with real-time conversion support
+- Unicode symbol detection (cm², m², ft², د.ب, ر.س, د.إ)
+- Auto-sizing functionality (0.001m → 1mm)
+- Pattern matching and text detection
+- Unit aliases and normalization
+- Arabic currency symbols (BHD, KWD, SAR, AED, QAR)
+- European number formats (1.234,56)
+- Double detection prevention (ensures single unit matches don't create duplicate conversions)
+- Edge cases and error handling
 
 ### 2. **Browser Tests** (Manual)
 
@@ -60,15 +60,15 @@ npm run validate
 ```
 
 **What it checks:**
-- ✅ Manifest.json structure and Manifest v3 compliance
-- ✅ Required files exist (background.js, content.js, icons, etc.)
-- ✅ JavaScript syntax validation
-- ✅ Content script loading order
-- ✅ Icon files (16px, 32px, 48px, 128px)
-- ✅ Permissions and security settings
-- ✅ File structure integrity
+- Manifest.json structure and Manifest v3 compliance
+- Required files exist (background.js, content.js, icons, etc.)
+- JavaScript syntax validation
+- Content script loading order
+- Icon files (16px, 32px, 48px, 128px)
+- Permissions and security settings
+- File structure integrity
 
-## 🤖 GitHub Actions (Automated CI/CD)
+## GitHub Actions (Automated CI/CD)
 
 This project uses GitHub Actions for continuous integration and automated testing.
 
@@ -78,11 +78,11 @@ This project uses GitHub Actions for continuous integration and automated testin
 - Manual workflow dispatch
 
 ### **Test Matrix:**
-- Node.js 18.x, 20.x, and 22.x
+- Node.js 24.x
 - Ubuntu latest, Windows latest, macOS latest
 
 ### **What Runs Automatically:**
-1. **Unit Tests** - All 103 core conversion logic tests
+1. **Unit Tests** - All core conversion logic tests
 2. **Extension Validation** - Structure, syntax, and Manifest v3 compliance
 3. **Currency Integration Tests** - Pattern detection and conversion logic
 4. **Dimension Parsing Tests** - Complex format support ("by", "×", "x")
@@ -94,45 +94,46 @@ This project uses GitHub Actions for continuous integration and automated testin
 2. Click "Actions" tab
 3. View test results and download build artifacts
 
-## 📊 Test Coverage
+## Test Coverage
 
-Current test coverage: **103/103 tests passing (100% success rate)**
+The test suite provides comprehensive coverage across all functionality areas.
 
-### **Core Functionality** ✅
-- [x] Length conversions (mm, cm, m, km, in, ft, yd, mi)
-- [x] Weight conversions (mg, g, kg, t, oz, lb)
-- [x] Temperature conversions (°C, °F, K)
-- [x] Volume conversions (ml, L, fl oz, cup, pt, qt, gal)
-- [x] Area conversions (mm², cm², m², km², in², ft², acre)
+### Core Functionality
+- Length conversions (mm, cm, m, km, in, ft, yd, mi)
+- Weight conversions (mg, g, kg, t, oz, lb)
+- Temperature conversions (°C, °F, K)
+- Volume conversions (ml, L, fl oz, cup, pt, qt, gal)
+- Area conversions (mm², cm², m², km², in², ft², acre)
 
-### **Advanced Features** ✅
-- [x] **Dimension Support** - "10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "12 by 8 by 6 feet"
-- [x] **Currency Conversions** - Real-time exchange rates with 150+ currencies
-- [x] **Arabic Currency Support** - د.ب (BHD), د.ك (KWD), ر.س (SAR), د.إ (AED)
-- [x] **European Number Formats** - 1.234,56 decimal comma support
-- [x] Unicode symbol detection (cm², m², °C, etc.)
-- [x] Text format aliases ("square meters", "degrees Celsius")
-- [x] Auto-sizing (0.001 m → 1 mm, 2000 m → 2 km)
-- [x] Pattern matching with priority handling
-- [x] Settings persistence and auto-save
+### Advanced Features
+- Dimension Support - "10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "12 by 8 by 6 feet"
+- Currency Conversions - Real-time exchange rates with 150+ currencies
+- Arabic Currency Support - د.ب (BHD), د.ك (KWD), ر.س (SAR), د.إ (AED)
+- European Number Formats - 1.234,56 decimal comma support
+- Unicode symbol detection (cm², m², °C, etc.)
+- Text format aliases ("square meters", "degrees Celsius")
+- Auto-sizing (0.001 m → 1 mm, 2000 m → 2 km)
+- Pattern matching with priority handling
+- Settings persistence and auto-save
+- Double detection prevention (prevents overlapping unit matches)
 
-### **Extension Integration** ✅
-- [x] Manifest v3 compliance
-- [x] Content script injection and isolation
-- [x] Chrome storage API integration
-- [x] Popup positioning and display
-- [x] Service worker background processing
-- [x] Permission validation (activeTab, storage)
+### Extension Integration
+- Manifest v3 compliance
+- Content script injection and isolation
+- Chrome storage API integration
+- Popup positioning and display
+- Service worker background processing
+- Permission validation (activeTab, storage)
 
-### **Error Handling & Edge Cases** ✅
-- [x] Invalid unit combinations
-- [x] Zero and negative values
-- [x] Very large/small numbers
-- [x] Malformed text patterns
-- [x] Missing currency data fallbacks
-- [x] Network timeout handling
+### Error Handling & Edge Cases
+- Invalid unit combinations
+- Zero and negative values
+- Very large/small numbers
+- Malformed text patterns
+- Missing currency data fallbacks
+- Network timeout handling
 
-## 🚨 Troubleshooting Tests
+##  Troubleshooting Tests
 
 ### **"Module not found" errors:**
 ```bash
@@ -170,12 +171,12 @@ npm test
 3. Verify the page allows content scripts
 4. Check for JavaScript errors in browser console
 
-## 🔄 Continuous Integration
+## Continuous Integration
 
 The CI/CD pipeline runs comprehensive tests automatically:
 
 1. **On every push:**
-   - Runs all 103 automated tests
+   - Runs all automated tests
    - Validates extension structure and Manifest v3 compliance
    - Checks code quality and syntax
    - Tests currency pattern detection
@@ -191,29 +192,77 @@ The CI/CD pipeline runs comprehensive tests automatically:
    - Attaches extension ZIP file
    - Generates release notes from commits
 
-## 📈 Adding New Tests
+## Adding New Tests
 
-To add new test cases, edit `tests/test-runner.js`:
+The test suite now uses a modular structure with separate test cases and test runner files for better maintainability.
+
+### Test Structure
+- **tests/test-cases.js** - Contains all test case definitions organized by category
+- **tests/test-runner.js** - Streamlined test runner that loads and executes test cases
+
+### Adding Test Cases
+
+To add new test cases, edit `tests/test-cases.js` and add to the appropriate category:
 
 ```javascript
-// Add to existing test methods or create new ones
-testNewFeature() {
-  console.log(`\n${colors.blue}[Testing New Feature]${colors.reset}`);
-  
-  const result = this.unitConverter.newMethod();
-  this.assert(result === expected, 'New feature works', expected, result);
-}
+// Example: Adding a new basic conversion test
+basicConversions: [
+  // ...existing tests...
+  {
+    name: 'New conversion test',
+    type: 'conversion',
+    input: { value: 100, from: 'unit1', to: 'unit2' },
+    expected: 50,
+    tolerance: 0.001
+  }
+],
 
-// For currency tests, add to testCurrencyPatternDetection()
-const newCurrencyTest = this.detector.findCurrencyConversions('¥1000', userSettings);
-this.assert(newCurrencyTest.length > 0, 'Currency Pattern: JPY detected', '>0', newCurrencyTest.length);
+// Example: Adding a new pattern detection test
+patternMatching: [
+  // ...existing tests...
+  {
+    name: 'Pattern: "new format" detected',
+    type: 'patternDetection',
+    input: { 
+      text: 'test text', 
+      userSettings: { lengthUnit: 'm', areaUnit: 'm2' } 
+    },
+    expected: { minConversions: 1 }
+  }
+]
 ```
 
-## 🎯 Test Commands Summary
+### Test Types Available
+- `conversion` - Standard unit conversions
+- `normalize` - Unit normalization tests  
+- `unitType` - Unit type detection tests
+- `bestUnit` - Auto-sizing tests
+- `format` - Number formatting tests
+- `patternDetection` - Text pattern recognition tests
+- `dimensionDetection` - Dimension detection tests
+- `doubleDetectionCount` - Double detection prevention tests
+- `originalBugFix` - Bug fix verification tests
+
+### Test Categories
+- basicConversions
+- areaConversions  
+- unitDetection
+- autoSizing
+- patternMatching
+- comprehensiveConversions
+- decimalPrecision
+- edgeCases
+- comprehensiveAutoSizing
+- dimensionConversions
+- doubleDetectionPrevention
+- dimensionFormats
+- nonDimensions
+
+## Test Commands Summary
 
 ```bash
 # Core testing commands
-npm test                    # Run all 103 automated tests
+npm test                    # Run all automated tests
 npm run test:all           # Run comprehensive test suite  
 npm run test:verbose       # Detailed test output
 npm run test:stop-on-failure  # Stop on first failure
@@ -228,13 +277,11 @@ node tests/test-runner.js  # Run core tests directly
 node tests/validate-extension.js  # Validate structure only
 ```
 
-## 🏆 Success Criteria
+## Success Criteria
 
 All tests should pass before merging to main branch:
-- ✅ **103/103 automated tests passing**
-- ✅ **Extension validation passing**
-- ✅ **Manual browser tests working**
-- ✅ **No console errors during testing**
-- ✅ **Build process completing successfully**
-
-🚀 **Ready for production when all criteria are met!**
+- All automated tests passing
+- Extension validation passing
+- Manual browser tests working
+- No console errors during testing
+- Build process completing successfully
