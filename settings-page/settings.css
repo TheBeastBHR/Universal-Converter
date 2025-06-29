@@ -3,20 +3,24 @@ body {
     min-height: min-content;
     max-height: 600px;
     padding: 5px 5px 0 5px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     background: linear-gradient(to bottom, #2d3748 0%, #4a5568 100%);
     color: #f0f0f0;
     margin: 0;
     overflow-y: auto;
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .section,.settings {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 5px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .settings {
@@ -27,8 +31,10 @@ body {
 .settings h3,.section h3 {
     text-align: center;
     margin-bottom: 7px;
-    font-size: 14px;
-    color: #f0f0f0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f7fafc;
+    letter-spacing: 0.3px;
 }
 
 .unit-group {
@@ -39,23 +45,33 @@ body {
     display: block;
     font-weight: 500;
     margin-bottom: 5px;
-    font-size: 12px;
+    font-size: 13px;
+    color: rgba(247, 250, 252, 0.9);
+    letter-spacing: 0.2px;
 }
 
 select {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #666;
-    border-radius: 4px;
-    background: #404040;
-    font-size: 12px;
-    color: #f0f0f0;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(64, 64, 64, 0.8);
+    font-size: 13px;
+    color: #f7fafc;
+    backdrop-filter: blur(5px);
+    cursor: pointer;
 }
 
 select:focus {
     outline: none;
-    border-color: #888;
-    box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    background: rgba(80, 80, 80, 0.9);
+}
+
+select:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(72, 72, 72, 0.8);
 }
 
 .preset-buttons {
@@ -66,49 +82,49 @@ select:focus {
 
 .preset-btn {
     flex: 1;
-    padding: 10px;
-    border: 1px solid #666;
-    border-radius: 5px;
-    background: #404040;
-    color: #f0f0f0;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(96, 96, 96, 0.8);
+    color: #ffffff;
     cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
 }
 
 .preset-btn:hover {
-    background: #505050;
-    border-color: #888;
-    transform: translateY(-1px);
+    background: rgba(112, 112, 112, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .preset-btn.active {
-    background: #606060;
-    border-color: #999;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
 }
 
 hr {
     border: none;
     height: 1px;
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     margin: 15px 0;
 }
 
-/* Custom scrollbar styling for dark theme */
+/* Custom scrollbar styling*/
 body::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 body::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
 }
 
 body::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 body::-webkit-scrollbar-thumb:hover {
