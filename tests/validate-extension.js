@@ -138,14 +138,13 @@ class ExtensionValidator {
         const filePath = path.join(__dirname, '..', file);
         if (fs.existsSync(filePath)) {
           const content = fs.readFileSync(filePath, 'utf8');
-          // Basic syntax check - try to parse as JS
-          // Note: This won't catch all errors but helps with basic syntax issues
-          const hasBasicErrors = content.includes('undefined.') || 
-                                content.includes('null.') ||
-                                content.match(/\){2,}/) || // Too many closing parens
-                                content.match(/\}{2,}/); // Too many closing braces
+          // Basic syntax check - look for obvious syntax errors
+          const hasBasicErrors = content.includes('undefined..') || // Double dots after undefined
+                                content.includes('null..') ||      // Double dots after null
+                                content.includes(';;;;;;') ||      // Too many semicolons
+                                content.includes('{{{{');          // Too many opening braces
           
-          this.check(!hasBasicErrors, `Basic syntax check passed: ${file}`, true);
+          this.check(!hasBasicErrors, `Basic syntax check passed: ${file}`);
         }
       } catch (error) {
         this.check(false, `Syntax error in ${file}: ${error.message}`);

@@ -4,15 +4,6 @@ name: Universal Converter CI/CD
 on:
   push:
     branches: [ main, develop ]
-    paths:
-      - '**.js'
-      - '**.json'
-      - '**.html'
-      - '**.css'
-      - 'manifest.json'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/**'
     paths-ignore:
       - '**.md'
       - '**.txt'
@@ -29,18 +20,11 @@ on:
       - 'build/**'
       - 'dist/**'
       - 'node_modules/**'
+      - 'img/**'
+      - 'docs/**'
       
   pull_request:
     branches: [ main ]
-    paths:
-      - '**.js'
-      - '**.json'
-      - '**.html'
-      - '**.css'
-      - 'manifest.json'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/**'
     paths-ignore:
       - '**.md'
       - '**.txt'
@@ -57,6 +41,8 @@ on:
       - 'build/**'
       - 'dist/**'
       - 'node_modules/**'
+      - 'img/**'
+      - 'docs/**'
 
 jobs:
   test:
