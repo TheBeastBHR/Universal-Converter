@@ -2,8 +2,8 @@
 
 <div align="center">
 
-[![Tests](https://github.com/TheBeastBHR/Universal-Converter/actions/workflows/ci.yml/badge.svg)](https://github.com/TheBeastBHR/Universal-Converter/actions)
-[![Node.js](https://img.shields.io/badge/node.js-24.x-green)](package.json)
+[![Tests](../../actions/workflows/ci.yml/badge.svg)](../../actions)
+[![Node.js](https://img.shields.io/badge/node.js-24.x-green)](../../blob/main/package.json)
 
 </div>
 
