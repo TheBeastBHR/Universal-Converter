@@ -15,17 +15,18 @@
 <strong>Instantly convert any unit or currency by simply selecting text on any webpage!</strong>
 </div>
 
-A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and mixed-dimension support.
+A powerful Chrome Extension that automatically detects and converts units in selected text, supporting length, weight, temperature, volume, area measurements, and **real-time currency conversions** with smart auto-sizing and dimension support.
 
 ## ✨ Key Features
 
-- **Text Selection Conversion** - Select any measurement, get instant popup results
+- **Single-Selection Conversion** - Select individual measurements for precise, instant conversions
 - **50+ Unit Types** - Length, weight, temperature, volume, area
 - **Real-Time Currency Conversion** - Live exchange rates for 150+ currencies with Arabic/Unicode symbol support
 - **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
-- **Dimension Support** - Handles complex formats like "8ft × 4ft × 30in"
+- **Dimension Support** - Handles formats like "8ft × 4ft × 30in", "6m × 4m × 2.5m"
 - **Unicode Compatible** - Recognizes symbols like cm², m², °C, د.ب, ر.س
-- **Non-Intrusive** - uses a popup to avoid modifying the original text
+- **Non-Intrusive** - Uses a popup to avoid modifying the original text
+- **False-Positive Prevention** - Only converts explicitly selected measurements
 - **Auto-Save Settings** - Metric/Imperial presets with manual overrides
 
 ## 🚀 Quick Start

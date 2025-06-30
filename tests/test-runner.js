@@ -283,6 +283,36 @@ class StreamlinedUnitConverterTester {
     });
   }
 
+  // Run false positive prevention tests
+  runSingleSelectionTests() {
+    console.log(`\n${colors.blue}[Testing Single Selection Approach]${colors.reset}`);
+    
+    this.testCases.singleSelection.forEach((testCase, index) => {
+      console.log(`Testing single selection case ${index + 1}: ${testCase.name}`);
+      
+      const userSettings = testCase.input;
+      const conversions = this.detector.findConversions(testCase.input.selectedText, userSettings);
+      
+      if (testCase.expected.hasConversion) {
+        // Should have exactly one conversion
+        this.assert(conversions.length === 1, 
+          `Single Selection Case ${index + 1}: Should detect 1 conversion`, 
+          1, conversions.length);
+        
+        if (conversions.length > 0 && testCase.expected.conversionType) {
+          this.assert(conversions[0].type === testCase.expected.conversionType, 
+            `Single Selection Case ${index + 1}: Should detect ${testCase.expected.conversionType} type`, 
+            testCase.expected.conversionType, conversions[0].type);
+        }
+      } else {
+        // Should have no conversions
+        this.assert(conversions.length === 0, 
+          `Single Selection Case ${index + 1}: Should detect 0 conversions`, 
+          0, conversions.length);
+      }
+    });
+  }
+
   // Generate test report
   generateReport() {
     console.log(`\n${colors.bright}${colors.blue}[Test Report]${colors.reset}`);
@@ -323,10 +353,12 @@ class StreamlinedUnitConverterTester {
     this.runTestSuite('Comprehensive Auto-Sizing', this.testCases.comprehensiveAutoSizing);
     this.runTestSuite('Dimension Conversions', this.testCases.dimensionConversions);
     this.runTestSuite('Double Detection Prevention', this.testCases.doubleDetectionPrevention);
+    this.runTestSuite('Single Selection Tests', this.testCases.singleSelection);
     
     // Run additional specialized tests
     this.runDimensionFormatTests();
     this.runNonDimensionTests();
+    this.runSingleSelectionTests();
   }
 }
 

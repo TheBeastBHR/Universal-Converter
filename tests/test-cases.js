@@ -296,22 +296,22 @@ const testCases = {
     }
   ],
 
-  // Double detection prevention test cases
+  // Single-selection approach test cases (updated from double detection prevention)
   doubleDetectionPrevention: [
     {
-      name: 'Double Detection: Dimension format should yield 1 conversion',
+      name: 'Single Selection: Pure dimension should yield 1 conversion',
       type: 'doubleDetectionCount',
       input: { 
-        text: 'Product size: 36.5 x 110.8 x 32 cm', 
+        text: '36.5 x 110.8 x 32 cm', 
         userSettings: { lengthUnit: 'cm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
       },
       expected: 1
     },
     {
-      name: 'Double Detection: Should detect as dimensions type',
+      name: 'Single Selection: Pure dimension should detect as dimensions type',
       type: 'doubleDetectionType',
       input: { 
-        text: 'Product size: 36.5 x 110.8 x 32 cm', 
+        text: '36.5 x 110.8 x 32 cm', 
         userSettings: { lengthUnit: 'cm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
       },
       expected: 'dimensions'
@@ -327,49 +327,135 @@ const testCases = {
     }
   ],
 
-  // Additional test cases for various dimension formats
+  // Additional test cases for various dimension formats (updated for single-selection)
   dimensionFormats: [
     {
       name: 'Simple dimension',
-      text: 'Box dimensions: 10 x 20 x 30 cm',
+      text: '10 x 20 x 30 cm',
       expectedCount: 1,
       expectedType: 'dimensions'
     },
     {
       name: 'Dimension in inches',
-      text: 'Package: 12.5 x 8.0 x 3.5 in shipping box',
+      text: '12.5 x 8.0 x 3.5 in',
       expectedCount: 1,
       expectedType: 'dimensions'
     },
     {
       name: 'No spaces in dimension',
-      text: 'Size: 36.5x110.8x32cm',
+      text: '36.5x110.8x32cm',
       expectedCount: 1,
       expectedType: 'dimensions'
     },
     {
       name: 'Unicode multiply symbols',
-      text: 'Dimensions: 36.5 × 110.8 × 32 cm',
+      text: '36.5 × 110.8 × 32 cm',
       expectedCount: 1,
       expectedType: 'dimensions'
     }
   ],
 
-  // Non-dimension test cases
+  // Non-dimension test cases (updated for single-selection)
   nonDimensions: [
     {
       name: 'Height measurement',
-      text: 'Height: 180 cm',
+      text: '180 cm',
       expectedCount: 1,
       expectedTypeNot: 'dimensions'
     },
     {
       name: 'Single measurement',
-      text: 'Single measurement: 25 inches',
+      text: '25 inches',
       expectedCount: 1,
       expectedTypeNot: 'dimensions'
     }
-  ]
+  ],
+
+  // Single-selection conversion test cases (new simplified approach)
+  singleSelection: [
+    {
+      name: 'Single Selection: "$100" should convert to target currency',
+      type: 'singleSelection',
+      input: {
+        selectedText: '$100',
+        currencyUnit: 'EUR'
+      },
+      expected: {
+        conversionType: 'currency',
+        hasConversion: true
+      }
+    },
+    {
+      name: 'Single Selection: "6m × 4m × 2.5m" should convert dimensions',
+      type: 'singleSelection',
+      input: {
+        selectedText: '6m × 4m × 2.5m',
+        lengthUnit: 'ft'
+      },
+      expected: {
+        conversionType: 'dimensions',
+        hasConversion: true
+      }
+    },
+    {
+      name: 'Single Selection: "200g" should convert weight',
+      type: 'singleSelection',
+      input: {
+        selectedText: '200g',
+        weightUnit: 'oz'
+      },
+      expected: {
+        conversionType: 'weight',
+        hasConversion: true
+      }
+    },
+    {
+      name: 'Single Selection: "100 inches" should convert length',
+      type: 'singleSelection',
+      input: {
+        selectedText: '100 inches',
+        lengthUnit: 'cm'
+      },
+      expected: {
+        conversionType: 'length',
+        hasConversion: true
+      }
+    },
+    {
+      name: 'Single Selection: "32°F" should convert temperature',
+      type: 'singleSelection',
+      input: {
+        selectedText: '32°F',
+        temperatureUnit: 'c'
+      },
+      expected: {
+        conversionType: 'temperature',
+        hasConversion: true
+      }
+    },
+    {
+      name: 'Single Selection: "in the US" should not convert (no measurement)',
+      type: 'singleSelection',
+      input: {
+        selectedText: 'in the US',
+        lengthUnit: 'cm'
+      },
+      expected: {
+        hasConversion: false
+      }
+    },
+    {
+      name: 'Single Selection: "hello world" should not convert (no measurement)',
+      type: 'singleSelection',
+      input: {
+        selectedText: 'hello world',
+        lengthUnit: 'cm'
+      },
+      expected: {
+        hasConversion: false
+      }
+    }
+  ],
 };
 
 // Export for Node.js

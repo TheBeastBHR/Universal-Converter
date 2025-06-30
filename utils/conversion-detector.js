@@ -10,268 +10,234 @@ window.UnitConverter.ConversionDetector = class {
   }
   
   /**
-   * Find all conversions in the given text
-   * @param {string} text - The text to analyze
+   * Find conversion for the selected text (single-line approach)
+   * @param {string} selectedText - The selected text to convert
    * @param {Object} userSettings - User preference settings
-   * @returns {Array} - Array of conversion objects
+   * @returns {Array} - Array with single conversion object or empty array
    */
-  findConversions(text, userSettings) {
-    const conversions = [];
-    const processedRanges = []; // Track which parts of text we've already processed globally
+  findConversions(selectedText, userSettings) {
+    // Clean the selected text
+    const text = selectedText.trim();
     
-    // Check for currency conversions using Currency-Converter-master logic
-    const currencyConversions = this.findCurrencyConversions(text, userSettings);
-    conversions.push(...currencyConversions);
+    if (!text) return [];
     
-    // Add currency ranges to processed ranges
-    for (const conversion of currencyConversions) {
-      const index = text.indexOf(conversion.original);
-      if (index !== -1) {
-        processedRanges.push({ 
-          start: index, 
-          end: index + conversion.original.length 
-        });
-      }
-    }
+    // Try to detect and convert in order of priority
     
-    // Check for dimensions (L x W x H format) - supports mixed units
-    const dimensionConversions = this.findDimensionalConversions(text, userSettings, processedRanges);
-    conversions.push(...dimensionConversions);
+    // 1. Check for dimensions first (most specific pattern)
+    const dimensionResult = this.detectDimension(text, userSettings);
+    if (dimensionResult) return [dimensionResult];
     
-    // Add dimension ranges to processed ranges
-    for (const conversion of dimensionConversions) {
-      const index = text.indexOf(conversion.original);
-      if (index !== -1) {
-        processedRanges.push({ 
-          start: index, 
-          end: index + conversion.original.length 
-        });
-      }
-    }
+    // 2. Check for currency
+    const currencyResult = this.detectCurrency(text, userSettings);
+    if (currencyResult) return [currencyResult];
     
-    // Check for regular units
-    const regularConversions = this.findRegularConversions(text, userSettings, processedRanges);
-    conversions.push(...regularConversions);
+    // 3. Check for regular units
+    const unitResult = this.detectUnit(text, userSettings);
+    if (unitResult) return [unitResult];
     
-    return conversions;
+    // No conversion found
+    return [];
   }
   
   /**
-   * Find dimensional conversions (L x W x H format)
-   * @param {string} text - Text to analyze
+   * Detect and convert dimensions in selected text
+   * @param {string} text - Selected text
    * @param {Object} userSettings - User settings
-   * @param {Array} processedRanges - Already processed text ranges
-   * @returns {Array} - Array of dimensional conversions
+   * @returns {Object|null} - Conversion result or null
    */
-  findDimensionalConversions(text, userSettings, processedRanges = []) {
-    const conversions = [];
-    const dimensionMatches = text.matchAll(this.patterns.dimensions);
+  detectDimension(text, userSettings) {
+    let match = null;
+    let length, width, height, unit;
     
-    for (const match of dimensionMatches) {
-      const [fullMatch, length, width, height, unit] = match;
-      const matchStart = match.index;
-      const matchEnd = match.index + fullMatch.length;
-      
-      // Check if this range overlaps with already processed ranges
-      const isOverlapping = processedRanges.some(range => 
-        (matchStart < range.end && matchEnd > range.start)
-      );
-      
-      if (isOverlapping) continue; // Skip if already processed
-      
-      // Normalize the unit (same unit applies to all dimensions)
-      const normalizedUnit = this.unitConverter.normalizeUnit(unit);
-      
-      // Get target unit
-      const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedUnit, userSettings);
-      
-      if (targetUnit) {
-        // Convert all dimensions to the target unit
-        const convertedLength = this.unitConverter.convert(parseFloat(length), normalizedUnit, targetUnit);
-        const convertedWidth = this.unitConverter.convert(parseFloat(width), normalizedUnit, targetUnit);
-        const convertedHeight = this.unitConverter.convert(parseFloat(height), normalizedUnit, targetUnit);
-        
-        if (convertedLength !== null && convertedWidth !== null && convertedHeight !== null) {
-          // Use getBestUnit for smart unit sizing for each dimension
-          const bestLength = this.unitConverter.getBestUnit(convertedLength, 'length', targetUnit);
-          const bestWidth = this.unitConverter.getBestUnit(convertedWidth, 'length', targetUnit);
-          const bestHeight = this.unitConverter.getBestUnit(convertedHeight, 'length', targetUnit);
-          
-          // For consistency, use the same unit for all dimensions (prefer the unit that works best for the largest dimension)
-          const maxValue = Math.max(bestLength.value, bestWidth.value, bestHeight.value);
-          let chosenUnit = targetUnit;
-          
-          if (maxValue === bestLength.value) chosenUnit = bestLength.unit;
-          else if (maxValue === bestWidth.value) chosenUnit = bestWidth.unit;
-          else chosenUnit = bestHeight.unit;
-          
-          // Convert all dimensions to the chosen unit
-          const finalLength = this.unitConverter.convert(parseFloat(length), normalizedUnit, chosenUnit);
-          const finalWidth = this.unitConverter.convert(parseFloat(width), normalizedUnit, chosenUnit);
-          const finalHeight = this.unitConverter.convert(parseFloat(height), normalizedUnit, chosenUnit);
-          
-          conversions.push({
-            original: fullMatch,
-            converted: `${Math.round(finalLength * 100) / 100} × ${Math.round(finalWidth * 100) / 100} × ${Math.round(finalHeight * 100) / 100} ${chosenUnit}`,
-            type: 'dimensions'
-          });
-        }
+    // Try pattern with units on each number first (e.g., "6m × 4m × 2.5m")
+    if (this.patterns.dimensionsWithUnits) {
+      const patternWithUnits = new RegExp(this.patterns.dimensionsWithUnits.source, 'i');
+      match = text.match(patternWithUnits);
+      if (match && match.length >= 5) {
+        // [fullMatch, length, unit, width, height] - pattern: (\d+(?:\.\d+)?)\s*(unit)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*\2\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*\2
+        [, length, unit, width, height] = match;
       }
     }
     
-    return conversions;
+    // If no match, try pattern with unit at the end (e.g., "6 × 4 × 2.5 m")
+    if (!match) {
+      const pattern = new RegExp(this.patterns.dimensions.source, 'i');
+      match = text.match(pattern);
+      if (match && match.length >= 5) {
+        // [fullMatch, length, width, height, unit]
+        [, length, width, height, unit] = match;
+      }
+    }
+    
+    if (!match || !length || !width || !height || !unit) return null;
+    
+    const fullMatch = match[0];
+    
+    // Make sure the match covers most of the selected text (avoid partial matches)
+    if (fullMatch.length < text.length * 0.8) return null;
+    
+    const normalizedUnit = this.unitConverter.normalizeUnit(unit);
+    if (!normalizedUnit) return null;
+    
+    const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedUnit, userSettings);
+    
+    if (!targetUnit) return null;
+    
+    // Convert all dimensions to the target unit
+    const convertedLength = this.unitConverter.convert(parseFloat(length), normalizedUnit, targetUnit);
+    const convertedWidth = this.unitConverter.convert(parseFloat(width), normalizedUnit, targetUnit);
+    const convertedHeight = this.unitConverter.convert(parseFloat(height), normalizedUnit, targetUnit);
+    
+    if (convertedLength === null || convertedWidth === null || convertedHeight === null) {
+      return null;
+    }
+    
+    // Use getBestUnit for smart unit sizing
+    const bestLength = this.unitConverter.getBestUnit(convertedLength, 'length', targetUnit);
+    const bestWidth = this.unitConverter.getBestUnit(convertedWidth, 'length', targetUnit);
+    const bestHeight = this.unitConverter.getBestUnit(convertedHeight, 'length', targetUnit);
+    
+    // Choose the unit that works best for the largest dimension
+    const maxValue = Math.max(bestLength.value, bestWidth.value, bestHeight.value);
+    let chosenUnit = targetUnit;
+    
+    if (maxValue === bestLength.value) chosenUnit = bestLength.unit;
+    else if (maxValue === bestWidth.value) chosenUnit = bestWidth.unit;
+    else chosenUnit = bestHeight.unit;
+    
+    // Convert all dimensions to the chosen unit
+    const finalLength = this.unitConverter.convert(parseFloat(length), normalizedUnit, chosenUnit);
+    const finalWidth = this.unitConverter.convert(parseFloat(width), normalizedUnit, chosenUnit);
+    const finalHeight = this.unitConverter.convert(parseFloat(height), normalizedUnit, chosenUnit);
+    
+    return {
+      original: fullMatch,
+      converted: `${Math.round(finalLength * 100) / 100} × ${Math.round(finalWidth * 100) / 100} × ${Math.round(finalHeight * 100) / 100} ${chosenUnit}`,
+      type: 'dimensions'
+    };
   }
   
   /**
-   * Find currency conversions using Currency-Converter-master logic
-   * @param {string} text - Text to analyze
+   * Detect and convert currency in selected text
+   * @param {string} text - Selected text
    * @param {Object} userSettings - User settings
-   * @returns {Array} - Array of currency conversions
+   * @returns {Object|null} - Conversion result or null
    */
-  /**
-   * Find currency conversions using Currency-Converter-master logic and regex patterns
-   * @param {string} text - Text to analyze
-   * @param {Object} userSettings - User settings
-   * @returns {Array} - Array of currency conversions
-   */
-  findCurrencyConversions(text, userSettings) {
-    const conversions = [];
-    
+  detectCurrency(text, userSettings) {
     if (!window.UnitConverter.currencyConverter) {
-      return conversions;
+      return null;
     }
     
     try {
       const targetCurrency = userSettings.currencyUnit || 'USD';
       const currencyConverter = window.UnitConverter.currencyConverter;
       
-      // Use regex pattern to find currency matches
-      const currencyPattern = this.patterns.currency;
-      const matches = [...text.matchAll(currencyPattern)];
+      // Create a non-global version of the pattern for single match with capture groups
+      const pattern = new RegExp(this.patterns.currency.source, 'i');
+      const match = text.match(pattern);
+      if (!match) return null;
       
-      for (const match of matches) {
-        const fullMatch = match[0];
-        let amount, symbol;
-        
-        // Handle both symbol-first and symbol-last patterns
-        if (match[1] && match[2]) {
-          // Symbol first: $100
-          symbol = match[1];
-          amount = match[2];
-        } else if (match[3] && match[4]) {
-          // Symbol last: 100$
-          amount = match[3];
-          symbol = match[4];
-        } else {
-          continue;
-        }
-        
-        // Use Currency-Converter-master logic for detection
-        const detectedCurrency = currencyConverter.detectCurrency(symbol);
-        
-        if (detectedCurrency !== 'Unknown currency') {
-          // Extract the numeric value using Currency-Converter-master logic
-          const numericAmount = currencyConverter.extractNumber(fullMatch);
-          
-          if (numericAmount && detectedCurrency.toUpperCase() !== targetCurrency.toUpperCase()) {
-            conversions.push({
-              match: fullMatch,
-              originalValue: numericAmount,
-              originalUnit: detectedCurrency,
-              targetUnit: targetCurrency.toUpperCase(),
-              type: 'currency',
-              needsAsyncProcessing: true,
-              fromCurrency: detectedCurrency,
-              toCurrency: targetCurrency.toUpperCase(),
-              convertedValue: '...', // Will be updated with actual conversion
-              // Add properties expected by popup
-              original: `${numericAmount} ${detectedCurrency}`,
-              converted: '...' // Will be updated after API call
-            });
-          }
-        }
+      // Make sure the match covers most of the selected text
+      if (match[0].length < text.length * 0.7) return null;
+      
+      let amount, symbol;
+      
+      // Handle both symbol-first and symbol-last patterns
+      if (match[1] && match[2]) {
+        // Symbol first: $100
+        symbol = match[1];
+        amount = match[2];
+      } else if (match[3] && match[4]) {
+        // Symbol last: 100$
+        amount = match[3];
+        symbol = match[4];
+      } else {
+        return null;
       }
+      
+      const detectedCurrency = currencyConverter.detectCurrency(symbol);
+      
+      if (detectedCurrency === 'Unknown currency') return null;
+      
+      const numericAmount = currencyConverter.extractNumber(match[0]);
+      
+      if (!numericAmount || detectedCurrency.toUpperCase() === targetCurrency.toUpperCase()) {
+        return null;
+      }
+      
+      return {
+        match: match[0],
+        originalValue: numericAmount,
+        originalUnit: detectedCurrency,
+        targetUnit: targetCurrency.toUpperCase(),
+        type: 'currency',
+        needsAsyncProcessing: true,
+        fromCurrency: detectedCurrency,
+        toCurrency: targetCurrency.toUpperCase(),
+        convertedValue: '...', // Will be updated with actual conversion
+        original: `${numericAmount} ${detectedCurrency}`,
+        converted: '...' // Will be updated after API call
+      };
     } catch (error) {
       console.error('Currency detection error:', error);
+      return null;
     }
-    
-    return conversions;
   }
 
   /**
-   * Find regular unit conversions
-   * @param {string} text - Text to analyze
+   * Detect and convert regular units in selected text
+   * @param {string} text - Selected text
    * @param {Object} userSettings - User settings
-   * @param {Array} processedRanges - Already processed text ranges
-   * @returns {Array} - Array of regular conversions
-   */  
-  findRegularConversions(text, userSettings, processedRanges = []) {
-    const conversions = [];
-    
-    // Process area units FIRST to avoid conflicts with length units
+   * @returns {Object|null} - Conversion result or null
+   */
+  detectUnit(text, userSettings) {
+    // Try unit types in priority order (area first to avoid conflicts with length)
     const priorityOrder = ['area', 'temperature', 'volume', 'weight', 'length'];
     
     for (const unitType of priorityOrder) {
-      if (unitType === 'dimensions') continue;
-      
       const pattern = this.patterns[unitType];
       if (!pattern) continue;
       
-      const matches = text.matchAll(pattern);
-      for (const match of matches) {
-        const [fullMatch, value, unit] = match;
-        const matchStart = match.index;
-        const matchEnd = match.index + fullMatch.length;
-        
-        // Check if this range overlaps with already processed ranges
-        const isOverlapping = processedRanges.some(range => 
-          (matchStart < range.end && matchEnd > range.start)
-        );
-        
-        if (isOverlapping) continue; // Skip if already processed by higher priority pattern or other conversion types
-        
-        const normalizedUnit = this.unitConverter.normalizeUnit(unit);
-        const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedUnit, userSettings);
-        
-        if (targetUnit && normalizedUnit !== targetUnit) {
-          const convertedValue = this.unitConverter.convert(parseFloat(value), normalizedUnit, targetUnit);
-          if (convertedValue !== null) {
-            // Auto-detect best unit size
-            const bestResult = this.unitConverter.getBestUnit(convertedValue, unitType, targetUnit);
-            
-            // Skip if the best unit is the same as the original unit AND the values are essentially the same
-            if (bestResult.unit === normalizedUnit && Math.abs(bestResult.value - parseFloat(value)) < 0.01) {
-              continue;
-            }
-            
-            let convertedText = this.unitConverter.formatResult(bestResult.value, bestResult.unit);
-            
-            // For area units, also show the linear equivalent
-            // Commented out as requested - linear equivalent feature disabled
-            /*
-            if (unitType === 'area') {
-              const linearEquivalent = this.unitConverter.getLinearEquivalent(
-                bestResult.value, bestResult.unit
-              );
-              if (linearEquivalent) {
-                convertedText = `${convertedText}, ${linearEquivalent} linear`;
-              }
-            }
-            */
-            
-            conversions.push({
-              original: fullMatch,
-              converted: convertedText,
-              type: unitType
-            });
-            
-            // Mark this range as processed
-            processedRanges.push({ start: matchStart, end: matchEnd });
-          }
-        }
+      // Create a non-global version of the pattern for single match with capture groups
+      const nonGlobalPattern = new RegExp(pattern.source, 'i');
+      const match = text.match(nonGlobalPattern);
+      if (!match || match.length < 3) continue; // Need at least [fullMatch, value, unit]
+      
+      // Make sure the match covers most of the selected text
+      if (match[0].length < text.length * 0.7) continue;
+      
+      const [fullMatch, value, unit] = match;
+      
+      // Validate that we have all required parts
+      if (!value || !unit) continue;
+      
+      const normalizedUnit = this.unitConverter.normalizeUnit(unit);
+      if (!normalizedUnit) continue;
+      
+      const targetUnit = this.unitConverter.getDefaultTargetUnit(normalizedUnit, userSettings);
+      
+      if (!targetUnit || normalizedUnit === targetUnit) continue;
+      
+      const convertedValue = this.unitConverter.convert(parseFloat(value), normalizedUnit, targetUnit);
+      if (convertedValue === null) continue;
+      
+      // Auto-detect best unit size
+      const bestResult = this.unitConverter.getBestUnit(convertedValue, unitType, targetUnit);
+      
+      // Skip if the best unit is the same as the original unit AND the values are essentially the same
+      if (bestResult.unit === normalizedUnit && Math.abs(bestResult.value - parseFloat(value)) < 0.01) {
+        continue;
       }
+      
+      const convertedText = this.unitConverter.formatResult(bestResult.value, bestResult.unit);
+      
+      return {
+        original: fullMatch,
+        converted: convertedText,
+        type: unitType
+      };
     }
     
-    return conversions;
+    return null;
   }
 };

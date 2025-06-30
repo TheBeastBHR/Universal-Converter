@@ -23,15 +23,15 @@ npm run test:stop-on-failure
 
 **What it tests:**
 - Basic unit conversions (length, weight, temperature, volume, area)
-- Dimension conversions ("10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "12 by 8 by 6 feet")
+- Single-selection dimension conversions ("10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "6m × 4m × 2.5m")
 - Currency pattern detection with real-time conversion support
 - Unicode symbol detection (cm², m², ft², د.ب, ر.س, د.إ)
 - Auto-sizing functionality (0.001m → 1mm)
-- Pattern matching and text detection
+- Pattern matching and individual measurement detection
 - Unit aliases and normalization
 - Arabic currency symbols (BHD, KWD, SAR, AED, QAR)
 - European number formats (1.234,56)
-- Double detection prevention (ensures single unit matches don't create duplicate conversions)
+- False-positive prevention (only converts explicitly selected measurements)
 - Edge cases and error handling
 
 ### 2. **Browser Tests** (Manual)
@@ -47,11 +47,12 @@ npm run test:browser
 
 **What to test:**
 - Install extension in Chrome/Edge
-- Select highlighted text in test files
+- Select individual highlighted measurements in test files
 - Verify conversion popups appear with correct values
 - Test currency conversions with live exchange rates
 - Check dimension parsing for various formats
 - Verify auto-sizing works correctly
+- Confirm false-positive prevention (non-measurements are ignored)
 
 ### 3. **Extension Validation**
 
@@ -106,7 +107,8 @@ The test suite provides comprehensive coverage across all functionality areas.
 - Area conversions (mm², cm², m², km², in², ft², acre)
 
 ### Advanced Features
-- Dimension Support - "10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "12 by 8 by 6 feet"
+- Single-Selection Approach - Only converts explicitly selected individual measurements
+- Dimension Support - "10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "6m × 4m × 2.5m"
 - Currency Conversions - Real-time exchange rates with 150+ currencies
 - Arabic Currency Support - د.ب (BHD), د.ك (KWD), ر.س (SAR), د.إ (AED)
 - European Number Formats - 1.234,56 decimal comma support
@@ -115,7 +117,7 @@ The test suite provides comprehensive coverage across all functionality areas.
 - Auto-sizing (0.001 m → 1 mm, 2000 m → 2 km)
 - Pattern matching with priority handling
 - Settings persistence and auto-save
-- Double detection prevention (prevents overlapping unit matches)
+- False-positive prevention (avoids converting context text like "100 in the US")
 
 ### Extension Integration
 - Manifest v3 compliance
@@ -132,6 +134,7 @@ The test suite provides comprehensive coverage across all functionality areas.
 - Malformed text patterns
 - Missing currency data fallbacks
 - Network timeout handling
+- Non-measurement text rejection (false-positive prevention)
 
 ##  Troubleshooting Tests
 
@@ -166,10 +169,11 @@ npm test
 4. Verify package.json scripts are correct
 
 ### **Extension not detecting text:**
-1. Check that text is properly highlighted/selected
+1. Check that only the measurement itself is highlighted/selected (not surrounding context)
 2. Ensure content script is loaded (check Extensions page)
 3. Verify the page allows content scripts
 4. Check for JavaScript errors in browser console
+5. Try selecting just the number and unit (e.g., "5.5 kg" not "The package weighs 5.5 kg")
 
 ## Continuous Integration
 
@@ -181,6 +185,7 @@ The CI/CD pipeline runs comprehensive tests automatically:
    - Checks code quality and syntax
    - Tests currency pattern detection
    - Verifies dimension parsing functionality
+   - Tests single-selection approach and false-positive prevention
 
 2. **On main branch:**
    - Creates distributable package in build/ folder
@@ -238,10 +243,10 @@ patternMatching: [
 - `unitType` - Unit type detection tests
 - `bestUnit` - Auto-sizing tests
 - `format` - Number formatting tests
-- `patternDetection` - Text pattern recognition tests
+- `patternDetection` - Individual measurement pattern recognition
 - `dimensionDetection` - Dimension detection tests
-- `doubleDetectionCount` - Double detection prevention tests
-- `originalBugFix` - Bug fix verification tests
+- `singleSelection` - Single-selection approach tests
+- `falsePositivePrevention` - Tests that non-measurements are rejected
 
 ### Test Categories
 - basicConversions
@@ -254,7 +259,7 @@ patternMatching: [
 - edgeCases
 - comprehensiveAutoSizing
 - dimensionConversions
-- doubleDetectionPrevention
+- singleSelectionApproach
 - dimensionFormats
 - nonDimensions
 
@@ -282,6 +287,8 @@ node tests/validate-extension.js  # Validate structure only
 All tests should pass before merging to main branch:
 - All automated tests passing
 - Extension validation passing
-- Manual browser tests working
+- Manual browser tests working (individual measurement selections)
 - No console errors during testing
 - Build process completing successfully
+- Single-selection approach working correctly
+- False-positive prevention verified

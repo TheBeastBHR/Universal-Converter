@@ -2,9 +2,11 @@
 build/
 *.zip
 *.crx
+*.pem
 # Test scripts
 run-tests.ps1
-
+tests/debug*
+debug*
 # Node.js
 node_modules/
 npm-debug.log*
