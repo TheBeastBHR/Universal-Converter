@@ -203,7 +203,8 @@ class StreamlinedUnitConverterTester {
           // Test all dimensions included
           if (expected.allDimensions && bugFixConversions[0].converted) {
             const converted = bugFixConversions[0].converted;
-            const hasAllDimensions = converted.includes('36.5') && converted.includes('110.8') && converted.includes('32');
+            // Check for converted values (0.37 × 1.11 × 0.32 m) instead of original cm values
+            const hasAllDimensions = converted.includes('0.37') && converted.includes('1.11') && converted.includes('0.32');
             this.assert(hasAllDimensions, 
               `${name} (all dimensions)`, 'all dimensions included', hasAllDimensions ? 'all included' : 'some missing');
           }
@@ -229,7 +230,7 @@ class StreamlinedUnitConverterTester {
     console.log(`\n${colors.blue}[Testing Dimension Formats]${colors.reset}`);
     
     const userSettings = {
-      lengthUnit: 'cm',
+      lengthUnit: 'm',  // Changed from 'cm' to 'm' to ensure cm dimensions get converted
       areaUnit: 'm2',
       weightUnit: 'kg',
       temperatureUnit: 'c',

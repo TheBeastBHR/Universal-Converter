@@ -98,17 +98,34 @@ window.UnitConverter.ConversionDetector = class {
     const bestHeight = this.unitConverter.getBestUnit(convertedHeight, 'length', targetUnit);
     
     // Choose the unit that works best for the largest dimension
+    // But prioritize the target unit if it's reasonable for most dimensions
     const maxValue = Math.max(bestLength.value, bestWidth.value, bestHeight.value);
     let chosenUnit = targetUnit;
     
-    if (maxValue === bestLength.value) chosenUnit = bestLength.unit;
-    else if (maxValue === bestWidth.value) chosenUnit = bestWidth.unit;
-    else chosenUnit = bestHeight.unit;
+    // Only override the target unit if ALL dimensions would be much better in a different unit
+    // This prevents the algorithm from reverting to the original unit when user wants a specific target
+    const allDimensionsPreferSameUnit = (bestLength.unit === bestWidth.unit && 
+                                        bestWidth.unit === bestHeight.unit &&
+                                        bestLength.unit !== targetUnit);
+    
+    if (allDimensionsPreferSameUnit) {
+      // Only use the alternate unit if it's significantly better for ALL dimensions
+      chosenUnit = bestLength.unit;
+    }
+    // Otherwise, stick with the user's preferred target unit
     
     // Convert all dimensions to the chosen unit
     const finalLength = this.unitConverter.convert(parseFloat(length), normalizedUnit, chosenUnit);
     const finalWidth = this.unitConverter.convert(parseFloat(width), normalizedUnit, chosenUnit);
     const finalHeight = this.unitConverter.convert(parseFloat(height), normalizedUnit, chosenUnit);
+    
+    // Skip if the chosen unit is the same as the original unit AND the values are essentially the same
+    if (chosenUnit === normalizedUnit && 
+        Math.abs(finalLength - parseFloat(length)) < 0.01 &&
+        Math.abs(finalWidth - parseFloat(width)) < 0.01 &&
+        Math.abs(finalHeight - parseFloat(height)) < 0.01) {
+      return null;
+    }
     
     return {
       original: fullMatch,

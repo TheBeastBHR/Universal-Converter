@@ -299,29 +299,47 @@ const testCases = {
   // Single-selection approach test cases (updated from double detection prevention)
   doubleDetectionPrevention: [
     {
-      name: 'Single Selection: Pure dimension should yield 1 conversion',
+      name: 'Single Selection: Dimension should convert cm to m when user prefers meters',
+      type: 'doubleDetectionCount',
+      input: { 
+        text: '36.5 x 110.8 x 32 cm', 
+        userSettings: { lengthUnit: 'm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
+      },
+      expected: 1
+    },
+    {
+      name: 'Single Selection: Dimension should convert cm to m and detect as dimensions type',
+      type: 'doubleDetectionType',
+      input: { 
+        text: '36.5 x 110.8 x 32 cm', 
+        userSettings: { lengthUnit: 'm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
+      },
+      expected: 'dimensions'
+    },
+    {
+      name: 'Single Selection: Same unit should NOT convert (same-unit suppression)',
       type: 'doubleDetectionCount',
       input: { 
         text: '36.5 x 110.8 x 32 cm', 
         userSettings: { lengthUnit: 'cm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
       },
+      expected: 0
+    },
+    {
+      name: 'Single Selection: Large dimension should convert to meters',
+      type: 'doubleDetectionCount',
+      input: { 
+        text: '365 x 1108 x 320 cm', 
+        userSettings: { lengthUnit: 'm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
+      },
       expected: 1
     },
     {
-      name: 'Single Selection: Pure dimension should detect as dimensions type',
-      type: 'doubleDetectionType',
-      input: { 
-        text: '36.5 x 110.8 x 32 cm', 
-        userSettings: { lengthUnit: 'cm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
-      },
-      expected: 'dimensions'
-    },
-    {
-      name: 'Original Bug: "36.5 x 110.8 x 32 cm" should yield exactly 1 conversion (not double detection)',
+      name: 'Original Bug: "36.5 x 110.8 x 32 cm" should convert to meters when user prefers meters',
       type: 'originalBugFix',
       input: { 
         text: '36.5 x 110.8 x 32 cm', 
-        userSettings: { lengthUnit: 'cm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
+        userSettings: { lengthUnit: 'm', areaUnit: 'm2', weightUnit: 'kg', temperatureUnit: 'c', volumeUnit: 'l', currencyUnit: 'USD' }
       },
       expected: { count: 1, type: 'dimensions', allDimensions: true }
     }
@@ -330,27 +348,33 @@ const testCases = {
   // Additional test cases for various dimension formats (updated for single-selection)
   dimensionFormats: [
     {
-      name: 'Simple dimension',
+      name: 'Simple dimension (small values, getBestUnit chooses cm)',
       text: '10 x 20 x 30 cm',
-      expectedCount: 1,
+      expectedCount: 0,  // getBestUnit chooses cm, same-unit suppression applies
+      expectedType: null
+    },
+    {
+      name: 'Large dimension (should convert to meters)',
+      text: '150 x 200 x 300 cm',
+      expectedCount: 1,  // getBestUnit chooses m for large values
       expectedType: 'dimensions'
     },
     {
       name: 'Dimension in inches',
       text: '12.5 x 8.0 x 3.5 in',
-      expectedCount: 1,
+      expectedCount: 1,  // Will convert to cm (different units)
       expectedType: 'dimensions'
     },
     {
       name: 'No spaces in dimension',
       text: '36.5x110.8x32cm',
-      expectedCount: 1,
+      expectedCount: 1,  // Will convert cm to m (different units)
       expectedType: 'dimensions'
     },
     {
       name: 'Unicode multiply symbols',
       text: '36.5 × 110.8 × 32 cm',
-      expectedCount: 1,
+      expectedCount: 1,  // Will convert cm to m (different units)
       expectedType: 'dimensions'
     }
   ],
