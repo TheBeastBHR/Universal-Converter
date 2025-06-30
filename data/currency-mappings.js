@@ -155,6 +155,35 @@ const countryNameToCurrencyCode = {
     'Zimbabwean Dollar': 'ZWL'
 };
 const currencySymbolToCurrencyCode = {
+    // Direct currency code mappings
+    'USD': 'USD',
+    'EUR': 'EUR', 
+    'GBP': 'GBP',
+    'JPY': 'JPY',
+    'CAD': 'CAD',
+    'AUD': 'AUD',
+    'CHF': 'CHF',
+    'SEK': 'SEK',
+    'NOK': 'NOK',
+    'DKK': 'DKK',
+    'PLN': 'PLN',
+    'CZK': 'CZK',
+    'HUF': 'HUF',
+    'RON': 'RON',
+    'BGN': 'BGN',
+    'HRK': 'HRK',
+    'RSD': 'RSD',
+    'BAM': 'BAM',
+    'MKD': 'MKD',
+    'ALL': 'ALL',
+    'ISK': 'ISK',
+    'BHD': 'BHD',
+    'KWD': 'KWD',
+    'SAR': 'SAR',
+    'AED': 'AED',
+    'QAR': 'QAR',
+    
+    // Symbol mappings
     'Dhs': 'AED',
     'Dh': 'AED',
     'د.إ': 'AED',

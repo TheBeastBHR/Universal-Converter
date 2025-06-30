@@ -60,7 +60,7 @@ window.UnitConverterData.UNIT_PATTERNS = {
   // This pattern matches currency symbols followed by numbers or numbers followed by currency symbols
   // Supports various number formats including commas, dots, apostrophes, and spaces as separators
   // Added word boundaries to prevent false matches in identifiers
-  currency: /(?:(?:^|\s)(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡)(?=\s*\d)\s*(\d+(?:[.,\d' \s]*\d)?)|(\d+(?:[.,\d' \s]*\d)?)\s*(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡)(?=\s|$))/gi
+  currency: /(?:(?:^|\s)(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡|CAD|AUD|USD|EUR|GBP|JPY|CHF|SEK|NOK|DKK|PLN|CZK|HUF|RON|BGN|HRK|RSD|BAM|MKD|ALL|ISK|د\.ب|د\.ك|ر\.س|د\.إ|ر\.ق)(?=\s*\d)\s*(\d+(?:[.,\d' \s]*\d)?)|(\d+(?:[.,\d' \s]*\d)?)\s*(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡|CAD|AUD|USD|EUR|GBP|JPY|CHF|SEK|NOK|DKK|PLN|CZK|HUF|RON|BGN|HRK|RSD|BAM|MKD|ALL|ISK|د\.ب|د\.ك|ر\.س|د\.إ|ر\.ق)(?=\s|$))/gi
 };
 
 window.UnitConverterData.UNIT_ALIASES = {
