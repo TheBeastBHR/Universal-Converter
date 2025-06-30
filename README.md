@@ -1,9 +1,8 @@
 <h1 style="text-align: center;">Universal Converter - Chrome Extension</h1>
 
 <div align="center">
-
+    
 [![Tests](../../actions/workflows/ci.yml/badge.svg)](../../actions)
-[![Node.js](https://img.shields.io/badge/node.js-24.x-green)](../../blob/main/package.json)
 
 </div>
 
@@ -20,17 +19,12 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 ## ✨ Key Features
 
 - **Single-Selection Conversion** - Select individual measurements for precise, instant conversions
-- **50+ Unit Types** - Length, weight, temperature, volume, area
 - **Real-Time Currency Conversion** - Live exchange rates for 150+ currencies with Arabic/Unicode symbol support
 - **Smart Auto-Sizing** - Automatically chooses appropriate units (0.001m → 1mm)  
 - **Dimension Support** - Handles formats like "8ft × 4ft × 30in", "6m × 4m × 2.5m"
-- **Unicode Compatible** - Recognizes symbols like cm², m², °C, د.ب, ر.س
-- **Non-Intrusive** - Uses a popup to avoid modifying the original text
-- **False-Positive Prevention** - Only converts explicitly selected measurements
 - **Auto-Save Settings** - Metric/Imperial presets with manual overrides
 
 ## 🚀 Quick Start
-
 
 **Manual Installation**
 1. Click on Code, Download ZIP (or get it from releases), Extract files.
