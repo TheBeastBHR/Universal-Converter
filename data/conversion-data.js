@@ -56,11 +56,8 @@ window.UnitConverterData.UNIT_PATTERNS = {
   // Two dimension patterns: with units on each number, and with unit at the end
   dimensionsWithUnits: /(\d+(?:\.\d+)?)\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*\2\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*\2/gi,
   dimensions: /(\d+(?:\.\d+)?)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*(?:x|×|by|\*)\s*(\d+(?:\.\d+)?)\s*-?\s*(m|cm|mm|km|in|inch|inches|ft|foot|feet|yd|yard|yards|mi|mile|miles|meter|meters|centimeter|centimeters|millimeter|millimeters|kilometer|kilometers)\b/gi,
-  // Currency patterns based on Currency-Converter-master: major symbols + amounts
-  // This pattern matches currency symbols followed by numbers or numbers followed by currency symbols
-  // Supports various number formats including commas, dots, apostrophes, and spaces as separators
-  // Added word boundaries to prevent false matches in identifiers
-  currency: /(?:(?:^|\s)(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡|CAD|AUD|USD|EUR|GBP|JPY|CHF|SEK|NOK|DKK|PLN|CZK|HUF|RON|BGN|HRK|RSD|BAM|MKD|ALL|ISK|د\.ب|د\.ك|ر\.س|د\.إ|ر\.ق)(?=\s*\d)\s*(\d+(?:[.,\d' \s]*\d)?)|(\d+(?:[.,\d' \s]*\d)?)\s*(\$|€|£|¥|₹|₽|¢|₩|₦|₡|₪|₱|₫|₴|₵|₨|₭|₲|₸|₼|₺|₾|₿|¤|﷼|؋|֏|ƒ|Kz|Dhs?|Af|Lek|ден|som|៛|₮|UM|Rf|MVR|ރ|K|RM|MT|MTn|N\$|B\/\.|S\/|Q|G|L|Ft|Rp|RI|J\$|KD|CI\$|LD\$|M|DH|Ar|den|Ks|UM|Rf|zł|Lei|Leu|QR|R\.O|₦|₾|₼|₺|₸|₲|₭|₨|₵|₴|₫|₱|₪|₡|CAD|AUD|USD|EUR|GBP|JPY|CHF|SEK|NOK|DKK|PLN|CZK|HUF|RON|BGN|HRK|RSD|BAM|MKD|ALL|ISK|د\.ب|د\.ك|ر\.س|د\.إ|ر\.ق)(?=\s|$))/gi
+  // Currency pattern will be generated dynamically from currency mappings
+  currency: null  // Will be set after currency mappings are loaded
 };
 
 window.UnitConverterData.UNIT_ALIASES = {
@@ -129,4 +126,50 @@ window.UnitConverterData.AREA_TO_LINEAR_MAP = {
   'km2': 'km',
   'ft2': 'ft', 
   'in2': 'in'
+};
+
+/**
+ * Generate currency regex pattern from currency mappings
+ * This ensures all currencies and symbols are covered automatically
+ */
+window.UnitConverterData.generateCurrencyPattern = function() {
+  // Wait for currency mappings to be loaded
+  if (!window.currencySymbolToCurrencyCode) {
+    return null;
+  }
+  
+  // Extract all currency symbols and codes
+  const symbols = Object.keys(window.currencySymbolToCurrencyCode);
+  
+  // Escape special regex characters
+  const escapeRegex = (str) => {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+  
+  // Sort by length (longest first) to prevent shorter patterns from matching first
+  const sortedSymbols = symbols.sort((a, b) => b.length - a.length);
+  
+  // Escape and join all symbols
+  const escapedSymbols = sortedSymbols.map(escapeRegex).join('|');
+  
+  // Create the complete pattern
+  // Matches: symbol + number OR number + symbol
+  const pattern = new RegExp(
+    `(?:(?:^|\\s)(${escapedSymbols})(?=\\s*\\d)\\s*(\\d+(?:[.,\\d' \\s]*\\d)?)|` +
+    `(\\d+(?:[.,\\d' \\s]*\\d)?)\\s*(${escapedSymbols})(?=\\s|$))`,
+    'gi'
+  );
+  
+  return pattern;
+};
+
+/**
+ * Initialize currency pattern after mappings are loaded
+ */
+window.UnitConverterData.initializeCurrencyPattern = function() {
+  const pattern = window.UnitConverterData.generateCurrencyPattern();
+  if (pattern) {
+    window.UnitConverterData.UNIT_PATTERNS.currency = pattern;
+    console.log('Currency pattern initialized with', Object.keys(window.currencySymbolToCurrencyCode || {}).length, 'symbols');
+  }
 };

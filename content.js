@@ -18,6 +18,11 @@ async function init() {
       return;
     }
 
+    // Initialize currency pattern from mappings
+    if (window.UnitConverterData.initializeCurrencyPattern) {
+      window.UnitConverterData.initializeCurrencyPattern();
+    }
+
     unitConverter = new window.UnitConverter.UnitConverter();
     conversionDetector = new window.UnitConverter.ConversionDetector(unitConverter);
     popupManager = new window.UnitConverter.PopupManager();

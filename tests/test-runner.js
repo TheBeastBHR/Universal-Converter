@@ -68,6 +68,11 @@ class StreamlinedUnitConverterTester {
         global.window.UnitConverter.currencyConverter = new global.window.UnitConverter.CurrencyConverter();
       }
       
+      // Initialize currency pattern after mappings are loaded
+      if (global.window.UnitConverterData && global.window.UnitConverterData.initializeCurrencyPattern) {
+        global.window.UnitConverterData.initializeCurrencyPattern();
+      }
+      
     } catch (error) {
       console.error(`${colors.red}❌ Failed to load modules:${colors.reset}`, error.message);
       process.exit(1);
