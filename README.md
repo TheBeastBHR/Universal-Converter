@@ -24,10 +24,12 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 - **Dimension Support** - Handles formats like "8ft × 4ft × 30in", "6m × 4m × 2.5m"
 - **Auto-Save Settings** - Metric/Imperial presets with manual overrides
 
-## 🚀 Quick Start
+## 🚀 Installation
+**One Click Installation**
+- [Chrome Webstore](https://chromewebstore.google.com/detail/ediegfdjholeejhjdenagnjjjlhafgbl)
 
 **Manual Installation**
-1. Click on Code, Download ZIP (or get it from releases), Extract files.
+1. Click on Code, Download ZIP, Extract files. (or get it from releases for more stable-er build)
 2. **Open** `chrome://extensions/` in Chrome
 3. **Enable** "Developer mode" (top right toggle)
 4. **Click** "Load unpacked" and select the project folder
