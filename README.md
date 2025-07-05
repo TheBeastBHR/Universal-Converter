@@ -39,7 +39,7 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 
 For  testing documentation, build instructions, and development setup:
 
-**→ [See TESTING.md](tests/TESTING.md)**
+**→ [See TESTING.md](TESTING.md)**
 
 **Quick Commands:**
 ```bash
@@ -48,6 +48,12 @@ npm run validate  # Validate extension structure
 npm run build     # Build for distribution
 ```
 
+For Contribution Guidelines:
+
+**→ [See CONTRIBUTING.md](CONTRIBUTING.md)**
+
+
+
 ## 📁 Project Structure
 
 ```
@@ -55,7 +61,7 @@ Universal Converter/
 ├── manifest.json              # Extension configuration
 ├── background.js              # Service worker
 ├── content.js                 # Main content script
-├── content.css                # Content script styles
+├── content.css                # Content script styles (Mainly Contains styles for the popup)
 ├── package.json               # Node.js dependencies
 │
 ├── data/                       # Conversion data
@@ -72,21 +78,23 @@ Universal Converter/
 │
 ├── settings-page/             # Extension settings UI
 │   ├── settings.html         # Settings interface
-│   └── settings.js           # Settings functionality
+│   ├── settings.js           # Settings functionality
+│   └── settings.css          # Settings styles  
 │
 ├── icons/                     # Extension icons
 │
 ├── tests/                     # Test suite
 │   ├── test-runner.js        # Core unit tests
 │   ├── test-suite.js         # Additional tests
+│   ├── test-cases.js         # Test case definitions
 │   ├── validate-extension.js # Extension structure validation
 │   ├── run-all-tests.js      # Cross-platform test runner
 │   ├── test.html             # Browser test page
-│   ├── area-test.html        # Area conversion test page
-│   └── TESTING.md            # Testing documentation
+│   └── area-test.html        # Area conversion test page
 │
-└── .github/                    # GitHub configuration
-    └── workflows/             # CI/CD automation
+└── .github/                   # GitHub configuration
+    └── workflows/            # CI/CD automation
+        └── ci.yml           # Continuous integration
 ```
 
 ## 🔒 Privacy & Security
@@ -97,12 +105,9 @@ Universal Converter/
 
 ## 🤝 Contributing
 
-1. Fork this repository
-2. Create a feature branch
-3. Make your changes and test thoroughly
-4. Submit a pull request
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
-See [TESTING.md](tests/TESTING.md) for development guidelines and testing procedures.
+See [TESTING.md](tests/TESTING.md) for testing procedures.
 
 ## 🙏 Credits & Acknowledgments
 

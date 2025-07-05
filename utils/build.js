@@ -50,7 +50,6 @@ class ExtensionBuilder {
       'package.json',
       'package-lock.json',
       '.gitignore',
-      'TEST_RUNNER_README.md',
       'img' // Usually development assets
     ];
     
@@ -159,8 +158,17 @@ class ExtensionBuilder {
       'manifest.json',
       'background.js',
       'content.js',
+      'content.css',
+      'data/conversion-data.js',
+      'data/currency-data.js',
+      'utils/conversion-detector.js',
+      'utils/currency-converter.js',
+      'utils/popup-manager.js',
+      'utils/settings-manager.js',
+      'utils/unit-converter.js',
       'settings-page/settings.html',
-      'settings-page/settings.js'
+      'settings-page/settings.js',
+      'settings-page/settings.css'
     ];
     
     let isValid = true;
@@ -236,7 +244,7 @@ class ExtensionBuilder {
           fs.unlinkSync(zipPath);
         }
         
-        // Create ZIP using cross-platform archiver
+        // Create ZIP using archiver
         const output = fs.createWriteStream(zipPath);
         const archive = archiver('zip', {
           zlib: { level: 9 } // Maximum compression
