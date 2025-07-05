@@ -160,7 +160,7 @@ class ExtensionBuilder {
       'content.js',
       'content.css',
       'data/conversion-data.js',
-      'data/currency-data.js',
+      'data/currency-mappings.js',
       'utils/conversion-detector.js',
       'utils/currency-converter.js',
       'utils/popup-manager.js',
