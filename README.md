@@ -24,6 +24,47 @@ A powerful Chrome Extension that automatically detects and converts units in sel
 - **Dimension Support** - Handles formats like "8ft × 4ft × 30in", "6m × 4m × 2.5m"
 - **Auto-Save Settings** - Metric/Imperial presets with manual overrides
 
+## Supported Units
+
+### 📏 **Length**
+- **Metric**: meter (m), centimeter (cm), millimeter (mm), kilometer (km)
+- **Imperial**: inch (in), foot (ft), yard (yd), mile (mi)
+
+### ⚖️ **Weight/Mass**
+- **Metric**: kilogram (kg), gram (g), milligram (mg), tonne (t)
+- **Imperial**: pound (lb), ounce (oz)
+
+### 🌡️ **Temperature**
+- **Units**: Celsius (°C), Fahrenheit (°F), Kelvin (K)
+
+### 🫗 **Volume**
+- **Metric**: liter (l), milliliter (ml)
+- **Imperial**: gallon (gal), quart (qt), pint (pt), cup, fluid ounce (fl oz)
+
+### 📐 **Area**
+- **Metric**: square meter (m²), square centimeter (cm²), square millimeter (mm²), square kilometer (km²)
+- **Imperial**: square foot (ft²), square inch (in²), acre
+
+### 🏃 **Speed**
+- **Units**: meters per second (m/s), kilometers per hour (km/h), miles per hour (mph), feet per second (fps), knots (kn), mach
+
+### 🔧 **Torque**
+- **Units**: newton-meter (N⋅m), pound-foot (lb⋅ft), pound-inch (lb⋅in), kilogram-meter (kg⋅m), ounce-inch (oz⋅in)
+
+### 🌬️ **Pressure**
+- **Units**: pascal (Pa), bar, pounds per square inch (psi), atmosphere (atm), millimeters of mercury (mmHg), inches of mercury (inHg), torr, kilopascal (kPa), megapascal (MPa)
+
+### 🌍 **Multi-Dimensional**
+- **3D Dimensions**: Supports "length × width × height" formats
+
+### 💰 **Currency** (150+ currencies with real-time rates)
+- USD ($), EUR (€), GBP (£), JPY (¥), CAD, AUD, CHF and more...
+- **Unicode Support**: Arabic, Chinese, and other international currency symbols
+
+### 🕐 **Time Zones**
+- EST, PST, CST, MST, GMT, UTC, CET, JST and more...
+- **Format Support**: 12-hour (AM/PM) and 24-hour formats
+
 ## 🚀 Installation
 **One Click Installation**
 - [Chrome Webstore](https://chromewebstore.google.com/detail/ediegfdjholeejhjdenagnjjjlhafgbl)
