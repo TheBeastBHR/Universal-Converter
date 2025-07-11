@@ -1,13 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Universal Converter",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Convert any unit or currency to another with text selection popup and comprehensive unit support",
   "permissions": [
     "activeTab",
     "storage"
   ],  "action": {
-    "default_popup": "settings-page/settings.html",
     "default_title": "Universal Converter Settings"
   },
   "content_scripts": [

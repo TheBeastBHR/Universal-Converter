@@ -154,9 +154,6 @@ window.UnitConverter.ConversionDetector = class {
       const match = text.match(pattern);
       if (!match) return null;
       
-      // Make sure the match covers most of the selected text
-      if (match[0].length < text.length * 0.7) return null;
-      
       let amount, symbol;
       
       // Handle both symbol-first and symbol-last patterns
@@ -208,20 +205,24 @@ window.UnitConverter.ConversionDetector = class {
    * @returns {Object|null} - Conversion result or null
    */
   detectUnit(text, userSettings) {
-    // Try unit types in priority order (area first to avoid conflicts with length)
-    const priorityOrder = ['area', 'temperature', 'volume', 'weight', 'length'];
+    // Try unit types in priority order (torque before weight to avoid lb conflicts)
+    const priorityOrder = ['timezone', 'area', 'torque', 'speed', 'pressure', 'temperature', 'volume', 'weight', 'length'];
     
     for (const unitType of priorityOrder) {
       const pattern = this.patterns[unitType];
       if (!pattern) continue;
       
+      // Special handling for timezone conversion
+      if (unitType === 'timezone') {
+        const timezoneResult = this.detectTimezone(text, userSettings);
+        if (timezoneResult) return timezoneResult;
+        continue;
+      }
+      
       // Create a non-global version of the pattern for single match with capture groups
       const nonGlobalPattern = new RegExp(pattern.source, 'i');
       const match = text.match(nonGlobalPattern);
       if (!match || match.length < 3) continue; // Need at least [fullMatch, value, unit]
-      
-      // Make sure the match covers most of the selected text
-      if (match[0].length < text.length * 0.7) continue;
       
       const [fullMatch, value, unit] = match;
       
@@ -256,5 +257,68 @@ window.UnitConverter.ConversionDetector = class {
     }
     
     return null;
+  }
+
+  /**
+   * Detect and convert timezone in selected text
+   * @param {string} text - Selected text
+   * @param {Object} userSettings - User settings
+   * @returns {Object|null} - Conversion result or null
+   */
+  detectTimezone(text, userSettings) {
+    const pattern = this.patterns.timezone;
+    if (!pattern) return null;
+    
+    // Create a non-global version of the pattern to get capture groups
+    const nonGlobalPattern = new RegExp(pattern.source, 'i');
+    const match = text.match(nonGlobalPattern);
+    if (!match) return null;
+    
+    // Extract time and timezone information
+    const timeString = match[0];
+    let targetTimezone = userSettings.timezoneUnit || 'auto';
+    let isAutoDetected = false;
+    
+    // If target is auto, use user's current timezone
+    if (targetTimezone === 'auto') {
+      isAutoDetected = true;
+      const userOffset = window.UnitConverterData.getUserTimezone();
+      targetTimezone = window.UnitConverterData.getTimezoneFromOffset(userOffset);
+    }
+    
+    // Parse timezone from the match
+    let sourceTimezone = 'auto';
+    
+    // Pattern structure: [fullMatch, hour, minute, ampm, timezoneGroup, baseTimezone, offset, offsetHour, offsetMin]
+    if (match[5]) {
+      // Base timezone like EST, PST, GMT, etc.
+      sourceTimezone = match[5];
+      if (match[6]) {
+        // Has offset like GMT+2, UTC-5
+        sourceTimezone = `${match[5]}${match[6]}`;
+      }
+    } else if (match[7] && match[8]) {
+      // Direct offset format like +02:30
+      sourceTimezone = `${match[7]}:${match[8]}`;
+    } else if (match[7]) {
+      // Direct offset format like +2
+      sourceTimezone = `GMT${match[7]}`;
+    }
+    
+    // If source is auto, can't convert
+    if (sourceTimezone === 'auto') return null;
+    
+    // Don't convert if source and target are the same
+    if (sourceTimezone === targetTimezone) return null;
+    
+    // Use GMT offset format for display when auto-detected
+    const converted = this.unitConverter.convertTimezone(timeString, sourceTimezone, targetTimezone, isAutoDetected);
+    if (!converted) return null;
+    
+    return {
+      original: timeString,
+      converted: `${converted.formatted} ${converted.timezone}`,
+      type: 'timezone'
+    };
   }
 };

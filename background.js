@@ -1,4 +1,12 @@
 // Background service worker for Chrome Extension v3
+
+// Handle extension icon click to open settings page
+chrome.action.onClicked.addListener((tab) => {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL('settings-page/settings.html')
+  });
+});
+
 chrome.runtime.onInstalled.addListener(async () => {
   console.log('Unit Converter extension installed');
   

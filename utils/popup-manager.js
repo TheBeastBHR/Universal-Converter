@@ -13,13 +13,32 @@ window.UnitConverter.PopupManager = class {
    * @param {Array} conversions - Array of conversion objects
    * @param {Selection} selection - Text selection object
    */
-  showConversionPopup(conversions, selection) {
+  async showConversionPopup(conversions, selection) {
     this.hidePopup();
+    
+    // Get user settings for time format preference
+    let userSettings = {};
+    try {
+      const result = await chrome.storage.sync.get(['unitSettings']);
+      userSettings = result.unitSettings || {};
+    } catch (error) {
+      // If storage is not available (e.g., in tests), use defaults
+      userSettings = { is12hr: true };
+    }
+    
+    // Apply time format conversion to timezone results
+    const processedConversions = conversions.map(conv => {
+      if (conv.type === 'timezone') {
+        const converted = this.convertTimeFormat(conv.converted, userSettings.is12hr !== false);
+        return { ...conv, converted };
+      }
+      return conv;
+    });
     
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     
-    this.conversionPopup = this.createPopupElement(conversions);
+    this.conversionPopup = this.createPopupElement(processedConversions);
     document.body.appendChild(this.conversionPopup);
     
     this.positionPopup(rect);
@@ -98,6 +117,37 @@ window.UnitConverter.PopupManager = class {
     if (this.conversionPopup) {
       this.conversionPopup.remove();
       this.conversionPopup = null;
+    }
+  }
+  
+  /**
+   * Convert time format in a string from 12hr to 24hr or vice versa
+   * @param {string} timeString - String containing time (e.g., "3:30 PM GMT+5")
+   * @param {boolean} to12hr - true to convert to 12hr, false to convert to 24hr
+   * @returns {string} - String with converted time format
+   */
+  convertTimeFormat(timeString, to12hr = true) {
+    // Match time patterns: 3:30 PM, 15:30, etc.
+    const time12hrPattern = /(\d{1,2}):(\d{2})\s*(AM|PM)/gi;
+    const time24hrPattern = /(\d{1,2}):(\d{2})(?!\s*(AM|PM))/gi;
+    
+    if (to12hr) {
+      // Convert 24hr to 12hr
+      return timeString.replace(time24hrPattern, (match, hours, minutes) => {
+        const h = parseInt(hours);
+        const period = h >= 12 ? 'PM' : 'AM';
+        const displayHours = h === 0 ? 12 : h > 12 ? h - 12 : h;
+        return `${displayHours}:${minutes} ${period}`;
+      });
+    } else {
+      // Convert 12hr to 24hr
+      return timeString.replace(time12hrPattern, (match, hours, minutes, period) => {
+        let h = parseInt(hours);
+        if (period.toUpperCase() === 'PM' && h !== 12) h += 12;
+        if (period.toUpperCase() === 'AM' && h === 12) h = 0;
+        const displayHours = h.toString().padStart(2, '0');
+        return `${displayHours}:${minutes}`;
+      });
     }
   }
 };

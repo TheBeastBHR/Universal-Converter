@@ -57,8 +57,8 @@ class ExtensionValidator {
       this.check(manifest.permissions.includes('activeTab'), 'activeTab permission granted');
       this.check(manifest.permissions.includes('storage'), 'storage permission granted');
 
-      // Check action (popup)
-      this.check(manifest.action && manifest.action.default_popup, 'Action popup configured');
+      // Check action (title configured, popup optional for standalone design)
+      this.check(manifest.action && manifest.action.default_title, 'Action configured with title');
 
       // Check content scripts
       this.check(Array.isArray(manifest.content_scripts), 'Content scripts array exists');

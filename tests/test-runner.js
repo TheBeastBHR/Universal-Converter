@@ -216,6 +216,18 @@ class StreamlinedUnitConverterTester {
         }
         break;
 
+      case 'timezonePatternTest':
+        // Test if timezone patterns are recognized in text
+        const { conversionData } = require('../data/conversion-data');
+        const timezonePattern = conversionData.timezone?.patterns?.[0];
+        if (timezonePattern) {
+          const hasMatch = timezonePattern.test(input.text);
+          this.assert(hasMatch === expected.hasTimePattern, name, expected.hasTimePattern ? 'pattern matched' : 'pattern not matched', hasMatch ? 'pattern matched' : 'pattern not matched');
+        } else {
+          this.assert(false, name, 'timezone pattern available', 'timezone pattern not found');
+        }
+        break;
+
       default:
         console.log(`${colors.yellow}[WARNING] Unknown test type: ${type}${colors.reset}`);
     }
@@ -360,6 +372,15 @@ class StreamlinedUnitConverterTester {
     this.runTestSuite('Dimension Conversions', this.testCases.dimensionConversions);
     this.runTestSuite('Double Detection Prevention', this.testCases.doubleDetectionPrevention);
     this.runTestSuite('Single Selection Tests', this.testCases.singleSelection);
+    this.runTestSuite('Speed Conversions', this.testCases.speedConversions);
+    this.runTestSuite('Torque Conversions', this.testCases.torqueConversions);
+    this.runTestSuite('Pressure Conversions', this.testCases.pressureConversions);
+    this.runTestSuite('Timezone Conversions', this.testCases.timezoneConversions);
+    this.runTestSuite('Timezone Pattern Detection', this.testCases.timezonePatternDetection);
+    this.runTestSuite('Timezone Regex Tests', this.testCases.timezoneRegexTests);
+    this.runTestSuite('Timezone Pattern Recognition', this.testCases.timezonePatternRecognition);
+    this.runTestSuite('New Units Pattern Matching', this.testCases.newUnitsPatternMatching);
+    this.runTestSuite('New Units Auto-Sizing', this.testCases.newUnitsAutoSizing);
     
     // Run additional specialized tests
     this.runDimensionFormatTests();

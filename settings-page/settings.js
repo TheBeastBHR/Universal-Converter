@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     temperatureUnit: document.getElementById('temperatureUnit'),
     volumeUnit: document.getElementById('volumeUnit'),
     areaUnit: document.getElementById('areaUnit'),
+    speedUnit: document.getElementById('speedUnit'),
+    torqueUnit: document.getElementById('torqueUnit'),
+    pressureUnit: document.getElementById('pressureUnit'),
+    timezoneUnit: document.getElementById('timezoneUnit'),
     currencyUnit: document.getElementById('currencyUnit')
   };
   
@@ -23,6 +27,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       temperatureUnit: 'c',
       volumeUnit: 'l',
       areaUnit: 'm2',
+      speedUnit: 'kmh',
+      torqueUnit: 'nm',
+      pressureUnit: 'kpa',
+      timezoneUnit: 'auto',
+      is12hr: true, // true = 12hr, false = 24hr
       currencyUnit: 'EUR'
     },
     imperial: {
@@ -31,6 +40,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       temperatureUnit: 'f',
       volumeUnit: 'gal',
       areaUnit: 'ft2',
+      speedUnit: 'mph',
+      torqueUnit: 'lbft',
+      pressureUnit: 'psi',
+      timezoneUnit: 'auto',
+      is12hr: true, // true = 12hr, false = 24hr
       currencyUnit: 'USD'
     }
   };
@@ -120,17 +134,29 @@ document.addEventListener('DOMContentLoaded', async function() {
     applyPreset('custom');
     saveSettings(); // Auto-save when preset is applied
   });
-  // Event listeners for unit selectors with auto-save (excluding currency)
+  // Event listeners for unit selectors with auto-save (excluding currency and timezone)
   [elements.lengthUnit, elements.weightUnit, elements.temperatureUnit, 
-   elements.volumeUnit, elements.areaUnit].forEach(select => {
+   elements.volumeUnit, elements.areaUnit, elements.speedUnit, elements.torqueUnit, elements.pressureUnit].forEach(select => {
     select.addEventListener('change', () => {
       updateActivePreset();
       saveSettings(); // Auto-save when any setting changes
     });
   });
   
-  // Currency unit changes don't affect preset status
+  // Currency, timezone and time format changes don't affect preset status
   elements.currencyUnit.addEventListener('change', () => {
+    saveSettings();
+  });
+  
+  elements.timezoneUnit.addEventListener('change', () => {
+    saveSettings();
+  });
+  
+  document.getElementById('timeFormat12').addEventListener('change', () => {
+    saveSettings();
+  });
+  
+  document.getElementById('timeFormat24').addEventListener('change', () => {
     saveSettings();
   });
   
@@ -144,6 +170,16 @@ document.addEventListener('DOMContentLoaded', async function() {
       elements.temperatureUnit.value = settings.temperatureUnit || 'c';
       elements.volumeUnit.value = settings.volumeUnit || 'l';
       elements.areaUnit.value = settings.areaUnit || 'm2';
+      elements.speedUnit.value = settings.speedUnit || 'ms';
+      elements.torqueUnit.value = settings.torqueUnit || 'nm';
+      elements.pressureUnit.value = settings.pressureUnit || 'pa';
+      elements.timezoneUnit.value = settings.timezoneUnit || 'auto';
+      
+      // Set radio button based on settings
+      const is12hr = settings.is12hr !== false; // Default to 12hr (true)
+      document.getElementById('timeFormat12').checked = is12hr;
+      document.getElementById('timeFormat24').checked = !is12hr;
+      
       elements.currencyUnit.value = settings.currencyUnit || 'USD';
       
       updateActivePreset(settings.preset || 'metric');
@@ -156,17 +192,22 @@ document.addEventListener('DOMContentLoaded', async function() {
   function applyPreset(presetName) {
     if (presetName !== 'custom' && presets[presetName]) {
       const preset = presets[presetName];
-      // Store current currency selection before applying preset
+      // Store current currency and timezone selection before applying preset
       const currentCurrency = elements.currencyUnit.value;
+      const currentTimezone = elements.timezoneUnit.value;
       
       elements.lengthUnit.value = preset.lengthUnit;
       elements.weightUnit.value = preset.weightUnit;
       elements.temperatureUnit.value = preset.temperatureUnit;
       elements.volumeUnit.value = preset.volumeUnit;
       elements.areaUnit.value = preset.areaUnit;
+      elements.speedUnit.value = preset.speedUnit;
+      elements.torqueUnit.value = preset.torqueUnit;
+      elements.pressureUnit.value = preset.pressureUnit;
       
-      // Restore currency selection - don't change it with presets
+      // Restore currency and timezone selection - don't change them with presets
       elements.currencyUnit.value = currentCurrency;
+      elements.timezoneUnit.value = currentTimezone;
     }
     updateActivePreset(presetName);
   }
@@ -183,22 +224,28 @@ document.addEventListener('DOMContentLoaded', async function() {
       else if (activePreset === 'imperial') elements.imperialBtn.classList.add('active');
       else if (activePreset === 'custom') elements.customBtn.classList.add('active');
     } else {
-      // Auto-detect based on current settings (excluding currency)
+      // Auto-detect based on current settings (excluding currency and timezone)
       const currentSettings = {
         lengthUnit: elements.lengthUnit.value,
         weightUnit: elements.weightUnit.value,
         temperatureUnit: elements.temperatureUnit.value,
         volumeUnit: elements.volumeUnit.value,
-        areaUnit: elements.areaUnit.value
+        areaUnit: elements.areaUnit.value,
+        speedUnit: elements.speedUnit.value,
+        torqueUnit: elements.torqueUnit.value,
+        pressureUnit: elements.pressureUnit.value
       };
       
-      // Compare against preset configurations (excluding currency)
+      // Compare against preset configurations (excluding currency and timezone)
       const metricSettings = {
         lengthUnit: presets.metric.lengthUnit,
         weightUnit: presets.metric.weightUnit,
         temperatureUnit: presets.metric.temperatureUnit,
         volumeUnit: presets.metric.volumeUnit,
-        areaUnit: presets.metric.areaUnit
+        areaUnit: presets.metric.areaUnit,
+        speedUnit: presets.metric.speedUnit,
+        torqueUnit: presets.metric.torqueUnit,
+        pressureUnit: presets.metric.pressureUnit
       };
       
       const imperialSettings = {
@@ -206,7 +253,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         weightUnit: presets.imperial.weightUnit,
         temperatureUnit: presets.imperial.temperatureUnit,
         volumeUnit: presets.imperial.volumeUnit,
-        areaUnit: presets.imperial.areaUnit
+        areaUnit: presets.imperial.areaUnit,
+        speedUnit: presets.imperial.speedUnit,
+        torqueUnit: presets.imperial.torqueUnit,
+        pressureUnit: presets.imperial.pressureUnit
       };
       
       const isMetric = JSON.stringify(currentSettings) === JSON.stringify(metricSettings);
@@ -230,6 +280,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       temperatureUnit: elements.temperatureUnit.value,
       volumeUnit: elements.volumeUnit.value,
       areaUnit: elements.areaUnit.value,
+      speedUnit: elements.speedUnit.value,
+      torqueUnit: elements.torqueUnit.value,
+      pressureUnit: elements.pressureUnit.value,
+      timezoneUnit: elements.timezoneUnit.value,
+      is12hr: document.getElementById('timeFormat12').checked,
       currencyUnit: elements.currencyUnit.value
     };
     

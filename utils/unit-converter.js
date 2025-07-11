@@ -69,7 +69,28 @@ window.UnitConverter.UnitConverter = class {
       return this.convertTemperature(value, normalizedFrom, normalizedTo);
     }
     
+    if (unitType === 'speed') {
+      return this.convertSpeed(value, normalizedFrom, normalizedTo);
+    }
+    
+    if (unitType === 'torque') {
+      return this.convertTorque(value, normalizedFrom, normalizedTo);
+    }
+    
+    if (unitType === 'pressure') {
+      return this.convertPressure(value, normalizedFrom, normalizedTo);
+    }
+    
+    if (unitType === 'timezone') {
+      // Timezone conversion is handled differently - returns object not number
+      return null; // Use convertTimezone method directly
+    }
+    
     const conversions = this.conversions[unitType];
+    if (!conversions[normalizedFrom] || !conversions[normalizedTo]) {
+      return null;
+    }
+    
     const valueInBase = value / conversions[normalizedFrom];
     return valueInBase * conversions[normalizedTo];
   }
@@ -115,9 +136,176 @@ window.UnitConverter.UnitConverter = class {
                       unitType === 'temperature' ? 'temperatureUnit' :
                       unitType === 'volume' ? 'volumeUnit' :
                       unitType === 'area' ? 'areaUnit' : 
+                      unitType === 'speed' ? 'speedUnit' :
+                      unitType === 'torque' ? 'torqueUnit' :
+                      unitType === 'pressure' ? 'pressureUnit' :
+                      unitType === 'timezone' ? 'timezoneUnit' :
                       unitType === 'currency' ? 'currencyUnit' : 'lengthUnit';
     
     return userSettings[settingKey] || this.defaultUnits[unitType];
+  }
+
+  /**
+   * Convert speed units
+   * @param {number} value - Speed value
+   * @param {string} fromUnit - Source unit
+   * @param {string} toUnit - Target unit
+   * @returns {number|null} - Converted value or null
+   */
+  convertSpeed(value, fromUnit, toUnit) {
+    const normalizedFrom = this.normalizeUnit(fromUnit);
+    const normalizedTo = this.normalizeUnit(toUnit);
+    
+    if (!this.conversions.speed[normalizedFrom] || !this.conversions.speed[normalizedTo]) {
+      return null;
+    }
+    
+    // Convert to m/s first, then to target unit
+    const metersPerSecond = value * this.conversions.speed[normalizedFrom];
+    return metersPerSecond / this.conversions.speed[normalizedTo];
+  }
+
+  /**
+   * Convert torque units
+   * @param {number} value - Torque value
+   * @param {string} fromUnit - Source unit
+   * @param {string} toUnit - Target unit
+   * @returns {number|null} - Converted value or null
+   */
+  convertTorque(value, fromUnit, toUnit) {
+    const normalizedFrom = this.normalizeUnit(fromUnit);
+    const normalizedTo = this.normalizeUnit(toUnit);
+    
+    if (!this.conversions.torque[normalizedFrom] || !this.conversions.torque[normalizedTo]) {
+      return null;
+    }
+    
+    // Convert to Nm first, then to target unit
+    const newtonMeters = value * this.conversions.torque[normalizedFrom];
+    return newtonMeters / this.conversions.torque[normalizedTo];
+  }
+
+  /**
+   * Convert pressure units
+   * @param {number} value - Pressure value
+   * @param {string} fromUnit - Source unit
+   * @param {string} toUnit - Target unit
+   * @returns {number|null} - Converted value or null
+   */
+  convertPressure(value, fromUnit, toUnit) {
+    const normalizedFrom = this.normalizeUnit(fromUnit);
+    const normalizedTo = this.normalizeUnit(toUnit);
+    
+    if (!this.conversions.pressure[normalizedFrom] || !this.conversions.pressure[normalizedTo]) {
+      return null;
+    }
+    
+    // Convert to Pa first, then to target unit
+    const pascals = value * this.conversions.pressure[normalizedFrom];
+    return pascals / this.conversions.pressure[normalizedTo];
+  }
+
+  /**
+   * Convert timezone (time conversion)
+   * @param {string} timeString - Time string (e.g., "3:30 PM")
+   * @param {string} fromZone - Source timezone
+   * @param {string} toZone - Target timezone
+   * @param {boolean} useOffsetFormat - Whether to return GMT offset format for display
+   * @returns {Object|null} - Converted time object or null
+   */
+  convertTimezone(timeString, fromZone, toZone, useOffsetFormat = false) {
+    try {
+      // Parse time string
+      const timeMatch = timeString.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+      if (!timeMatch) return null;
+      
+      let hours = parseInt(timeMatch[1]);
+      const minutes = parseInt(timeMatch[2]);
+      const period = timeMatch[3]?.toUpperCase();
+      
+      // Convert to 24-hour format
+      if (period === 'PM' && hours !== 12) hours += 12;
+      if (period === 'AM' && hours === 12) hours = 0;
+      
+      // Get timezone offsets
+      const fromOffset = this.getTimezoneOffset(fromZone);
+      const toOffset = this.getTimezoneOffset(toZone);
+      
+      if (fromOffset === null || toOffset === null) return null;
+      
+      // Create date object for calculation
+      const date = new Date();
+      date.setHours(hours, minutes, 0, 0);
+      
+      // Convert timezone
+      const offsetDiff = (toOffset - fromOffset) * 60 * 60 * 1000;
+      const convertedDate = new Date(date.getTime() + offsetDiff);
+      
+      // Determine display timezone - use GMT offset format if requested (auto-detected)
+      let displayTimezone = toZone;
+      if (useOffsetFormat) {
+        displayTimezone = `GMT${toOffset >= 0 ? '+' : ''}${toOffset}`;
+      } else if (toZone.startsWith('GMT') || toZone.startsWith('UTC')) {
+        displayTimezone = `GMT${toOffset >= 0 ? '+' : ''}${toOffset}`;
+      }
+      
+      return {
+        hours: convertedDate.getHours(),
+        minutes: convertedDate.getMinutes(),
+        formatted: this.formatTime(convertedDate.getHours(), convertedDate.getMinutes()),
+        timezone: displayTimezone
+      };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   * Get timezone offset in hours
+   * @param {string} timezone - Timezone string
+   * @returns {number|null} - Offset in hours or null
+   */
+  getTimezoneOffset(timezone) {
+    const tz = timezone.toUpperCase();
+    
+    // Check timezone mappings
+    if (window.UnitConverterData.TIMEZONE_MAPPINGS[tz] !== undefined) {
+      return window.UnitConverterData.TIMEZONE_MAPPINGS[tz];
+    }
+    
+    // Parse GMT/UTC format (including GMT+0, GMT-0)
+    const gmtMatch = timezone.match(/(?:GMT|UTC)([+-]?\d{1,2})/i);
+    if (gmtMatch) {
+      return parseInt(gmtMatch[1]);
+    }
+    
+    // Parse offset format
+    const offsetMatch = timezone.match(/([+-]\d{1,2}):?(\d{2})?/);
+    if (offsetMatch) {
+      const hours = parseInt(offsetMatch[1]);
+      const minutes = offsetMatch[2] ? parseInt(offsetMatch[2]) : 0;
+      return hours + (hours >= 0 ? minutes/60 : -minutes/60);
+    }
+    
+    // Auto-detect user timezone
+    if (tz === 'AUTO') {
+      return window.UnitConverterData.getUserTimezone();
+    }
+    
+    return null;
+  }
+
+  /**
+   * Format time for display
+   * @param {number} hours - Hours (24-hour format)
+   * @param {number} minutes - Minutes
+   * @returns {string} - Formatted time string
+   */
+  formatTime(hours, minutes) {
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+    const displayMinutes = minutes.toString().padStart(2, '0');
+    return `${displayHours}:${displayMinutes} ${period}`;
   }
   
   /**
@@ -127,7 +315,8 @@ window.UnitConverter.UnitConverter = class {
    * @returns {string} - Formatted result string
    */  formatResult(value, unit) {
     const formatted = Math.round(value * 100) / 100;
-    return `${formatted} ${unit}`;
+    const displayUnit = this.getDisplayUnit(unit);
+    return `${formatted} ${displayUnit}`;
   }
     /**
    * Calculate area equivalent for linear measurements
@@ -247,8 +436,96 @@ window.UnitConverter.UnitConverter = class {
       if (value > 43560 && defaultUnit === 'ft2') {
         return { value: value * units.acre, unit: 'acre' };
       }
+      
+    } else if (unitType === 'speed') {
+      const units = this.conversions.speed;
+      
+      // Auto-size speed based on magnitude
+      if (defaultUnit === 'ms') {
+        if (value > 50) {
+          return { value: value / units.kmh, unit: 'kmh' };
+        }
+      } else if (defaultUnit === 'kmh') {
+        if (value < 1) {
+          return { value: value * units.kmh, unit: 'ms' };
+        }
+      } else if (defaultUnit === 'mph') {
+        if (value < 1) {
+          return { value: value * units.mph / units.fps, unit: 'fps' };
+        }
+      }
+      
+    } else if (unitType === 'pressure') {
+      const units = this.conversions.pressure;
+      
+      // Auto-size pressure based on magnitude
+      if (defaultUnit === 'pa') {
+        if (value >= 100000) {
+          return { value: value / units.bar, unit: 'bar' };
+        } else if (value >= 1000) {
+          return { value: value / units.kpa, unit: 'kpa' };
+        }
+      } else if (defaultUnit === 'kpa') {
+        if (value < 1) {
+          return { value: value * units.kpa / units.pa, unit: 'pa' };
+        } else if (value >= 100) {
+          return { value: value / (units.bar / units.kpa), unit: 'bar' };
+        }
+      } else if (defaultUnit === 'bar') {
+        if (value < 0.01) {
+          return { value: value * units.bar / units.kpa, unit: 'kpa' };
+        }
+      }
     }
     
     return { value, unit: defaultUnit };
+  }
+  
+  /**
+   * Get display-friendly unit name
+   * @param {string} unit - The unit to format
+   * @returns {string} - Formatted unit name
+   */
+  getDisplayUnit(unit) {
+    const displayMap = {
+      // Speed units
+      'kmh': 'km/h',
+      'mph': 'mph',
+      'fps': 'ft/s',
+      'ms': 'm/s',
+      'kn': 'knots',
+      'mach': 'Mach',
+      
+      // Torque units
+      'nm': 'N⋅m',
+      'lbft': 'lb⋅ft',
+      'lbin': 'lb⋅in',
+      'kgm': 'kg⋅m',
+      'kgfm': 'kgf⋅m',
+      'ozin': 'oz⋅in',
+      
+      // Pressure units
+      'pa': 'Pa',
+      'kpa': 'kPa',
+      'mpa': 'MPa',
+      'bar': 'bar',
+      'psi': 'psi',
+      'atm': 'atm',
+      'mmhg': 'mmHg',
+      'inhg': 'inHg',
+      'torr': 'Torr',
+      'psf': 'psf',
+      
+      // Other units
+      'm': 'm', 'cm': 'cm', 'mm': 'mm', 'km': 'km',
+      'in': 'in', 'ft': 'ft', 'yd': 'yd', 'mi': 'mi',
+      'kg': 'kg', 'g': 'g', 'mg': 'mg', 'lb': 'lb', 'oz': 'oz', 't': 't',
+      'c': '°C', 'f': '°F', 'k': 'K',
+      'l': 'L', 'ml': 'mL', 'gal': 'gal', 'qt': 'qt', 'pt': 'pt', 'cup': 'cup', 'fl_oz': 'fl oz',
+      'm2': 'm²', 'cm2': 'cm²', 'mm2': 'mm²', 'km2': 'km²',
+      'ft2': 'ft²', 'in2': 'in²', 'acre': 'acre'
+    };
+    
+    return displayMap[unit] || unit;
   }
 };
