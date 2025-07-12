@@ -57,15 +57,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Clear existing options
     currencySelect.innerHTML = '';
     
-    // Add detect currency option
-    const detectOption = document.createElement('option');
-    detectOption.value = 'detect-currency';
-    detectOption.textContent = 'Detect your currency';
-    currencySelect.appendChild(detectOption);
-    
     // Add all currencies from the mapping
     if (typeof countryNameToCurrencyCode !== 'undefined') {
-      populateSelectList(currencySelect, countryNameToCurrencyCode, 'detect-currency');
+      populateSelectList(currencySelect, countryNameToCurrencyCode, 'USD');
     } else {
       // Fallback to basic currency list if mapping not loaded
       const basicCurrencies = {
@@ -80,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         'Indian Rupee': 'INR',
         'South Korean Won': 'KRW'
       };
-      populateSelectList(currencySelect, basicCurrencies, 'detect-currency');
+      populateSelectList(currencySelect, basicCurrencies, 'USD');
     }
   }
   

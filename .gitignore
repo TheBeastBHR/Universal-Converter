@@ -1,5 +1,6 @@
 # Build outputs
 build/
+build-firefox/
 *.zip
 *.crx
 *.pem
@@ -7,6 +8,7 @@ build/
 run-tests.ps1
 tests/debug*
 debug*
+
 # Node.js
 node_modules/
 npm-debug.log*

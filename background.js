@@ -7,8 +7,15 @@ chrome.action.onClicked.addListener((tab) => {
   });
 });
 
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('Unit Converter extension installed');
+  
+  // Open settings page on first install
+  if (details.reason === 'install') {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('settings-page/settings.html')
+    });
+  }
   
   // Set default settings if none exist
   try {
