@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     torqueUnit: document.getElementById('torqueUnit'),
     pressureUnit: document.getElementById('pressureUnit'),
     timezoneUnit: document.getElementById('timezoneUnit'),
+    timeFormatBtn: document.getElementById('timeFormatBtn'),
     currencyUnit: document.getElementById('currencyUnit')
   };
   
@@ -152,11 +153,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     saveSettings();
   });
   
-  document.getElementById('timeFormat12').addEventListener('change', () => {
-    saveSettings();
-  });
-  
-  document.getElementById('timeFormat24').addEventListener('change', () => {
+  elements.timeFormatBtn.addEventListener('click', () => {
+    const currentFormat = elements.timeFormatBtn.dataset.format;
+    const newFormat = currentFormat === '12' ? '24' : '12';
+    
+    elements.timeFormatBtn.dataset.format = newFormat;
+    elements.timeFormatBtn.textContent = newFormat === '12' ? '12 Hours' : '24 Hours';
+    
     saveSettings();
   });
   
@@ -175,10 +178,10 @@ document.addEventListener('DOMContentLoaded', async function() {
       elements.pressureUnit.value = settings.pressureUnit || 'pa';
       elements.timezoneUnit.value = settings.timezoneUnit || 'auto';
       
-      // Set radio button based on settings
+      // Set button based on settings
       const is12hr = settings.is12hr !== false; // Default to 12hr (true)
-      document.getElementById('timeFormat12').checked = is12hr;
-      document.getElementById('timeFormat24').checked = !is12hr;
+      elements.timeFormatBtn.dataset.format = is12hr ? '12' : '24';
+      elements.timeFormatBtn.textContent = is12hr ? '12 Hours' : '24 Hours';
       
       elements.currencyUnit.value = settings.currencyUnit || 'USD';
       
@@ -284,7 +287,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       torqueUnit: elements.torqueUnit.value,
       pressureUnit: elements.pressureUnit.value,
       timezoneUnit: elements.timezoneUnit.value,
-      is12hr: document.getElementById('timeFormat12').checked,
+      is12hr: elements.timeFormatBtn.dataset.format === '12',
       currencyUnit: elements.currencyUnit.value
     };
     
