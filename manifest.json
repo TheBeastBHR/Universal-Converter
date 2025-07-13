@@ -7,7 +7,7 @@
     "activeTab",
     "storage"
   ],  "action": {
-    "default_title": "Universal Converter Settings"
+    "default_title": "Universal Converter: Convert units and currencies"
   },
   "content_scripts": [
     {

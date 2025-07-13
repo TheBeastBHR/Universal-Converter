@@ -8,9 +8,6 @@
 # Run all automated tests
 npm test
 
-# Run extension validation
-npm run validate
-
 # Run comprehensive test suite
 npm run test:all
 
@@ -22,17 +19,17 @@ npm run test:stop-on-failure
 ```
 
 **What it tests:**
-- Basic unit conversions (length, weight, temperature, volume, area)
+- Detection Tests: Pattern matching, unit detection, timezone recognition, and measurement identification
+- Autosizing Tests: Automatic unit sizing functionality (small values to smaller units, large values to larger units)
+- Conversion Tests: All unit conversions including length, weight, temperature, volume, area, speed, torque, pressure, dimensions, and timezones
+- Other Tests: Edge cases, decimal precision, formatting, and error handling
 - Single-selection dimension conversions ("10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "6m × 4m × 2.5m")
 - Currency pattern detection with real-time conversion support
 - Unicode symbol detection (cm², m², ft², د.ب, ر.س, د.إ)
-- Auto-sizing functionality (0.001m → 1mm)
-- Pattern matching and individual measurement detection
 - Unit aliases and normalization
 - Arabic currency symbols (BHD, KWD, SAR, AED, QAR)
 - European number formats (1.234,56)
 - False-positive prevention (only converts explicitly selected measurements)
-- Edge cases and error handling
 
 ### 2. **Browser Tests** (Manual)
 
@@ -83,12 +80,13 @@ This project uses GitHub Actions for continuous integration and automated testin
 - Ubuntu latest, Windows latest, macOS latest
 
 ### **What Runs Automatically:**
-1. **Unit Tests** - All core conversion logic tests
-2. **Extension Validation** - Structure, syntax, and Manifest v3 compliance
-3. **Currency Integration Tests** - Pattern detection and conversion logic
-4. **Dimension Parsing Tests** - Complex format support ("by", "×", "x")
-5. **Cross-Platform Compatibility** - Windows, macOS, Linux
-6. **Build Verification** - Ensures extension can be packaged
+1. **Detection Tests** - Pattern matching, unit detection, timezone patterns, and measurement identification
+2. **Autosizing Tests** - Automatic unit sizing logic validation
+3. **Conversion Tests** - All core conversion logic including dimensions and timezones
+4. **Other Tests** - Edge cases, precision, and error handling
+5. **Extension Validation** - Structure, syntax, and Manifest v3 compliance
+6. **Cross-Platform Compatibility** - Windows, macOS, Linux
+7. **Build Verification** - Ensures extension can be packaged
 
 ### **Viewing Results:**
 1. Go to your GitHub repository
@@ -106,18 +104,6 @@ The test suite provides comprehensive coverage across all functionality areas.
 - Volume conversions (ml, L, fl oz, cup, pt, qt, gal)
 - Area conversions (mm², cm², m², km², in², ft², acre)
 
-### Advanced Features
-- Single-Selection Approach - Only converts explicitly selected individual measurements
-- Dimension Support - "10 x 5 x 3 inches", "4.5 × 3.2 × 2.8 meters", "6m × 4m × 2.5m"
-- Currency Conversions - Real-time exchange rates with 150+ currencies
-- Arabic Currency Support - د.ب (BHD), د.ك (KWD), ر.س (SAR), د.إ (AED)
-- European Number Formats - 1.234,56 decimal comma support
-- Unicode symbol detection (cm², m², °C, etc.)
-- Text format aliases ("square meters", "degrees Celsius")
-- Auto-sizing (0.001 m → 1 mm, 2000 m → 2 km)
-- Pattern matching with priority handling
-- Settings persistence and auto-save
-- False-positive prevention (avoids converting context text like "100 in the US")
 
 ### Extension Integration
 - Manifest v3 compliance
@@ -177,9 +163,7 @@ npm test
 
 ## Continuous Integration
 
-The CI/CD pipeline runs comprehensive tests automatically:
-
-1. **On every push:**
+The CI/CD pipeline runs comprehensive tests automatically where **on every push:**
    - Runs all automated tests
    - Validates extension structure and Manifest v3 compliance
    - Checks code quality and syntax
@@ -187,81 +171,86 @@ The CI/CD pipeline runs comprehensive tests automatically:
    - Verifies dimension parsing functionality
    - Tests single-selection approach and false-positive prevention
 
-2. **On main branch:**
-   - Creates distributable package in build/ folder
-   - Uploads build artifacts for download
-   - Validates cross-platform compatibility
+## Adding Tests
 
-3. **On tags (releases):**
-   - Creates GitHub release automatically
-   - Attaches extension ZIP file
-   - Generates release notes from commits
-
-## Adding New Tests
-
-The test suite now uses a modular structure with separate test cases and test runner files for better maintainability.
+The test suite uses a JSON-based structure with organized test categories for better maintainability.
 
 ### Test Structure
-- **tests/test-cases.js** - Contains all test case definitions organized by category
-- **tests/test-runner.js** - Streamlined test runner that loads and executes test cases
+- **tests/test-cases.json** - Contains all test case definitions organized by logical categories
+- **tests/test-runner.js** - test runner that loads and executes grouped test cases
+
+
+### Test Categories
+
+The tests are organized into four main categories:
+
+1. **Detection Tests**
+   - Unit detection and normalization
+   - Pattern matching and recognition
+   - Timezone pattern detection and regex validation
+   - Dimension format recognition
+   - Single selection approach validation
+   - False-positive prevention
+
+2. **Autosizing Tests**
+   - Automatic unit sizing based on value magnitude
+   - Best unit selection logic
+   - Value and unit combination optimization
+
+3. **Conversion Tests**
+   - Basic unit conversions (length, weight, temperature, volume, area)
+   - Speed, torque, and pressure conversions
+   - Dimension conversions with various separators
+   - Timezone conversions between different time zones
+
+4. **Other Tests**
+   - Decimal precision and formatting
+   - Edge cases and error handling
+   - Invalid unit combinations
+   - Boundary value testing
 
 ### Adding Test Cases
 
-To add new test cases, edit `tests/test-cases.js` and add to the appropriate category:
+To add test cases, edit `tests/test-cases.json` and add to the appropriate category:
 
-```javascript
-// Example: Adding a new basic conversion test
-basicConversions: [
-  // ...existing tests...
-  {
-    name: 'New conversion test',
-    type: 'conversion',
-    input: { value: 100, from: 'unit1', to: 'unit2' },
-    expected: 50,
-    tolerance: 0.001
-  }
-],
-
-// Example: Adding a new pattern detection test
-patternMatching: [
-  // ...existing tests...
-  {
-    name: 'Pattern: "new format" detected',
-    type: 'patternDetection',
-    input: { 
-      text: 'test text', 
-      userSettings: { lengthUnit: 'm', areaUnit: 'm2' } 
-    },
-    expected: { minConversions: 1 }
-  }
-]
+```json
+{
+  "Detection": [
+    {
+      "name": "Pattern: \"new format\" detected",
+      "type": "patternDetection",
+      "input": {
+        "text": "test text",
+        "userSettings": { "lengthUnit": "m", "areaUnit": "m2" }
+      },
+      "expected": { "minConversions": 1 }
+    }
+  ],
+  "Conversions": [
+    {
+      "name": "Length: 100 cm = 1 m",
+      "type": "conversion",
+      "input": { "value": 100, "from": "cm", "to": "m" },
+      "expected": 1,
+      "tolerance": 0.001
+    }
+  ]
+}
 ```
 
 ### Test Types Available
 - `conversion` - Standard unit conversions
+- `timezoneConversion` - Timezone conversion tests
 - `normalize` - Unit normalization tests  
 - `unitType` - Unit type detection tests
 - `bestUnit` - Auto-sizing tests
 - `format` - Number formatting tests
 - `patternDetection` - Individual measurement pattern recognition
+- `patternFromDataTest` - Pattern testing using actual conversion data
 - `dimensionDetection` - Dimension detection tests
 - `singleSelection` - Single-selection approach tests
-- `falsePositivePrevention` - Tests that non-measurements are rejected
-
-### Test Categories
-- basicConversions
-- areaConversions  
-- unitDetection
-- autoSizing
-- patternMatching
-- comprehensiveConversions
-- decimalPrecision
-- edgeCases
-- comprehensiveAutoSizing
-- dimensionConversions
-- singleSelectionApproach
-- dimensionFormats
-- nonDimensions
+- `doubleDetectionCount` - Multiple detection prevention tests
+- `originalBugFix` - Regression testing for specific bug fixes
 
 ## Test Commands Summary
 
@@ -277,15 +266,12 @@ npm run validate           # Validate extension structure
 npm run build             # Build extension for distribution
 npm run test:browser      # Instructions for manual browser testing
 
-# Development helpers
-node tests/test-runner.js  # Run core tests directly
-node tests/validate-extension.js  # Validate structure only
 ```
 
 ## Success Criteria
 
 All tests should pass before merging to main branch:
-- All automated tests passing
+- All automated tests passing (Detection, Autosizing, Conversions, Other Tests)
 - Extension validation passing
 - Manual browser tests working (individual measurement selections)
 - No console errors during testing

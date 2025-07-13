@@ -211,7 +211,7 @@ window.UnitConverter.CurrencyConverter = class {
 
     /**
      * Format currency display (from )
-     * Shows both currency code and symbol, e.g., "7.52 BHD د.ب"
+     * Shows both currency code and symbol, e.g., "7.52 USD $"
      */
     formatCurrency(amount, currencyCode, userLocale = navigator.language) {
         const formattedAmount = new Intl.NumberFormat(userLocale, {

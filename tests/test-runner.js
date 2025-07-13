@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Streamlined Test Runner for Unit Converter Extension
-// This script loads test cases from external files and runs them efficiently
+// JSON Test Runner for Unit Converter Extension
+// This script loads test cases from test-cases.json and runs them efficiently
 
 const fs = require('fs');
 const path = require('path');
@@ -15,7 +15,7 @@ const colors = {
   bright: '\x1b[1m'
 };
 
-class StreamlinedUnitConverterTester {
+class JSONUnitConverterTester {
   constructor() {
     this.testResults = [];
     this.testCount = 0;
@@ -81,10 +81,15 @@ class StreamlinedUnitConverterTester {
 
   loadTestCases() {
     try {
-      const testCasesPath = path.join(__dirname, 'test-cases.js');
-      delete require.cache[require.resolve(testCasesPath)]; // Clear cache
-      this.testCases = require(testCasesPath);
-      console.log(`${colors.green}✅ Test cases loaded successfully${colors.reset}`);
+      const testCasesPath = path.join(__dirname, 'test-cases.json');
+      const testCasesContent = fs.readFileSync(testCasesPath, 'utf8');
+      this.testCases = JSON.parse(testCasesContent);
+      console.log(`${colors.green}✅ Test cases loaded successfully from JSON${colors.reset}`);
+      
+      // Log test case counts
+      Object.entries(this.testCases).forEach(([groupName, tests]) => {
+        console.log(`   ${groupName}: ${tests.length} tests`);
+      });
     } catch (error) {
       console.error(`${colors.red}❌ Failed to load test cases:${colors.reset}`, error.message);
       process.exit(1);
@@ -218,8 +223,7 @@ class StreamlinedUnitConverterTester {
 
       case 'timezonePatternTest':
         // Test if timezone patterns are recognized in text
-        const { conversionData } = require('../data/conversion-data');
-        const timezonePattern = conversionData.timezone?.patterns?.[0];
+        const timezonePattern = global.window.UnitConverterData?.PATTERNS?.timezone;
         if (timezonePattern) {
           const hasMatch = timezonePattern.test(input.text);
           this.assert(hasMatch === expected.hasTimePattern, name, expected.hasTimePattern ? 'pattern matched' : 'pattern not matched', hasMatch ? 'pattern matched' : 'pattern not matched');
@@ -228,8 +232,124 @@ class StreamlinedUnitConverterTester {
         }
         break;
 
+      case 'regexTest':
+        // Test if a regex pattern matches text
+        const pattern = input.pattern;
+        if (pattern) {
+          // Reset regex state if it's global
+          if (pattern.global) {
+            pattern.lastIndex = 0;
+          }
+          const hasMatch = pattern.test(input.text);
+          this.assert(hasMatch === expected.hasMatch, name, expected.hasMatch ? 'pattern should match' : 'pattern should not match', hasMatch ? 'pattern matched' : 'pattern did not match');
+        } else {
+          this.assert(false, name, 'pattern provided', 'no pattern found');
+        }
+        break;
+
+      case 'patternFromDataTest':
+        // Test using actual patterns from conversion data
+        const dataPattern = global.window.UnitConverterData?.UNIT_PATTERNS?.[input.patternType];
+        if (dataPattern) {
+          // Reset regex state if it's global
+          if (dataPattern.global) {
+            dataPattern.lastIndex = 0;
+          }
+          const hasMatch = dataPattern.test(input.text);
+          this.assert(hasMatch === expected.hasMatch, name, expected.hasMatch ? 'pattern should match' : 'pattern should not match', hasMatch ? 'pattern matched' : 'pattern did not match');
+        } else {
+          this.assert(false, name, `${input.patternType} pattern available`, `${input.patternType} pattern not found in conversion data`);
+        }
+        break;
+
+      case 'singleSelection':
+        // Handle single selection tests with different structure
+        const userSettings = Object.assign({}, input);
+        delete userSettings.selectedText; // Remove selectedText from userSettings
+        const singleSelectionConversions = this.detector.findConversions(input.selectedText, userSettings);
+        
+        if (expected.hasConversion) {
+          // Should have exactly one conversion
+          this.assert(singleSelectionConversions.length === 1, 
+            name, '1 conversion', singleSelectionConversions.length);
+          
+          if (singleSelectionConversions.length > 0 && expected.conversionType) {
+            this.assert(singleSelectionConversions[0].type === expected.conversionType, 
+              `${name} (type)`, expected.conversionType, singleSelectionConversions[0].type);
+          }
+        } else {
+          // Should have no conversions
+          this.assert(singleSelectionConversions.length === 0, 
+            name, '0 conversions', singleSelectionConversions.length);
+        }
+        break;
+
+      case 'timezoneConversion':
+        // Handle timezone conversion tests
+        const timezoneResult = this.unitConverter.convertTimezone(input.time, input.from, input.to);
+        if (timezoneResult && timezoneResult.formatted && timezoneResult.timezone) {
+          const actualResult = `${timezoneResult.formatted} ${timezoneResult.timezone}`;
+          this.assert(actualResult === expected, name, expected, actualResult);
+        } else {
+          this.assert(false, name, expected, 'conversion failed');
+        }
+        break;
+
+      // Handle legacy test formats that might not follow standard structure
       default:
-        console.log(`${colors.yellow}[WARNING] Unknown test type: ${type}${colors.reset}`);
+        // Check if this is a legacy dimension format test
+        if (testCase.text && testCase.expectedCount !== undefined) {
+          this.runLegacyDimensionTest(testCase);
+        } else if (testCase.text && testCase.expectedTypeNot !== undefined) {
+          this.runLegacyNonDimensionTest(testCase);
+        } else {
+          console.log(`${colors.yellow}[WARNING] Unknown test type: ${type || 'undefined'}${colors.reset}`);
+          console.log(`   Test case:`, JSON.stringify(testCase, null, 2));
+        }
+    }
+  }
+
+  // Handle legacy dimension format tests
+  runLegacyDimensionTest(testCase) {
+    const userSettings = {
+      lengthUnit: 'm',
+      areaUnit: 'm2',
+      weightUnit: 'kg',
+      temperatureUnit: 'c',
+      volumeUnit: 'l',
+      currencyUnit: 'USD'
+    };
+
+    const conversions = this.detector.findConversions(testCase.text, userSettings);
+    
+    this.assert(conversions.length === testCase.expectedCount, 
+      testCase.name, testCase.expectedCount, conversions.length);
+    
+    if (conversions.length > 0 && testCase.expectedType) {
+      this.assert(conversions[0].type === testCase.expectedType, 
+        `${testCase.name} (type)`, testCase.expectedType, conversions[0].type);
+    }
+  }
+
+  // Handle legacy non-dimension tests
+  runLegacyNonDimensionTest(testCase) {
+    const userSettings = {
+      lengthUnit: 'm',
+      areaUnit: 'm2',
+      weightUnit: 'kg',
+      temperatureUnit: 'c',
+      volumeUnit: 'l',
+      currencyUnit: 'USD'
+    };
+
+    const conversions = this.detector.findConversions(testCase.text, userSettings);
+    
+    this.assert(conversions.length === testCase.expectedCount, 
+      testCase.name, testCase.expectedCount, conversions.length);
+    
+    if (conversions.length > 0 && testCase.expectedTypeNot) {
+      this.assert(conversions[0].type !== testCase.expectedTypeNot, 
+        `${testCase.name} (not ${testCase.expectedTypeNot})`, `not ${testCase.expectedTypeNot}`, conversions[0].type);
     }
   }
 
@@ -239,95 +359,6 @@ class StreamlinedUnitConverterTester {
     
     testCases.forEach(testCase => {
       this.runTestCase(testCase);
-    });
-  }
-
-  // Run dimension format tests
-  runDimensionFormatTests() {
-    console.log(`\n${colors.blue}[Testing Dimension Formats]${colors.reset}`);
-    
-    const userSettings = {
-      lengthUnit: 'm',  // Changed from 'cm' to 'm' to ensure cm dimensions get converted
-      areaUnit: 'm2',
-      weightUnit: 'kg',
-      temperatureUnit: 'c',
-      volumeUnit: 'l',
-      currencyUnit: 'USD'
-    };
-
-    this.testCases.dimensionFormats.forEach((testCase, index) => {
-      console.log(`Testing case ${index + 1}: ${testCase.name}`);
-      const conversions = this.detector.findConversions(testCase.text, userSettings);
-      
-      this.assert(conversions.length === testCase.expectedCount, 
-        `Dimension Format Case ${index + 1}: "${testCase.name}" should yield ${testCase.expectedCount} conversion(s)`, 
-        testCase.expectedCount, conversions.length);
-      
-      if (conversions.length > 0 && testCase.expectedType) {
-        this.assert(conversions[0].type === testCase.expectedType, 
-          `Dimension Format Case ${index + 1}: Should detect as ${testCase.expectedType} type`, 
-          testCase.expectedType, conversions[0].type);
-      }
-    });
-  }
-
-  // Run non-dimension tests
-  runNonDimensionTests() {
-    console.log(`\n${colors.blue}[Testing Non-Dimension Cases]${colors.reset}`);
-    
-    // Use different target units to ensure conversions are triggered
-    const userSettings = {
-      lengthUnit: 'm',  // Changed from 'cm' to 'm' to trigger cm->m conversion
-      areaUnit: 'm2',
-      weightUnit: 'kg',
-      temperatureUnit: 'c',
-      volumeUnit: 'l',
-      currencyUnit: 'USD'
-    };
-
-    this.testCases.nonDimensions.forEach((testCase, index) => {
-      console.log(`Testing non-dimension case ${index + 1}: ${testCase.name}`);
-      const conversions = this.detector.findConversions(testCase.text, userSettings);
-      
-      this.assert(conversions.length === testCase.expectedCount, 
-        `Non-Dimension Case ${index + 1}: Should detect ${testCase.expectedCount} measurement(s)`, 
-        testCase.expectedCount, conversions.length);
-      
-      if (conversions.length > 0 && testCase.expectedTypeNot) {
-        this.assert(conversions[0].type !== testCase.expectedTypeNot, 
-          `Non-Dimension Case ${index + 1}: Should NOT detect as ${testCase.expectedTypeNot}`, 
-          `not ${testCase.expectedTypeNot}`, conversions[0].type);
-      }
-    });
-  }
-
-  // Run false positive prevention tests
-  runSingleSelectionTests() {
-    console.log(`\n${colors.blue}[Testing Single Selection Approach]${colors.reset}`);
-    
-    this.testCases.singleSelection.forEach((testCase, index) => {
-      console.log(`Testing single selection case ${index + 1}: ${testCase.name}`);
-      
-      const userSettings = testCase.input;
-      const conversions = this.detector.findConversions(testCase.input.selectedText, userSettings);
-      
-      if (testCase.expected.hasConversion) {
-        // Should have exactly one conversion
-        this.assert(conversions.length === 1, 
-          `Single Selection Case ${index + 1}: Should detect 1 conversion`, 
-          1, conversions.length);
-        
-        if (conversions.length > 0 && testCase.expected.conversionType) {
-          this.assert(conversions[0].type === testCase.expected.conversionType, 
-            `Single Selection Case ${index + 1}: Should detect ${testCase.expected.conversionType} type`, 
-            testCase.expected.conversionType, conversions[0].type);
-        }
-      } else {
-        // Should have no conversions
-        this.assert(conversions.length === 0, 
-          `Single Selection Case ${index + 1}: Should detect 0 conversions`, 
-          0, conversions.length);
-      }
     });
   }
 
@@ -357,41 +388,19 @@ class StreamlinedUnitConverterTester {
 
   // Run all tests
   async runAllTests() {
-    console.log(`${colors.bright}${colors.yellow}[Starting Streamlined Unit Converter Tests]${colors.reset}\n`);
+    console.log(`${colors.bright}${colors.yellow}[Starting JSON-Based Unit Converter Tests]${colors.reset}\n`);
     
-    // Run test suites from test cases file
-    this.runTestSuite('Basic Unit Conversions', this.testCases.basicConversions);
-    this.runTestSuite('Area Conversions', this.testCases.areaConversions);
-    this.runTestSuite('Unit Detection', this.testCases.unitDetection);
-    this.runTestSuite('Auto-Sizing', this.testCases.autoSizing);
-    this.runTestSuite('Pattern Matching', this.testCases.patternMatching);
-    this.runTestSuite('Comprehensive Conversions', this.testCases.comprehensiveConversions);
-    this.runTestSuite('Decimal Precision', this.testCases.decimalPrecision);
-    this.runTestSuite('Edge Cases', this.testCases.edgeCases);
-    this.runTestSuite('Comprehensive Auto-Sizing', this.testCases.comprehensiveAutoSizing);
-    this.runTestSuite('Dimension Conversions', this.testCases.dimensionConversions);
-    this.runTestSuite('Double Detection Prevention', this.testCases.doubleDetectionPrevention);
-    this.runTestSuite('Single Selection Tests', this.testCases.singleSelection);
-    this.runTestSuite('Speed Conversions', this.testCases.speedConversions);
-    this.runTestSuite('Torque Conversions', this.testCases.torqueConversions);
-    this.runTestSuite('Pressure Conversions', this.testCases.pressureConversions);
-    this.runTestSuite('Timezone Conversions', this.testCases.timezoneConversions);
-    this.runTestSuite('Timezone Pattern Detection', this.testCases.timezonePatternDetection);
-    this.runTestSuite('Timezone Regex Tests', this.testCases.timezoneRegexTests);
-    this.runTestSuite('Timezone Pattern Recognition', this.testCases.timezonePatternRecognition);
-    this.runTestSuite('New Units Pattern Matching', this.testCases.newUnitsPatternMatching);
-    this.runTestSuite('New Units Auto-Sizing', this.testCases.newUnitsAutoSizing);
-    
-    // Run additional specialized tests
-    this.runDimensionFormatTests();
-    this.runNonDimensionTests();
-    this.runSingleSelectionTests();
+    // Run grouped test suites from JSON
+    this.runTestSuite('Detection Tests', this.testCases.Detection);
+    this.runTestSuite('Autosizing Tests', this.testCases.Autosizing);
+    this.runTestSuite('Conversion Tests', this.testCases.Conversions);
+    this.runTestSuite('Other Tests', this.testCases.OtherTests);
   }
 }
 
 // Run tests if this file is executed directly
 if (require.main === module) {
-  const tester = new StreamlinedUnitConverterTester();
+  const tester = new JSONUnitConverterTester();
   tester.runAllTests().then(() => {
     tester.generateReport();
   }).catch(error => {
@@ -400,4 +409,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = StreamlinedUnitConverterTester;
+module.exports = JSONUnitConverterTester;
